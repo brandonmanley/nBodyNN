@@ -7,11 +7,7 @@ from __future__ import print_function
 # import numpy
 # import time
 
-# from amuse.community.phigrape.interface import PhiGRAPE
-# from amuse.community.hermite.interface import Hermite
 from amuse.community.brutus.interface import Brutus 
-# from amuse.community.huayno.interface import Huayno
-# from amuse.community.bhtree.interface import BHTree
 from amuse.units import nbody_system
 from amuse.units.quantities import AdaptingVectorQuantity
 from matplotlib import pyplot
@@ -82,3 +78,13 @@ if __name__ == "__main__":
         subplot.set_xlim(-8, 8)
         subplot.set_ylim(-6, 6)
     pyplot.show()
+
+'''
+notes:
+
+- Units:    variable | unit       is syntax for representing variables and units
+            eg  mass=100 | kg      means 100 kg
+
+            nbody_system includes 3 units: time, length, mass and sets G = 1
+
+'''
