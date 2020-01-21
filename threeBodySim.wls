@@ -5,8 +5,9 @@ delta = 0.001
 validationDatapoints = {}
 validationDatapoints = Append[validationDatapoints, {"m1", "m2", "m3", "x1", "x2", "x3", "y1", "y2", "y3", "tEnd", "x1[tEnd]", "x2[tEnd]", "x3[tEnd]", "y1[tEnd]", "y2[tEnd]", "y3[tEnd]" }]
    
-nDataPoints = 2
+nDataPoints = 500*7
 While[ Length[validationDatapoints] < nDataPoints +1,
+    If[ Mod[Length[validationDatapoints], 100]==0, Print["Added ", Length[validationDatapoints], " points"]];
   
     x1o = {RandomReal[{-3, -1}], RandomReal[{1, 2}]};
     x2o = {RandomReal[{0, 2}], RandomReal[{-2, 0}]};
@@ -77,15 +78,17 @@ While[ Length[validationDatapoints] < nDataPoints +1,
 
     tEndtime = {0.001, 0.003, 0.005, 0.01, 1, 5, 7.5};
 
+
+
     For[i=1, i < Length[tEndtime]+1,
-        Print[tEndtime[[i]]]; 
         Quiet[
-            validationDatapoints = Append[validationDatapoints, {m1, m2, m3, x1o[[1]], x1o[[2]], x2o[[1]], x2o[[2]], x3o[[1]], x3o[[2]], tEndtime[[i]], mx1[tEndtime[[i]]], mx2[tEndtime[[i]]], mx3[tEndtime[[i]]], my1[tEndtime[[i]]], my2[tEndtime[[i]]], my3[tEndtime[[i]]]}]
+            point = {m1, m2, m3, x1o[[1]], x1o[[2]], x2o[[1]], x2o[[2]], x3o[[1]], x3o[[2]], tEndtime[[i]], mx1[tEndtime[[i]]], mx2[tEndtime[[i]]], mx3[tEndtime[[i]]], my1[tEndtime[[i]]], my2[tEndtime[[i]]], my3[tEndtime[[i]]] };
+            If[Length[Select[# > 10^6&][point] ]>0, ++i; Continue, validationDatapoints = Append[validationDatapoints,point]]
             ]; ++i;
         ]
     ]
 
-Export["~/Desktop/nBodyNN/valData_final.csv", validationDatapoints, "CSV"]
+Export["~/Desktop/nBodyNN/valData_500_t7.csv", validationDatapoints, "CSV"]
 
 (* traj = ParametricPlot[{{mx1[t], my1[t]}, {mx2[t], my2[t]}, {mx3[t], my3[t]}}, {t, 0, Tend}, PlotRange -> {{-10, 10}, {-10, 10}}] *)
 (* Export["traj.pdf", traj] *)
