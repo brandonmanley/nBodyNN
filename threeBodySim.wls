@@ -1,20 +1,26 @@
 #!/usr/bin/env wolframscript
 
+delta = 0.001 
+
 validationDatapoints = {}
-Do[
-    x1o = {RandomReal[{-1, 1}], RandomReal[{-1, 1}]};
-    x2o = {RandomReal[{-1, 1}], RandomReal[{-1, 1}]};
-    x3o = {RandomReal[{-1, 1}], RandomReal[{-1, 1}]};
+validationDatapoints = Append[validationDatapoints, {"m1", "m2", "m3", "x1", "x2", "x3", "y1", "y2", "y3", "tEnd", "x1[tEnd]", "x2[tEnd]", "x3[tEnd]", "y1[tEnd]", "y2[tEnd]", "y3[tEnd]" }]
+   
+nDataPoints = 2
+While[ Length[validationDatapoints] < nDataPoints +1,
+  
+    x1o = {RandomReal[{-3, -1}], RandomReal[{1, 2}]};
+    x2o = {RandomReal[{0, 2}], RandomReal[{-2, 0}]};
+    x3o = {RandomReal[{3, 5}], RandomReal[{3, 5}]};
 
     v1o = {0,0};
     v2o = {0,0};
     v3o = {0,0};
 
-    Tend = 80;
+    Tend = 8;
 
-    m1 = RandomReal[{1,100}];
-    m2 = RandomReal[{1,100}];
-    m3 = RandomReal[{1,100}];
+    m1 = 5;
+    m2 = 12;
+    m3 = 13;
 
     G =  6.674*(10**-11);
 
@@ -48,7 +54,17 @@ Do[
     eqn3vxI = x3'[0] == v3o[[1]];
     eqn3vyI = y3'[0] == v3o[[2]];
 
-    soln = NDSolve[{eqn1ax, eqn1ay, eqn2ax, eqn2ay, eqn3ax, eqn3ay, eqn1xI, eqn1yI, eqn2xI, eqn2yI, eqn3xI, eqn3yI, eqn1vxI, eqn1vyI, eqn2vxI, eqn2vyI, eqn3vxI, eqn3vyI}, {x1[t], y1[t], x2[t], y2[t], x3[t], y3[t]}, {t, 0, Tend}];
+    soln = NDSolve[{ 
+   WhenEvent[Abs[((x1[t] - x3[t])^2 + (y1[t] - y3[t])^2)] < delta, 
+    "StopIntegration"], 
+   WhenEvent[Abs[((x2[t] - x3[t])^2 + (y2[t] - y3[t])^2)] < delta, 
+    "StopIntegration"], 
+   WhenEvent[Abs[((x1[t] - x2[t])^2 + (y1[t] - y2[t])^2)] < delta, 
+    "StopIntegration"], eqn1ax, eqn1ay, eqn2ax, 
+   eqn2ay, eqn3ax, eqn3ay, eqn1xI, eqn1yI, eqn2xI, eqn2yI, eqn3xI, 
+   eqn3yI, eqn1vxI, eqn1vyI, eqn2vxI, eqn2vyI, eqn3vxI, 
+   eqn3vyI}, {x1[t], y1[t], x2[t], y2[t], x3[t], y3[t]}, {t, 0, 
+   Tend}];
 
     mx1[t_] = x1[t] /. soln[[1]][[1]];
     my1[t_] = y1[t] /. soln[[1]][[2]];
@@ -59,17 +75,17 @@ Do[
     mx3[t_] = x3[t] /. soln[[1]][[5]];
     my3[t_] = y3[t] /. soln[[1]][[6]];
 
-    tStart = 0;
-    tEnd = 0;
+    tEndtime = {0.001, 0.003, 0.005, 0.01, 1, 5, 7.5};
 
-    tStart = RandomReal[{0, Tend}];
-    tEnd = RandomReal[{0, Tend}];
-    While[tStart > tEnd, tStart = RandomReal[{0, Tend}]; tEnd = RandomReal[{0, Tend}]];
+    For[i=1, i < Length[tEndtime]+1,
+        Print[tEndtime[[i]]]; 
+        Quiet[
+            validationDatapoints = Append[validationDatapoints, {m1, m2, m3, x1o[[1]], x1o[[2]], x2o[[1]], x2o[[2]], x3o[[1]], x3o[[2]], tEndtime[[i]], mx1[tEndtime[[i]]], mx2[tEndtime[[i]]], mx3[tEndtime[[i]]], my1[tEndtime[[i]]], my2[tEndtime[[i]]], my3[tEndtime[[i]]]}]
+            ]; ++i;
+        ]
+    ]
 
-    validationDatapoints = Append[validationDatapoints, {m1, m2, m3, tStart, tEnd, mx1[tStart], my1[tStart], mx2[tStart], my2[tStart], mx3[tStart], my3[tStart], mx1'[tStart], my1'[tStart], mx2'[tStart], my2'[tStart], mx3'[tStart], my3'[tStart], mx1[tEnd], my1[tEnd], mx2[tEnd], my2[tEnd], mx3[tEnd], my3[tEnd], mx1'[tEnd], my1'[tEnd], mx2'[tEnd], my2'[tEnd], mx3'[tEnd], my3'[tEnd]}];
-    , 20]
-
-Export["~/Desktop/nBodyNN/valData.csv", validationDatapoints, "CSV"]
+Export["~/Desktop/nBodyNN/valData_final.csv", validationDatapoints, "CSV"]
 
 (* traj = ParametricPlot[{{mx1[t], my1[t]}, {mx2[t], my2[t]}, {mx3[t], my3[t]}}, {t, 0, Tend}, PlotRange -> {{-10, 10}, {-10, 10}}] *)
 (* Export["traj.pdf", traj] *)
