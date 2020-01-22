@@ -3,10 +3,12 @@
 delta = 0.001 
 
 validationDatapoints = {}
-validationDatapoints = Append[validationDatapoints, {"m1", "m2", "m3", "x1", "x2", "x3", "y1", "y2", "y3", "tEnd", "x1[tEnd]", "x2[tEnd]", "x3[tEnd]", "y1[tEnd]", "y2[tEnd]", "y3[tEnd]" }]
+validationDatapoints = Append[validationDatapoints, {"eventID", "m1", "m2", "m3", "x1", "x2", "x3", "y1", "y2", "y3", "tEnd", "x1[tEnd]", "x2[tEnd]", "x3[tEnd]", "y1[tEnd]", "y2[tEnd]", "y3[tEnd]" }]
    
-nDataPoints = 500*7
+nDataPoints = 5*7
+eventID = 100;
 While[ Length[validationDatapoints] < nDataPoints +1,
+
     If[ Mod[Length[validationDatapoints], 100]==0, Print["Added ", Length[validationDatapoints], " points"]];
   
     x1o = {RandomReal[{-3, -1}], RandomReal[{1, 2}]};
@@ -17,7 +19,7 @@ While[ Length[validationDatapoints] < nDataPoints +1,
     v2o = {0,0};
     v3o = {0,0};
 
-    Tend = 8;
+    Tend = 10;
 
     m1 = 5;
     m2 = 12;
@@ -76,17 +78,18 @@ While[ Length[validationDatapoints] < nDataPoints +1,
     mx3[t_] = x3[t] /. soln[[1]][[5]];
     my3[t_] = y3[t] /. soln[[1]][[6]];
 
-    tEndtime = {0.001, 0.003, 0.005, 0.01, 1, 5, 7.5};
+    tEndtime = Subdivide[Tend-0.000001, 17];
 
-
-
+    nTimePointsAdded = 0;
     For[i=1, i < Length[tEndtime]+1,
         Quiet[
-            point = {m1, m2, m3, x1o[[1]], x1o[[2]], x2o[[1]], x2o[[2]], x3o[[1]], x3o[[2]], tEndtime[[i]], mx1[tEndtime[[i]]], mx2[tEndtime[[i]]], mx3[tEndtime[[i]]], my1[tEndtime[[i]]], my2[tEndtime[[i]]], my3[tEndtime[[i]]] };
-            If[Length[Select[# > 10^6&][point] ]>0, ++i; Continue, validationDatapoints = Append[validationDatapoints,point]]
+            point = {eventID, m1, m2, m3, x1o[[1]], x1o[[2]], x2o[[1]], x2o[[2]], x3o[[1]], x3o[[2]], tEndtime[[i]], mx1[tEndtime[[i]]], mx2[tEndtime[[i]]], mx3[tEndtime[[i]]], my1[tEndtime[[i]]], my2[tEndtime[[i]]], my3[tEndtime[[i]]] };
+            If[Length[Select[# > 10^6&][point] ]>0, ++i; Continue, point[[1]] = eventID+i; validationDatapoints = Append[validationDatapoints,point];]
             ]; ++i;
-        ]
+        ];
+    eventID += 100;
     ]
+
 
 Export["~/Desktop/nBodyNN/valData_500_t7.csv", validationDatapoints, "CSV"]
 
