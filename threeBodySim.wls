@@ -5,7 +5,7 @@ delta = 0.001
 validationDatapoints = {}
 validationDatapoints = Append[validationDatapoints, {"eventID", "m1", "m2", "m3", "x1", "x2", "x3", "y1", "y2", "y3", "tEnd", "x1[tEnd]", "x2[tEnd]", "x3[tEnd]", "y1[tEnd]", "y2[tEnd]", "y3[tEnd]" }]
    
-nDataPoints = 5*7
+nDataPoints = (2*10^3)*17
 eventID = 100;
 While[ Length[validationDatapoints] < nDataPoints +1,
 
@@ -91,7 +91,7 @@ While[ Length[validationDatapoints] < nDataPoints +1,
     ]
 
 
-Export["~/Desktop/nBodyNN/valData_500_t7.csv", validationDatapoints, "CSV"]
+Export["~/Desktop/nBodyNN/valData_2e3_t17.csv", validationDatapoints, "CSV"]
 
 (* traj = ParametricPlot[{{mx1[t], my1[t]}, {mx2[t], my2[t]}, {mx3[t], my3[t]}}, {t, 0, Tend}, PlotRange -> {{-10, 10}, {-10, 10}}] *)
 (* Export["traj.pdf", traj] *)
