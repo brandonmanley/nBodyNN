@@ -27,34 +27,32 @@ fname = "/mnt/c/users/llave/Downloads/valData_500_t7.csv"
 df = pd.read_csv(fname)
 print(df.head)
 
-# df.columns = ['m1', 'm2', 'm3', 't_i','t_f',
-# 'x1_i','x2_i','x3_i','y1_i','y2_i','y3_i',
-# 'vx1_i','vx2_i','vx3_i','vy1_i','vy2_i','vy3_i',
-# 'x1_f','x2_f','x3_f','y1_f','y2_f','y3_f',
-# 'vx1_f','vx2_f','vx3_f','vy1_f','vy2_f','vy3_f',
-# ]
-# df.columns = ["m1 ", "m2 ", "m3 ", "x1 ", "x2 ", "x3 ", "y1 ", "y2 ", "y3 ", 
-# "tEnd ", "x1[tEnd]", "x2[tEnd]", "x3[tEnd]", "y1[tEnd]", "y2[tEnd]", "y3[tEnd]"]
-
 #Split variables and signal info, train and test
 dfShuffle = shuffle(df,random_state=42)
-X1 = dfShuffle.as_matrix(columns=[ "x1", "x2", "x3", "y1", "y2", "y3", "tEnd"])
-y1 = dfShuffle.as_matrix(columns=["x1[tEnd]", "x2[tEnd]", "x3[tEnd]", "y1[tEnd]", "y2[tEnd]", "y3[tEnd]"])
+dfShuffle = dfShuffle[dfShuffle.tEnd!=0]
+X1 = dfShuffle.as_matrix(columns=["x1", "x2", "x3", "y1", "y2", "y3", "tEnd"])
+y1 = dfShuffle.as_matrix(columns=["x1[tEnd]", "x2[tEnd]", "x3[tEnd]", "y1[tEnd]", "y2[tEnd]", "y3[tEnd]","eventID"])
 
 X_train,X_test,y_train,y_test = train_test_split(X1,y1, test_size=0.2, random_state=42)
 print(X_train.shape, y_train.shape)
 print(X_test.shape,y_test.shape)
 
+#extract id list from the y arrays
+id_list = y_test[:,6]
+y_train = np.delete(y_train,6,1)
+y_test = np.delete(y_test,6,1)
+
 X_train = X_train.astype('float32')
 X_test = X_test.astype('float32')
 y_train = y_train.astype('float32')
 y_test = y_test.astype('float32')
+print(y_train.shape,y_test.shape)
 
 #FIXME: add kfold validation to optimize nodes, epochs, layers
 
 #Run the neural network with the best number of hidden nodes and epochs
 hidden_nodes = 50   
-n_epochs = 1000
+n_epochs = 200
 optimizer = 'adam'
 
 network = models.Sequential()
@@ -66,7 +64,7 @@ network.save_weights('model_init.h5')
 history = network.fit(X_train,y_train,
                               epochs=n_epochs,
                               batch_size=128,
-                              verbose=0,
+                              verbose=1,
                               validation_data=(X_test,y_test))
 
 # training_vals_acc = history.history['accuracy']
@@ -124,4 +122,6 @@ print("Precicted accurately",good_pred)
 print("Predicted inaccurately",bad_pred)
 
 pred_out = np.asarray(predictions)
+id_list = np.reshape(id_list,(id_list.shape[0],1))
+pred_out = np.concatenate((pred_out,id_list),axis=1)
 np.savetxt("/mnt/c/Users/llave/Desktop/predicted_paths.csv", pred_out, delimiter=",")

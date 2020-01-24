@@ -54,17 +54,28 @@ def kfold_network(X, y, hidden_nodes,activation='relu',optimizer='adam'):
     avg_acc = 0
     avg_loss = 0
     avg_iterations = 0
-    
-    for train_index, val_index in skf.split(X, y):
-        
-        y_cat = to_categorical(y)
+
+    X_split = numpy.array_split(numpy.array(X),numSplits)
+    y_split = numpy.array_split(numpy.array(y),numSplits)
+
+    for index in range(numSplits):
         
         print("Training: numSplits", numSplits)
         numSplits += 1
-        X_train_temp = X[train_index]
-        y_train_temp = y_cat[train_index]
-        X_val = X[val_index]
-        y_val = y_cat[val_index]
+
+        X_train_temp = []
+        y_train_temp = []
+        X_val = []
+        y_val = []
+                
+        for jindex in range(numSplits):
+            if index == jindex:
+                X_val = X[jindex]
+                y_val = y[jindex]
+            else:
+                X_train_temp.append(X_split[index])
+                y_train_temp.append(y_split[index])
+        
         
 
         network.load_weights('model_init.h5')
@@ -119,7 +130,7 @@ df = pd.read_csv(fname)
 print(df.head)
 
 dfShuffle = shuffle(df,random_state=42)
-X1 = dfShuffle.as_matrix(columns=[ "x1", "x2", "x3", "y1", "y2", "y3", "tEnd"])
+X1 = dfShuffle.as_matrix(columns=["x1", "x2", "x3", "y1", "y2", "y3", "tEnd"])
 y1 = dfShuffle.as_matrix(columns=["x1[tEnd]", "x2[tEnd]", "x3[tEnd]", "y1[tEnd]", "y2[tEnd]", "y3[tEnd]"])
 
 X_train,X_test,y_train,y_test = train_test_split(X1,y1, test_size=0.2, random_state=42)
