@@ -79,7 +79,7 @@ eventID = 100;
     mx3[t_] = x3[t] /. soln[[1]][[5]];
     my3[t_] = y3[t] /. soln[[1]][[6]];
 
-    tEndtime = Subdivide[{10^(-9), Tend-0.000001}, 17];
+    tEndtime = Subdivide[0.001, Tend-0.000001, 17];
 
     nTimePointsAdded = 0;
     For[i=1, i < Length[tEndtime]+1,

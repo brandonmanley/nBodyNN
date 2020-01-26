@@ -23,9 +23,9 @@ from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.layers import Dense, Dropout, Activation
 
 path = "~/Desktop/nBodyNN/"
-
+meta_input = "3415_2020-01-26"
 #Import data
-fname = path+"valData_2e2_t17.csv"
+fname = path+"val_"+meta_input+".csv"
 df = pd.read_csv(fname)
 print(df.head)
 
@@ -41,7 +41,7 @@ print(df.head)
 #Split variables and signal info, train and test
 dfShuffle = shuffle(df,random_state=42)
 X1 = dfShuffle.as_matrix(columns=[ "x1", "x2", "x3", "y1", "y2", "y3", "tEnd"])
-y1 = dfShuffle.as_matrix(columns=["x1[tEnd]", "x2[tEnd]", "x3[tEnd]", "y1[tEnd]", "y2[tEnd]", "y3[tEnd]"])
+y1 = dfShuffle.as_matrix(columns=["x1[tEnd]", "x2[tEnd]", "x3[tEnd]", "y1[tEnd]", "y2[tEnd]", "y3[tEnd]", "eventID"])
 
 X_train,X_test,y_train,y_test = train_test_split(X1,y1, test_size=0.2, random_state=42)
 print(X_train.shape, y_train.shape)
@@ -126,4 +126,4 @@ print("Precicted accurately",good_pred)
 print("Predicted inaccurately",bad_pred)
 
 pred_out = np.asarray(predictions)
-np.savetxt("predicted_paths.csv", pred_out, delimiter=",")
+np.savetxt("predicted_paths_"+meta_input+".csv", pred_out, delimiter=",")
