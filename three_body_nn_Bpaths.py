@@ -24,7 +24,7 @@ from keras.layers import Dense, Dropout, Activation
 
 #Import data
 path = "~/Desktop/nBodyNN/"
-meta_input = "100010_2020-01-26"
+meta_input = "1015_2020-01-26"
 #Import data
 fname = path+"val_"+meta_input+".csv"
 df = pd.read_csv(fname)
@@ -61,7 +61,7 @@ optimizer = 'adam'
 network = models.Sequential()
 network.add(layers.Dense(hidden_nodes,activation='relu',input_dim=7))
 network.add(layers.Dense(6,activation='linear'))
-network.compile(optimizer=optimizer,loss='mse',metrics=['accuracy'])
+network.compile(optimizer=optimizer,loss='mean_squared_logarithmic_error',metrics=['accuracy'])
 network.save_weights('model_init.h5')
 
 history = network.fit(X_train,y_train,
@@ -69,6 +69,7 @@ history = network.fit(X_train,y_train,
                               batch_size=128,
                               verbose=1,
                               validation_data=(X_test,y_test))
+                              
 
 # training_vals_acc = history.history['accuracy']
 # training_vals_loss = history.history['loss']
