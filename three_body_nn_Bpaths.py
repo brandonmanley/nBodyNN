@@ -23,16 +23,13 @@ from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.layers import Dense, Dropout, Activation
 
 #Import data
-path = "~/Desktop/nBodyNN/"
-meta_input = "1015_2020-01-26"
-#Import data
-fname = path+"val_"+meta_input+".csv"
+fname = "val_100010_2020-01-26.csv"
 df = pd.read_csv(fname)
 print(df.head)
 
 #Split variables and signal info, train and test
 dfShuffle = shuffle(df,random_state=42)
-dfShuffle = dfShuffle[dfShuffle.tEnd!=0]
+#dfShuffle = dfShuffle[dfShuffle.tEnd!=0]
 X1 = dfShuffle.as_matrix(columns=["x1", "x2", "x3", "y1", "y2", "y3", "tEnd"])
 y1 = dfShuffle.as_matrix(columns=["x1[tEnd]", "x2[tEnd]", "x3[tEnd]", "y1[tEnd]", "y2[tEnd]", "y3[tEnd]","eventID"])
 
@@ -49,13 +46,15 @@ X_train = X_train.astype('float32')
 X_test = X_test.astype('float32')
 y_train = y_train.astype('float32')
 y_test = y_test.astype('float32')
+
+
 print(y_train.shape,y_test.shape)
 
 #FIXME: add kfold validation to optimize nodes, epochs, layers
 
 #Run the neural network with the best number of hidden nodes and epochs
 hidden_nodes = 50   
-n_epochs = 200
+n_epochs = 2000
 optimizer = 'adam'
 
 network = models.Sequential()
@@ -69,11 +68,10 @@ history = network.fit(X_train,y_train,
                               batch_size=128,
                               verbose=1,
                               validation_data=(X_test,y_test))
-                              
 
 # training_vals_acc = history.history['accuracy']
 # training_vals_loss = history.history['loss']
-# valid_vals_acc = history.history['val_acc']
+# valid_vals_acc = history.history['val_accuracy']
 # valid_vals_loss = history.history['val_loss']
 # iterations = len(training_vals_acc)
 # print("Number of iterations:",iterations)
@@ -128,4 +126,4 @@ print("Predicted inaccurately",bad_pred)
 pred_out = np.asarray(predictions)
 id_list = np.reshape(id_list,(id_list.shape[0],1))
 pred_out = np.concatenate((pred_out,id_list),axis=1)
-np.savetxt("predicted_paths_"+meta_input+".csv", pred_out, delimiter=",")
+np.savetxt("predicted_paths.csv", pred_out, delimiter=",")
