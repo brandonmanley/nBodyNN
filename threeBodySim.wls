@@ -79,7 +79,7 @@ eventID = 100;
     mx3[t_] = x3[t] /. soln[[1]][[5]];
     my3[t_] = y3[t] /. soln[[1]][[6]];
 
-    tEndtime = Subdivide[0.001, Tend-0.000001, 17];
+    tEndtime = Subdivide[0.1, Tend-0.000001, 17];
 
     nTimePointsAdded = 0;
     For[i=1, i < Length[tEndtime]+1,
@@ -93,7 +93,7 @@ eventID = 100;
 
 basePath = "~/Desktop/nBodyNN/val_"
 exportString = basePath <> ToString[Length[validationDatapoints]] <> "_" <> DateString["ISODate"] <> ".csv"
-
+Print["Exported path: ", exportString]
 Export[exportString, validationDatapoints, "CSV"]
 
 (* traj = ParametricPlot[{{mx1[t], my1[t]}, {mx2[t], my2[t]}, {mx3[t], my3[t]}}, {t, 0, Tend}, PlotRange -> {{-10, 10}, {-10, 10}}] *)
