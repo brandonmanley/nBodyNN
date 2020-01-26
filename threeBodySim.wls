@@ -7,9 +7,10 @@ validationDatapoints = Append[validationDatapoints, {"eventID", "m1", "m2", "m3"
    
 nDataPoints = (2*10^2)*17
 eventID = 100;
-While[ Length[validationDatapoints] < nDataPoints +1,
 
-    If[ Mod[Length[validationDatapoints], 100]==0, Print["Added ", Length[validationDatapoints], " points"]];
+    While[ Length[validationDatapoints] < nDataPoints +1,
+
+    Print["Added ", Length[validationDatapoints], " points"];
   
     x1o = {RandomReal[{-3, -1}], RandomReal[{1, 2}]};
     x2o = {RandomReal[{0, 2}], RandomReal[{-2, 0}]};
@@ -78,7 +79,7 @@ While[ Length[validationDatapoints] < nDataPoints +1,
     mx3[t_] = x3[t] /. soln[[1]][[5]];
     my3[t_] = y3[t] /. soln[[1]][[6]];
 
-    tEndtime = Subdivide[Tend-0.000001, 17];
+    tEndtime = Subdivide[{10^(-9), Tend-0.000001}, 17];
 
     nTimePointsAdded = 0;
     For[i=1, i < Length[tEndtime]+1,
@@ -90,8 +91,10 @@ While[ Length[validationDatapoints] < nDataPoints +1,
     eventID += 100;
     ]
 
+basePath = "~/Desktop/nBodyNN/val_"
+exportString = basePath <> ToString[Length[validationDatapoints]] <> "_" <> DateString["ISODate"] <> ".csv"
 
-Export["~/Desktop/nBodyNN/valData_2e2_t17.csv", validationDatapoints, "CSV"]
+Export[exportString, validationDatapoints, "CSV"]
 
 (* traj = ParametricPlot[{{mx1[t], my1[t]}, {mx2[t], my2[t]}, {mx3[t], my3[t]}}, {t, 0, Tend}, PlotRange -> {{-10, 10}, {-10, 10}}] *)
 (* Export["traj.pdf", traj] *)
