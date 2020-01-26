@@ -24,7 +24,7 @@ from keras.layers import Dense, Dropout, Activation
 
 #Import data
 path = "~/Desktop/nBodyNN/"
-meta_input = "3414_2020-01-26"
+meta_input = "100010_2020-01-26"
 #Import data
 fname = path+"val_"+meta_input+".csv"
 df = pd.read_csv(fname)
