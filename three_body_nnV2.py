@@ -18,11 +18,13 @@ from keras import layers
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.layers import Dense, Dropout, Activation
 
+workDir = "/mnt/c/Users/llave/Documents/nBody/"
+
 def nested_defaultdict(default_factory, depth=1):
     result = partial(defaultdict, default_factory)
     for _ in repeat(None, depth - 1):
         result = partial(defaultdict, result)
-    return result()
+    return result()    
 
 def kfold_network(X, y, hidden_nodes,activation='relu',optimizer='adam'):
 
@@ -33,9 +35,8 @@ def kfold_network(X, y, hidden_nodes,activation='relu',optimizer='adam'):
     network = models.Sequential()
     network.add(layers.Dense(hidden_nodes,activation='relu',input_dim=7))
     network.add(layers.Dense(6,activation='linear'))
-    network.compile(optimizer=optimizer,loss='categorical_crossentropy',metrics=['accuracy'])
-    network.save_weights('model_init.h5')
-
+    network.compile(optimizer=optimizer,loss='mean_squared_logarithmic_error',metrics=['accuracy'])
+    network.save_weights(workDir + '/weights/model_init.h5')
     #early stopping
     patienceCount = 10
     callbacks = [EarlyStopping(monitor='val_loss', patience=patienceCount),
@@ -43,7 +44,6 @@ def kfold_network(X, y, hidden_nodes,activation='relu',optimizer='adam'):
 
     #k-fold validation with 4 folds
     kfolds = 4
-    skf = StratifiedKFold(n_splits=kfolds)
     
     training_vals_acc = 0
     training_vals_loss = 0
@@ -55,10 +55,14 @@ def kfold_network(X, y, hidden_nodes,activation='relu',optimizer='adam'):
     avg_loss = 0
     avg_iterations = 0
 
-    X_split = numpy.array_split(numpy.array(X),numSplits)
-    y_split = numpy.array_split(numpy.array(y),numSplits)
+    numEvents = X.shape[0]
+    numEventsSplit = int(numEvents/4)
+    indeces = [numEventsSplit, numEventsSplit*2,numEventsSplit*3]
 
-    for index in range(numSplits):
+    X_split = np.vsplit(np.array(X),indeces)
+    y_split = np.vsplit(np.array(y),indeces)
+
+    for index in range(kfolds):
         
         print("Training: numSplits", numSplits)
         numSplits += 1
@@ -68,17 +72,15 @@ def kfold_network(X, y, hidden_nodes,activation='relu',optimizer='adam'):
         X_val = []
         y_val = []
                 
-        for jindex in range(numSplits):
+        for jindex in range(kfolds):
             if index == jindex:
-                X_val = X[jindex]
-                y_val = y[jindex]
+                X_val = X_split[jindex]
+                y_val = y_split[jindex]
             else:
-                X_train_temp.append(X_split[index])
-                y_train_temp.append(y_split[index])
+                X_train_temp = np.append(X_train_temp, X_split[index])
+                y_train_temp = np.append(y_train_temp, y_split[index])
         
-        
-
-        network.load_weights('model_init.h5')
+        network.load_weights(workDir + '/weights/model_init.h5')
         history = network.fit(X_train_temp,y_train_temp,
                               callbacks = callbacks,
                               epochs=max_epochs,
@@ -86,7 +88,7 @@ def kfold_network(X, y, hidden_nodes,activation='relu',optimizer='adam'):
                               validation_data=(X_val,y_val), 
                               verbose = 0)
         
-        network.save('trained_model_split'+str(numSplits)+'_nhidden'+str(hidden_nodes)+'.h5')
+        network.save(workDir + '/weights/trained_model_split'+str(numSplits)+'_nhidden'+str(hidden_nodes)+'.h5')
     
         #save the metrics for the best epoch, or the last one
         if(len(history.history['accuracy']) == max_epochs):
@@ -125,17 +127,21 @@ def kfold_network(X, y, hidden_nodes,activation='relu',optimizer='adam'):
 
 
 #Import data
-fname = "/mnt/c/users/llave/Downloads/valData_500_t7.csv"
+fname = workDir + "/data/val_100010_2020-01-26.csv"
 df = pd.read_csv(fname)
-print(df.head)
 
 dfShuffle = shuffle(df,random_state=42)
 X1 = dfShuffle.as_matrix(columns=["x1", "x2", "x3", "y1", "y2", "y3", "tEnd"])
-y1 = dfShuffle.as_matrix(columns=["x1[tEnd]", "x2[tEnd]", "x3[tEnd]", "y1[tEnd]", "y2[tEnd]", "y3[tEnd]"])
+y1 = dfShuffle.as_matrix(columns=["x1[tEnd]", "x2[tEnd]", "x3[tEnd]", "y1[tEnd]", "y2[tEnd]", "y3[tEnd]","eventID"])
 
 X_train,X_test,y_train,y_test = train_test_split(X1,y1, test_size=0.2, random_state=42)
 print(X_train.shape, y_train.shape)
 print(X_test.shape,y_test.shape)
+
+#extract id list from the y arrays
+id_list = y_test[:,6]
+y_train = np.delete(y_train,6,1)
+y_test = np.delete(y_test,6,1)
 
 X_train = X_train.astype('float32')
 X_test = X_test.astype('float32')
