@@ -23,7 +23,7 @@ from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.layers import Dense, Dropout, Activation
 
 #Import data
-fname = "val_100010_2020-01-26.csv"
+fname = "val_504_2020-01-27.csv"
 df = pd.read_csv(fname)
 print(df.head)
 
@@ -31,7 +31,7 @@ print(df.head)
 dfShuffle = shuffle(df,random_state=42)
 #dfShuffle = dfShuffle[dfShuffle.tEnd!=0]
 X1 = dfShuffle.as_matrix(columns=["x1", "x2", "x3", "y1", "y2", "y3", "tEnd"])
-y1 = dfShuffle.as_matrix(columns=["x1[tEnd]", "x2[tEnd]", "x3[tEnd]", "y1[tEnd]", "y2[tEnd]", "y3[tEnd]","eventID"])
+y1 = dfShuffle.as_matrix(columns=["x1tEnd", "x2tEnd", "x3tEnd", "y1tEnd", "y2tEnd", "y3tEnd","eventID"])
 
 X_train,X_test,y_train,y_test = train_test_split(X1,y1, test_size=0.2, random_state=42)
 print(X_train.shape, y_train.shape)
@@ -54,7 +54,7 @@ print(y_train.shape,y_test.shape)
 
 #Run the neural network with the best number of hidden nodes and epochs
 hidden_nodes = 50   
-n_epochs = 2000
+n_epochs = 100
 optimizer = 'adam'
 
 network = models.Sequential()
@@ -126,4 +126,4 @@ print("Predicted inaccurately",bad_pred)
 pred_out = np.asarray(predictions)
 id_list = np.reshape(id_list,(id_list.shape[0],1))
 pred_out = np.concatenate((pred_out,id_list),axis=1)
-np.savetxt("predicted_paths.csv", pred_out, delimiter=",")
+np.savetxt("predicted_paths_504_2020-01-27.csv", pred_out, delimiter=",")
