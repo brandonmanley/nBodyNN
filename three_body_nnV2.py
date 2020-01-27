@@ -59,8 +59,16 @@ def kfold_network(X, y, hidden_nodes,activation='relu',optimizer='adam'):
     numEventsSplit = int(numEvents/4)
     indeces = [numEventsSplit, numEventsSplit*2,numEventsSplit*3]
 
-    X_split = np.vsplit(np.array(X),indeces)
-    y_split = np.vsplit(np.array(y),indeces)
+    X_s1=X[:indeces[0],:]
+    X_s2=X[indeces[0]:indeces[1],:]
+    X_s3=X[indeces[1]:indeces[2],:]
+    X_s4=X[indeces[2]:,:]
+    y_s1=y[:indeces[0],:]
+    y_s2=y[indeces[0]:indeces[1],:]
+    y_s3=y[indeces[1]:indeces[2],:]
+    y_s4=y[indeces[2]:,:]
+    X_split = [X_s1,X_s2,X_s3,X_s4]
+    y_split = [y_s1,y_s2,y_s3,y_s4]
 
     for index in range(kfolds):
         
@@ -71,15 +79,18 @@ def kfold_network(X, y, hidden_nodes,activation='relu',optimizer='adam'):
         y_train_temp = []
         X_val = []
         y_val = []
+        i = []
                 
         for jindex in range(kfolds):
             if index == jindex:
                 X_val = X_split[jindex]
                 y_val = y_split[jindex]
             else:
-                X_train_temp = np.append(X_train_temp, X_split[index])
-                y_train_temp = np.append(y_train_temp, y_split[index])
+                i.append(jindex)
         
+        X_train_temp = np.vstack((X_split[i[0]],X_split[i[1]],X_split[i[2]]))
+        y_train_temp = np.vstack((y_split[i[0]],y_split[i[1]],y_split[i[2]]))
+
         network.load_weights(workDir + '/weights/model_init.h5')
         history = network.fit(X_train_temp,y_train_temp,
                               callbacks = callbacks,
@@ -170,7 +181,16 @@ for nodes in [10,20,30,50,100]:
 plt.plot([10,20,30,50,100],acc_list)
 plt.ylabel('Accuracy')
 plt.xlabel('Number of Hidden Nodes')
+plt.savefig(workDir+"accuracy_nodes.png")
 
+plt.clf()
 plt.plot([10,20,30,50,100],loss_list)
+plt.ylabel('Loss')
+plt.xlabel('Number of Hidden Nodes')
+plt.savefig(workDir+"loss_nodes.png")
 
+plt.clf()
 plt.plot([10,20,30,50,100],iterations_list)
+plt.ylabel('Iterations (Epochs)')
+plt.xlabel('Number of Hidden Nodes')
+plt.savefig(workDir+"iterations_nodes.png")
