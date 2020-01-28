@@ -4,36 +4,18 @@ import math
 import numpy as np 
 import matplotlib.pyplot as plt
 import random as r 
+import preputil as util 
 
 def Extract(mylist, index): 
     return [item[index] for item in mylist] 
 
 meta = "50002_2020-01-28"
-nEvents = int(int(meta[0:meta.find('_')])/6)
-in_file = "val_"+meta+".csv"
-pred_file = "predicted_paths_"+meta+".csv"
-
-# read sim/prediction csvs and label the columns of prediction
-pred_df = pd.read_csv(pred_file, header=None)
-pred_df.rename(columns={0: 'x1tEnd', 1: 'x2tEnd', 2: 'x3tEnd', 3: 'y1tEnd', 4: 'y2tEnd', 5: 'y3tEnd', 6: 'eventID'}, inplace=True)
-in_df = pd.read_csv(in_file)
-
-# set event id to be an int and sort by event id
-pred_df.eventID = pred_df.eventID.astype(int)
-pred_df.sort_values(["eventID"], axis=0, ascending=True, inplace= True) 
-
-# combine data frames into 1
-for col in ['x1tEnd', 'x2tEnd', 'x3tEnd', 'y1tEnd', 'y2tEnd', 'y3tEnd']:
-    in_df[col+'_2'] = in_df['eventID'].map(pred_df.set_index('eventID')[col])
-
-# remove any null predictions
-in_df = in_df[pd.notnull(in_df["x1tEnd_2"])]
+in_df = util.prepData(meta)
 
 r.seed(r.randint(1,len(in_df.index)))
 index = r.randint(1,len(in_df.index))
 eventNum = in_df.iloc[index].eventID
-print(eventNum)
-
+print('event:', int(eventNum/100))
 
 x1_i = []
 x2_i = []
