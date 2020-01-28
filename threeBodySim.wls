@@ -1,16 +1,24 @@
 #!/usr/bin/env wolframscript
 
-nIntervals = RandomInteger[{10, 100}]
+nIntervals = RandomInteger[{10, 98}];
+Print["Using ", nIntervals, " time stamps"];
 
-validationDatapoints = {}
-validationDatapoints = Append[validationDatapoints, {"eventID", "m1", "m2", "m3", "x1", "x2", "x3", "y1", "y2", "y3", "tEnd", "x1tEnd", "x2tEnd", "x3tEnd", "y1tEnd", "y2tEnd", "y3tEnd" }]
+delta = 0.01;
+
+validationDatapoints = {};
+validationDatapoints = Append[validationDatapoints, {"eventID", "m1", "m2", "m3", "x1", "x2", "x3", "y1", "y2", "y3", "tEnd", "x1tEnd", "x2tEnd", "x3tEnd", "y1tEnd", "y2tEnd", "y3tEnd" }];
    
-nDataPoints = 5000
+nDataPoints = 1000;
 eventID = 100;
+
+count = 0;
+Print["Making ", nDataPoints, " total data points"];
+WriteString[$Output, "# of events (100s): "];
 
     While[ Length[validationDatapoints] < nDataPoints +1,
 
-    Print["Added ", Length[validationDatapoints], " points"];
+    count += 1;
+    If[Mod[count, 100] == 0, WriteString[$Output, ToString[count/100]]];
   
     x1o = {RandomReal[{-3, -1}], RandomReal[{1, 2}]};
     x2o = {RandomReal[{0, 2}], RandomReal[{-2, 0}]};
@@ -20,7 +28,7 @@ eventID = 100;
     v2o = {0,0};
     v3o = {0,0};
 
-    Tend = 100;
+    Tend = 110;
 
     m1 = 5;
     m2 = 12;
@@ -79,7 +87,7 @@ eventID = 100;
     mx3[t_] = x3[t] /. soln[[1]][[5]];
     my3[t_] = y3[t] /. soln[[1]][[6]];
 
-    tEndtime = Subdivide[1, 100., a];
+    tEndtime = Subdivide[1, 100, nIntervals];
 
     For[i=1, i < Length[tEndtime]+1,
         Quiet[
@@ -90,12 +98,9 @@ eventID = 100;
     eventID += 100;
     ]
 
-basePath = "~/Desktop/nBodyNN/val_"
-exportString = basePath <> ToString[a] <> "_" <> ToString[Length[validationDatapoints]] <> "_" <> DateString["ISODate"] <> ".csv"
+Print["\n"];
+
+basePath = "~/Desktop/nBodyNN/data/varyNintervals/val_"
+exportString = basePath <> ToString[nIntervals] <> "_" <> ToString[Length[validationDatapoints]] <> "_" <> DateString["ISODate"] <> ".csv"
 Print["Exported path: ", exportString]
 Export[exportString, validationDatapoints, "CSV"]
-
-(* traj = ParametricPlot[{{mx1[t], my1[t]}, {mx2[t], my2[t]}, {mx3[t], my3[t]}}, {t, 0, Tend}, PlotRange -> {{-10, 10}, {-10, 10}}] *)
-(* Export["traj.pdf", traj] *)
-
-
