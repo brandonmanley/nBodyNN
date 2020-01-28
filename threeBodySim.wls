@@ -1,11 +1,11 @@
 #!/usr/bin/env wolframscript
 
-delta = 0.001 
+nIntervals = RandomInteger[{10, 100}]
 
 validationDatapoints = {}
 validationDatapoints = Append[validationDatapoints, {"eventID", "m1", "m2", "m3", "x1", "x2", "x3", "y1", "y2", "y3", "tEnd", "x1tEnd", "x2tEnd", "x3tEnd", "y1tEnd", "y2tEnd", "y3tEnd" }]
    
-nDataPoints = 500000
+nDataPoints = 5000
 eventID = 100;
 
     While[ Length[validationDatapoints] < nDataPoints +1,
@@ -79,8 +79,7 @@ eventID = 100;
     mx3[t_] = x3[t] /. soln[[1]][[5]];
     my3[t_] = y3[t] /. soln[[1]][[6]];
 
-    tEndtime = {};
-    For[k=1, k<101, ++k; tEndtime = AppendTo[tEndtime, k]];
+    tEndtime = Subdivide[1, 100., a];
 
     For[i=1, i < Length[tEndtime]+1,
         Quiet[
@@ -92,7 +91,7 @@ eventID = 100;
     ]
 
 basePath = "~/Desktop/nBodyNN/val_"
-exportString = basePath <> ToString[Length[validationDatapoints]] <> "_" <> DateString["ISODate"] <> ".csv"
+exportString = basePath <> ToString[a] <> "_" <> ToString[Length[validationDatapoints]] <> "_" <> DateString["ISODate"] <> ".csv"
 Print["Exported path: ", exportString]
 Export[exportString, validationDatapoints, "CSV"]
 
