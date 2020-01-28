@@ -8,7 +8,7 @@ import random as r
 def Extract(mylist, index): 
     return [item[index] for item in mylist] 
 
-meta = "504_2020-01-27"
+meta = "50002_2020-01-28"
 nEvents = int(int(meta[0:meta.find('_')])/6)
 in_file = "val_"+meta+".csv"
 pred_file = "predicted_paths_"+meta+".csv"
@@ -114,4 +114,29 @@ plt.ylabel('y [m]')
 plt.title('Event {0}'.format(int(eventNum/100)))
 plt.show()
 # plt.savefig('event_{0}_paths.png'.format(eventNum))
+
+
+# plot error as a function of radius 
+r1 = []
+r2 = []
+r3 = []
+e1 = []
+e2 = []
+e3 = []
+
+for row in in_df.itertuples():
+    r1.append(math.sqrt((row.x1tEnd**2)+(row.y1tEnd**2)))
+    r2.append(math.sqrt((row.x2tEnd**2)+(row.y2tEnd**2)))
+    r3.append(math.sqrt((row.x3tEnd**2)+(row.y3tEnd**2)))
+
+    e1.append(math.sqrt(((row.x1tEnd - row.x1tEnd_2)**2)+((row.y1tEnd - row.y1tEnd_2)**2)))
+    e2.append(math.sqrt(((row.x2tEnd - row.x2tEnd_2)**2)+((row.y2tEnd - row.y2tEnd_2)**2)))
+    e3.append(math.sqrt(((row.x3tEnd - row.x3tEnd_2)**2)+((row.y3tEnd - row.y3tEnd_2)**2)))
+
+plt.scatter(r1, e1, c='blue', s=1)
+plt.scatter(r2, e2, c='red', s=1)
+plt.scatter(r3, e3, c='green', s=1)
+plt.show()
+
+
 

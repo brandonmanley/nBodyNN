@@ -23,7 +23,8 @@ from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.layers import Dense, Dropout, Activation
 
 #Import data
-fname = "val_504_2020-01-27.csv"
+meta = '50002_2020-01-28'
+fname = "val_"+meta+".csv"
 df = pd.read_csv(fname)
 print(df.head)
 
@@ -126,4 +127,4 @@ print("Predicted inaccurately",bad_pred)
 pred_out = np.asarray(predictions)
 id_list = np.reshape(id_list,(id_list.shape[0],1))
 pred_out = np.concatenate((pred_out,id_list),axis=1)
-np.savetxt("predicted_paths_504_2020-01-27.csv", pred_out, delimiter=",")
+np.savetxt("predicted_paths_"+meta+".csv", pred_out, delimiter=",")
