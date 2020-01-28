@@ -87,7 +87,7 @@ WriteString[$Output, "# of events (100s): "];
     mx3[t_] = x3[t] /. soln[[1]][[5]];
     my3[t_] = y3[t] /. soln[[1]][[6]];
 
-    tEndtime = Subdivide[1, 100, nIntervals];
+    tEndtime = Subdivide[1, 100.0, nIntervals];
 
     For[i=1, i < Length[tEndtime]+1,
         Quiet[
