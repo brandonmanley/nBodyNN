@@ -5,7 +5,7 @@ delta = 0.001
 validationDatapoints = {}
 validationDatapoints = Append[validationDatapoints, {"eventID", "m1", "m2", "m3", "x1", "x2", "x3", "y1", "y2", "y3", "tEnd", "x1tEnd", "x2tEnd", "x3tEnd", "y1tEnd", "y2tEnd", "y3tEnd" }]
    
-nDataPoints = 500
+nDataPoints = 50000
 eventID = 100;
 
     While[ Length[validationDatapoints] < nDataPoints +1,
@@ -20,7 +20,7 @@ eventID = 100;
     v2o = {0,0};
     v3o = {0,0};
 
-    Tend = 10;
+    Tend = 100;
 
     m1 = 5;
     m2 = 12;
@@ -79,7 +79,7 @@ eventID = 100;
     mx3[t_] = x3[t] /. soln[[1]][[5]];
     my3[t_] = y3[t] /. soln[[1]][[6]];
 
-    tEndtime = {1,2,3,4,5,8};
+    tEndtime = {1,2,3,4,5,8, 10, 23, 32, 43, 64, 65, 78, 89, 92, 93, 62, 38, 21, 11, 16};
 
     nTimePointsAdded = 0;
     For[i=1, i < Length[tEndtime]+1,
