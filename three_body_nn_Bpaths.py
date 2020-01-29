@@ -27,6 +27,7 @@ for file in os.listdir("data/varyNintervals/"):
   nIntervals = file[file.find('_')+1:file.find('_')+3]
   meta = file[file.find('_')+1:file.find('.csv')]
   print(meta)
+  if meta != '12_10002_2020-01-28': continue
 
   #Import data
   fname = "data/varyNintervals/val_"+meta+".csv"
@@ -96,8 +97,8 @@ for file in os.listdir("data/varyNintervals/"):
   plt.xlabel('Epoch')
   plt.legend(['Train', 'Test'], loc='upper left')
   plt.savefig('accPlots/model_accuracy'+nIntervals+'.png')
-  plt.clf()
-  # plt.show()
+  # plt.clf()
+  plt.show()
 
   # Plot training & validation loss values
   plt.plot(history.history['loss'])
@@ -107,8 +108,8 @@ for file in os.listdir("data/varyNintervals/"):
   plt.xlabel('Epoch')
   plt.legend(['Train', 'Test'], loc='upper left')
   plt.savefig('lossPlots/model_loss'+nIntervals+'.png')
-  plt.clf()
-  # plt.show()
+  # plt.clf()
+  plt.show()
 
 
   predictions = network.predict(X_test)

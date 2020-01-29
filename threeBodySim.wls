@@ -1,6 +1,6 @@
 #!/usr/bin/env wolframscript
 
-nIntervals = RandomInteger[{10, 98}];
+nIntervals = RandomInteger[{5, 12}];
 Print["Using ", nIntervals, " time stamps"];
 
 delta = 0.01;
@@ -8,7 +8,7 @@ delta = 0.01;
 validationDatapoints = {};
 validationDatapoints = Append[validationDatapoints, {"eventID", "m1", "m2", "m3", "x1", "x2", "x3", "y1", "y2", "y3", "tEnd", "x1tEnd", "x2tEnd", "x3tEnd", "y1tEnd", "y2tEnd", "y3tEnd" }];
    
-nDataPoints = 1000;
+nDataPoints = 10000;
 eventID = 100;
 
 count = 0;
@@ -28,7 +28,7 @@ WriteString[$Output, "# of events (100s): "];
     v2o = {0,0};
     v3o = {0,0};
 
-    Tend = 110;
+    Tend = 110.0;
 
     m1 = 5;
     m2 = 12;
@@ -87,7 +87,8 @@ WriteString[$Output, "# of events (100s): "];
     mx3[t_] = x3[t] /. soln[[1]][[5]];
     my3[t_] = y3[t] /. soln[[1]][[6]];
 
-    tEndtime = Subdivide[1, 100.0, nIntervals];
+    (* tEndtime = Subdivide[1, Tend, nIntervals]; *)
+    tEndtime = {0.1, 10, 20, 30};
 
     For[i=1, i < Length[tEndtime]+1,
         Quiet[
