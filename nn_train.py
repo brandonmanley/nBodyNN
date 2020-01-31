@@ -22,16 +22,19 @@ from keras import layers
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.layers import Dense, Dropout, Activation
 
-#Import data
-fname = "/mnt/c/users/llave/Downloads/val_100010_2020-01-26.csv"
-df = pd.read_csv(fname)
-print(df.head)
+workDir = "/mnt/c/Users/llave/Documents/nBody/"
 
-#Split variables and signal info, train and test
+#Import data
+fname = workDir + "data/batch1_1.csv"
+df = pd.read_csv(fname)
+
 dfShuffle = shuffle(df,random_state=42)
-#dfShuffle = dfShuffle[dfShuffle.tEnd!=0]
+print(dfShuffle.head)
+
+#X1 = dfShuffle.as_matrix(columns=["x1", "x2", "x3", "y1", "y2", "y3", "tEnd"])
+#y1 = dfShuffle.as_matrix(columns=["x1tEnd", "x2tEnd", "x3tEnd", "y1tEnd", "y2tEnd", "y3tEnd","eventID"])
 X1 = dfShuffle.as_matrix(columns=["x1", "x2", "x3", "y1", "y2", "y3", "tEnd"])
-y1 = dfShuffle.as_matrix(columns=["x1[tEnd]", "x2[tEnd]", "x3[tEnd]", "y1[tEnd]", "y2[tEnd]", "y3[tEnd]","eventID"])
+y1 = dfShuffle.as_matrix(columns=["x1tEnd", "x2tEnd", "x3tEnd", "y1tEnd", "y2tEnd", "y3tEnd","eventID"])
 
 X_train,X_test,y_train,y_test = train_test_split(X1,y1, test_size=0.2, random_state=42)
 print(X_train.shape, y_train.shape)
@@ -56,30 +59,44 @@ print(y_train.shape,y_test.shape)
 hidden_nodes = 50   
 n_epochs = 200
 optimizer = 'adam'
+loss = 'mean_squared_logarithmic_error'
 
 network = models.Sequential()
 network.add(layers.Dense(hidden_nodes,activation='relu',input_dim=7))
 network.add(layers.Dense(6,activation='linear'))
-network.compile(optimizer=optimizer,loss='mean_squared_logarithmic_error',metrics=['accuracy'])
-network.save_weights('model_init.h5')
+network.compile(optimizer=optimizer,loss=loss,metrics=['accuracy'])
+network.save_weights(workDir + 'weights/model_init.h5')
 
 history = network.fit(X_train,y_train,
                               epochs=n_epochs,
                               batch_size=128,
                               verbose=1,
                               validation_data=(X_test,y_test))
+network.save_weights(workDir + 'weights/model_final1.h5')
 
-# training_vals_acc = history.history['accuracy']
-# training_vals_loss = history.history['loss']
-# valid_vals_acc = history.history['val_accuracy']
-# valid_vals_loss = history.history['val_loss']
-# iterations = len(training_vals_acc)
-# print("Number of iterations:",iterations)
-# print("Epoch\t Train Loss\t Train Acc\t Val Loss\t Val Acc")
-# i = 0
-# for tl,ta,vl,va in zip(training_vals_loss,training_vals_acc,valid_vals_loss,valid_vals_acc):
-#     print(i,'\t',round(tl,5),'\t',round(ta,5),'\t',round(vl,5),'\t',round(va,5))
-#     i += 1
+loss2 = 'mean_squared_error'
+network2 = models.Sequential()
+network2.add(layers.Dense(hidden_nodes,activation='relu',input_dim=7))
+network2.add(layers.Dense(6,activation='linear'))
+network2.compile(optimizer=optimizer,loss=loss2,metrics=['accuracy'])
+network2.load_weights(workDir + 'weights/model_final1.h5')
+history = network2.fit(X_train,y_train,
+                              epochs=n_epochs,
+                              batch_size=128,
+                              verbose=1,
+                              validation_data=(X_test,y_test))
+
+training_vals_acc = history.history['accuracy']
+training_vals_loss = history.history['loss']
+valid_vals_acc = history.history['val_accuracy']
+valid_vals_loss = history.history['val_loss']
+iterations = len(training_vals_acc)
+print("Number of iterations:",iterations)
+print("Epoch\t Train Loss\t Train Acc\t Val Loss\t Val Acc")
+i = 0
+for tl,ta,vl,va in zip(training_vals_loss,training_vals_acc,valid_vals_loss,valid_vals_acc):
+    print(i,'\t',round(tl,5),'\t',round(ta,5),'\t',round(vl,5),'\t',round(va,5))
+    i += 1
 
 # Plot training & validation accuracy values
 print(history.history.keys())
@@ -89,7 +106,7 @@ plt.title('Model accuracy')
 plt.ylabel('Accuracy')
 plt.xlabel('Epoch')
 plt.legend(['Train', 'Test'], loc='upper left')
-plt.savefig('/mnt/c/Users/llave/Desktop/model_accuracy.png')
+plt.savefig(workDir + 'model_accuracy.png')
 plt.show()
 
 # Plot training & validation loss values
@@ -99,7 +116,7 @@ plt.title('Model loss')
 plt.ylabel('Loss')
 plt.xlabel('Epoch')
 plt.legend(['Train', 'Test'], loc='upper left')
-plt.savefig('/mnt/c/Users/llave/Desktop/model_loss.png')
+plt.savefig(workDir + 'model_loss.png')
 plt.show()
 
 

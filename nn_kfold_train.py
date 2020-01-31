@@ -37,6 +37,7 @@ def kfold_network(X, y, hidden_nodes,activation='relu',optimizer='adam'):
     network.add(layers.Dense(6,activation='linear'))
     network.compile(optimizer=optimizer,loss='mean_squared_logarithmic_error',metrics=['accuracy'])
     network.save_weights(workDir + '/weights/model_init.h5')
+    
     #early stopping
     patienceCount = 10
     callbacks = [EarlyStopping(monitor='val_loss', patience=patienceCount),
@@ -138,12 +139,12 @@ def kfold_network(X, y, hidden_nodes,activation='relu',optimizer='adam'):
 
 
 #Import data
-fname = workDir + "/data/val_100010_2020-01-26.csv"
+fname = workDir + "/data/batch1_1.csv"
 df = pd.read_csv(fname)
 
 dfShuffle = shuffle(df,random_state=42)
 X1 = dfShuffle.as_matrix(columns=["x1", "x2", "x3", "y1", "y2", "y3", "tEnd"])
-y1 = dfShuffle.as_matrix(columns=["x1[tEnd]", "x2[tEnd]", "x3[tEnd]", "y1[tEnd]", "y2[tEnd]", "y3[tEnd]","eventID"])
+y1 = dfShuffle.as_matrix(columns=["x1tEnd", "x2tEnd", "x3tEnd", "y1tEnd", "y2tEnd", "y3tEnd","eventID"])
 
 X_train,X_test,y_train,y_test = train_test_split(X1,y1, test_size=0.2, random_state=42)
 print(X_train.shape, y_train.shape)
@@ -164,7 +165,7 @@ loss_list = []
 iterations_list = []
 
 # Determine best number of hidden nodes for one charge, and apply it for other charges
-for nodes in [10,20,30,50,100]:
+for nodes in [10,20,30,50,100,200]:
     
     print("Nodes", nodes)
     
