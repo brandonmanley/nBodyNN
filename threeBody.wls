@@ -2,7 +2,7 @@
 
 
 batchNum = 1;
-fileNum = 1;
+fileNum = 6;
 nEvents = 100;
 timeStampsPerEvent = 1000;
 nDataPoints = nEvents*timeStampsPerEvent;
@@ -13,7 +13,8 @@ divergentEventCutOff = 10^6;
 delta = 0.01;
 dateCreated = DateString["ISODate"];
 
-For[iFile=fileNum, iFile < 6, 
+nFiles = 20;
+For[iFile=fileNum, iFile < nFiles+1, 
     Print["Starting file ", iFile];
 
     validationDatapoints = {};

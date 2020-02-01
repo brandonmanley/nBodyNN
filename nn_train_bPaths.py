@@ -28,7 +28,7 @@ workDir = "/Users/brandonmanley/Desktop/nBody/"
 #Import data
 fname = workDir + "data/mathSim/"
 
-df = util.concatCSV(fname, "1")
+df = util.concatCSV(fname+'batch', "1")
 
 dfShuffle = shuffle(df,random_state=42)
 print(dfShuffle.head)
