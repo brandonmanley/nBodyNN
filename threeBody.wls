@@ -1,7 +1,7 @@
 #!/usr/bin/env wolframscript
 
 batchNum = 1;
-fileNum = 1;
+fileNum = 5;
 nEvents = 100;
 timeStampsPerEvent = 1000;
 nDataPoints = nEvents*timeStampsPerEvent;
@@ -24,7 +24,7 @@ WriteString[$Output, "# of events (10s): "];
 
     While[ events < nEvents,
 
-    If[Mod[events, 10] == 0, WriteString[$Output, ToString[events/10]]];
+    If[Mod[events, 10] == 0, WriteString[$Output, ToString[events]]];
   
     x1o = {RandomReal[{-3, -1}], RandomReal[{1, 2}]};
     x2o = {RandomReal[{0, 2}], RandomReal[{-2, 0}]};
@@ -82,6 +82,7 @@ WriteString[$Output, "# of events (10s): "];
    eqn3vyI}, {x1[t], y1[t], x2[t], y2[t], x3[t], y3[t]}, {t, 0, 
    Tend}];
 
+
     mx1[t_] = x1[t] /. soln[[1]][[1]];
     my1[t_] = y1[t] /. soln[[1]][[2]];
 
@@ -96,8 +97,11 @@ WriteString[$Output, "# of events (10s): "];
     previousSize = Length[validationDatapoints];
     For[i=1, i < Length[tEndtime]+1,
         Quiet[
-            point = {eventID, m1, m2, m3, x1o[[1]], x1o[[2]], x2o[[1]], x2o[[2]], x3o[[1]], x3o[[2]], tEndtime[[i]], mx1[tEndtime[[i]]], mx2[tEndtime[[i]]], mx3[tEndtime[[i]]], my1[tEndtime[[i]]], my2[tEndtime[[i]]], my3[tEndtime[[i]]] };
-            If[Length[Select[# > divergentEventCutOff&][point]]>0, ++i; ++divergentDatapoints; Continue, point[[1]] = eventID+i; validationDatapoints = Append[validationDatapoints,point];]
+            point = {eventID, m1, m2, m3, x1o[[1]], x1o[[2]], x2o[[1]], x2o[[2]], x3o[[1]], x3o[[2]], 
+            tEndtime[[i]], mx1[tEndtime[[i]]], mx2[tEndtime[[i]]], mx3[tEndtime[[i]]], 
+            my1[tEndtime[[i]]], my2[tEndtime[[i]]], my3[tEndtime[[i]]] };
+            If[Length[Select[# > divergentEventCutOff&][point]]>0, ++i; ++divergentDatapoints; 
+            Continue, point[[1]] = eventID+i; validationDatapoints = Append[validationDatapoints,point];]
             ]; ++i;
         ];
     currentSize = Length[validationDatapoints];

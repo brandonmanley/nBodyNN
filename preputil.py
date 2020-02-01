@@ -2,8 +2,8 @@ import os
 import pandas as pd 
 
 def prepData(meta):
-    in_file = "data/val_"+meta+".csv"
-    pred_file = "data/predicted_paths_"+meta+".csv"
+    in_file = "~/Desktop/nBody/data/mathSim/batch"+meta+".csv"
+    pred_file = "predicted_paths"+meta+".csv"
 
     # read sim/prediction csvs and label the columns of prediction
     pred_df = pd.read_csv(pred_file, header=None)

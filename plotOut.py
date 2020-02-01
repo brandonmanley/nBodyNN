@@ -9,7 +9,7 @@ import preputil as util
 def Extract(mylist, index): 
     return [item[index] for item in mylist] 
 
-meta = "50002_2020-01-28"
+meta = "1_1"
 in_df = util.prepData(meta)
 
 r.seed(r.randint(1,len(in_df.index)))
@@ -98,26 +98,25 @@ plt.show()
 # plt.savefig('event_{0}_paths.png'.format(eventNum))
 
 
-# plot error as a function of radius 
-r1 = []
-r2 = []
-r3 = []
-e1 = []
-e2 = []
-e3 = []
+# plot error as a function of bary
+bary = []
+timelist = []
+elist = []
 
 for row in in_df.itertuples():
-    r1.append(math.sqrt((row.x1tEnd**2)+(row.y1tEnd**2)))
-    r2.append(math.sqrt((row.x2tEnd**2)+(row.y2tEnd**2)))
-    r3.append(math.sqrt((row.x3tEnd**2)+(row.y3tEnd**2)))
+    bary.append(((row.m1*row.x1)+(row.m2*row.x2)+(row.m3*row.x3))/(row.m1+row.m2+row.m3))
 
-    e1.append(math.sqrt(((row.x1tEnd - row.x1tEnd_2)**2)+((row.y1tEnd - row.y1tEnd_2)**2)))
-    e2.append(math.sqrt(((row.x2tEnd - row.x2tEnd_2)**2)+((row.y2tEnd - row.y2tEnd_2)**2)))
-    e3.append(math.sqrt(((row.x3tEnd - row.x3tEnd_2)**2)+((row.y3tEnd - row.y3tEnd_2)**2)))
+    timelist.append(row.tEnd)
 
-plt.scatter(r1, e1, c='blue', s=1)
-plt.scatter(r2, e2, c='red', s=1)
-plt.scatter(r3, e3, c='green', s=1)
+    e1 = math.sqrt(((row.x1tEnd - row.x1tEnd_2)**2)+((row.y1tEnd - row.y1tEnd_2)**2))
+    e2 = math.sqrt(((row.x2tEnd - row.x2tEnd_2)**2)+((row.y2tEnd - row.y2tEnd_2)**2))
+    e3 = math.sqrt(((row.x3tEnd - row.x3tEnd_2)**2)+((row.y3tEnd - row.y3tEnd_2)**2)) 
+    elist.append(math.sqrt((e1**2)+(e2**2)+(e3**2)))
+
+
+plt.scatter(timelist, elist, c='blue', s=1)
+# plt.scatter(r2, e2, c='red', s=1)
+# plt.scatter(r3, e3, c='green', s=1)
 plt.show()
 
 
