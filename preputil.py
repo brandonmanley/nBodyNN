@@ -1,8 +1,9 @@
 import os
 import pandas as pd 
+import glob
 
-def prepData(meta):
-    in_file = "~/Desktop/nBody/data/mathSim/batch"+meta+".csv"
+def prepData(dir, meta):
+    in_file = dir+"batch"+meta+".csv"
     pred_file = "predicted_paths"+meta+".csv"
 
     # read sim/prediction csvs and label the columns of prediction
@@ -21,4 +22,11 @@ def prepData(meta):
     # remove any null predictions
     return in_df[pd.notnull(in_df["x1tEnd_2"])]
     # in_df.to_csv("data/prepared_"+meta+".csv")
+
+
+def concatCSV(dir, batch):
+    extension = 'csv'
+    all_filenames = [i for i in glob.glob(dir+'batch{0}_*.{1}'.format(batch,extension))]
+    return pd.concat([pd.read_csv(f) for f in all_filenames ])
+    # combined_csv.to_csv(workDir+"combined_data.csv", index=False, encoding='utf-8-sig')
 
