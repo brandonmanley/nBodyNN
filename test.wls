@@ -1,14 +1,16 @@
 #!/usr/bin/env wolframscript
 
-k=1; 
+k=0; 
 
 While[ k<100, 
 
-       k++; Pause@.1; 
+       Pause@.1; 
+       k++; 
 
       (* progress indicator *) 
-       Run[ "echo -n '" <> 
-            StringRepeat["|",k] <>  
-            StringRepeat["-", 100-k] <> 
-            "\r'"]
+       WriteString[$Output, StringRepeat["|",k] <>  
+            StringRepeat["-", 101-k] <> 
+            "\r'"]; 
+
+            
      ]
