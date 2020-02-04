@@ -1,19 +1,19 @@
 #!/usr/bin/env wolframscript
 
-
-batchNum = 1;
-fileNum = 6;
-nEvents = 100;
+batchNum = 2;
+fileNum = 1;
+nEventsPerFile = 100; 
 timeStampsPerEvent = 1000;
-nDataPoints = nEvents*timeStampsPerEvent;
-Tstart = 0.000000001;
 Tend = 10;
+
+nDataPoints = nEventsPerFile*timeStampsPerEvent;
+Tstart = 0;
 divergentDatapoints = 0;
 divergentEventCutOff = 10^6;
 delta = 0.01;
 dateCreated = DateString["ISODate"];
 
-nFiles = 20;
+nFiles = 1;
 For[iFile=fileNum, iFile < nFiles+1, 
     Print["Starting file ", iFile];
 
@@ -29,7 +29,7 @@ For[iFile=fileNum, iFile < nFiles+1,
     Print["Making ", nDataPoints, " total data points"];
     WriteString[$Output, "# of events (10s): "];
 
-        While[ events < nEvents,
+        While[ events < nEventsPerFile,
 
         If[Mod[events, 10] == 0, WriteString[$Output, ToString[events/10]]];
     
@@ -109,32 +109,35 @@ For[iFile=fileNum, iFile < nFiles+1,
                 my1[tEndtime[[i]]], my2[tEndtime[[i]]], my3[tEndtime[[i]]] };
 
                 divDatapoint = {m1, m2, m3, x1o[[1]], x2o[[1]], x3o[[1]], x1o[[2]], x2o[[2]], x3o[[2]]};
-                If[Length[Select[# > divergentEventCutOff&][point]]>0, ++i; ++divergentDatapoints; divData = AppendTo[divData, divDatapoint];
-                Continue, point[[1]] = eventID+i; validationDatapoints = Append[validationDatapoints,point];]
+                (* If[Length[Select[# > divergentEventCutOff&][point]]>0, ++i; ++divergentDatapoints; divData = AppendTo[divData, divDatapoint]; *)
+                point[[1]] = eventID+i; 
+                validationDatapoints = Append[validationDatapoints,point];
                 ]; ++i;
             ];
         currentSize = Length[validationDatapoints];
         If[currentSize > previousSize, eventID += 10000; ++events];
 
         ];
-
     Print["\n"];
 
-    basePath = "~/Desktop/nBody/data/mathSim/batch";
-    exportString = basePath <> ToString[batchNum] <> "_" <> ToString[iFile] <> ".csv";
+    basePath = "/nBodyData/mathSim/";
+    fileString = "batch" <> ToString[batchNum] <> "_" <> ToString[iFile] <> ".csv";
+    exportString = basePath <> fileString;
     Print["Exported path: ", exportString];
     Export[exportString, validationDatapoints, "CSV"];
 
-    Print[Length[divData]];
+    (* Print[Length[divData]];
     baseDivPath = "~/Desktop/nBody/data/mathDiv/batchDiv";
     exportDivString = baseDivPath <> ToString[batchNum] <> "_" <> ToString[iFile] <> ".csv";
     Export[exportDivString, divData, "CSV"];
+    Run["cp "<>exportDivString<> " ~/Desktop/OneDrive\ -\ The\ Ohio\ State\ University/nBody\ Data/mathDiv/"]; *)
 
 
     (* Make meta data *)
-    baseMetaPath = "~/Desktop/nBody/data/mathMeta/";
-    metaDataString = baseMetaPath <> "batch" <> ToString[batchNum] <> "_" <> ToString[iFile] <> "_meta.json";
-    Export[metaDataString, {"Batch number"->batchNum, "File number"->iFile, "Events"->nEvents, "Time stamps per event"->timeStampsPerEvent, 
+    baseMetaPath = "/nBodydata/mathMeta/";
+    metaFileString = "batch" <> ToString[batchNum] <> "_" <> ToString[iFile] <> "_meta.json";
+    metaDataString = baseMetaPath <> metaFileString;
+    Export[metaDataString, {"Batch number"->batchNum, "File number"->iFile, "Events"->nEventsPerFile, "Time stamps per event"->timeStampsPerEvent, 
                             "Data points"->Length[validationDatapoints], "Time start"->Tstart, "Time end"->Tend, 
                             "Divergent data points"->divergentDatapoints, "Divergent event cut off"->divergentEventCutOff, 
                             "Delta"->delta, "Date created"->dateCreated}];
