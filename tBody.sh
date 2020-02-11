@@ -1,4 +1,5 @@
 #! /usr/bin/env bash
 
-./threeBody.wls
-python syncData.py 
+./Brutus/main.exe 1 > outputBrut.txt & 
+./threeBody.wls 1
+# python syncData.py 

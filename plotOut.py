@@ -9,14 +9,23 @@ import preputil as util
 def Extract(mylist, index): 
     return [item[index] for item in mylist] 
 
-meta = "2_2"
+meta = "3_1"
 in_df = util.prepData("/nBodyData/",meta)
-print(in_df.head())
+# print(in_df.head())
+# pd.DataFrame.to_csv(in_df, "combined_"+meta+".csv")
+
+
 
 r.seed(1)
-index = r.randint(1,len(in_df.index))
-eventNum = in_df.iloc[index].eventID
-print('event:', int(eventNum/100))
+indexArray = np.array(in_df['eventID'])
+indexArray = np.unique((indexArray/ 10000).astype(int))
+# print(indexArray)
+index = np.random.choice(indexArray)*10000
+# index = 20000
+# index = r.randint(1,len(in_df.index))
+# eventNum = in_df.iloc[index].eventID
+eventNum = index
+print('event:', int(eventNum/10000))
 
 x1_i = []
 x2_i = []
@@ -95,7 +104,7 @@ df1_Brut = pd.DataFrame({'Brut x1':p1x_Brut, 'Brut y1': p1y_Brut})
 df2_Brut = pd.DataFrame({'Brut x2':p2x_Brut, 'Brut y2': p2y_Brut})
 df3_Brut = pd.DataFrame({'Brut x3':p3x_Brut, 'Brut y3': p3y_Brut})
 
-print(df1_Brut.head())
+# print(df1_Brut.head())
 
 # df1_NN = pd.DataFrame({'NN x1':p1x_NN, 'NN y1': p1y_NN})
 # df2_NN = pd.DataFrame({'NN x2':p2x_NN, 'NN y2': p2y_NN})
@@ -105,15 +114,15 @@ p1_i = pd.DataFrame({'Initial x1': [x1_i[0][0]], 'Initial y1': [x1_i[0][1]]})
 p2_i = pd.DataFrame({'Initial x2': [x2_i[0][0]], 'Initial y2': [x2_i[0][1]]})
 p3_i = pd.DataFrame({'Initial x3': [x3_i[0][0]], 'Initial y3': [x3_i[0][1]]})
 
-print(p1_i, p2_i, p3_i)
+# print(p1_i, p2_i, p3_i)
 
-# plt.plot('Sim x1', 'Sim y1', data=df1_sim, color='blue', marker='o')
-# plt.plot('Sim x2', 'Sim y2', data=df2_sim, color='red', marker='o')
-# plt.plot('Sim x3', 'Sim y3', data=df3_sim, color='green', marker='o')
+plt.plot('Sim x1', 'Sim y1', data=df1_sim, color='blue', marker='o',linewidth=1, markersize=3, markevery=30)
+plt.plot('Sim x2', 'Sim y2', data=df2_sim, color='red', marker='o',linewidth=1, markersize=3, markevery=30)
+plt.plot('Sim x3', 'Sim y3', data=df3_sim, color='green', marker='o',linewidth=1, markersize=3, markevery=30)
 
-plt.plot('Brut x1', 'Brut y1', data=df1_Brut, color='blue', marker='o', linestyle='dashed')
-plt.plot('Brut x2', 'Brut y2', data=df2_Brut, color='red', marker='o', linestyle='dashed')
-plt.plot('Brut x3', 'Brut y3', data=df3_Brut, color='green', marker='o', linestyle='dashed')
+plt.plot('Brut x1', 'Brut y1', data=df1_Brut, color='blue', marker='x', linestyle='dashed', linewidth=1, markersize=5, markevery=30)
+plt.plot('Brut x2', 'Brut y2', data=df2_Brut, color='red', marker='x', linestyle='dashed', linewidth=1, markersize=5, markevery=30)
+plt.plot('Brut x3', 'Brut y3', data=df3_Brut, color='green', marker='x', linestyle='dashed', linewidth=1, markersize=5, markevery=30)
 
 # plt.plot('NN x1', 'NN y1', data=df1_NN, color='blue', linestyle='dashed', marker='v')
 # plt.plot('NN x2', 'NN y2', data=df2_NN, color='red', linestyle='dashed', marker='v')
@@ -126,7 +135,7 @@ plt.plot('Initial x3', 'Initial y3', data=p3_i, color='black', marker='s')
 plt.legend(loc='best', ncol=3, fancybox=True)
 plt.xlabel('x [m]')
 plt.ylabel('y [m]')
-plt.title('Event {0}'.format(int(eventNum/100)))
+plt.title('Event {0}'.format(int(eventNum/10000)))
 plt.show()
 # plt.savefig('event_{0}_paths.png'.format(eventNum))
 

@@ -1,12 +1,12 @@
 #!/usr/bin/env wolframscript
 
-batchNum = 2;
+batchNum = 3;
 (* nEventsPerFile = 1;  *)
 timeStampsPerEvent = 2560;
 Tend = 10.0;
 Tstart = 0;
 divergentDatapoints = 0;
-divergentEventCutOff = 10^6;
+divergentEventCutOff = 10^5;
 delta = 0.01;
 dateCreated = DateString["ISODate"];
 
@@ -20,7 +20,8 @@ divData = Append[divData, {"m1", "m2", "m3", "x1", "x2", "x3", "y1", "y2", "y3",
 eventID = 10000;
 events = 0;
 
-inputFile = "~/Desktop/nBody/nBodyNN/Brutus/indat_test" <> ToString[iFile] <> ".dat";
+inputFile = "/nBodyData/inputs/indat_"<>ToString[batchNum]<>"_" <> ToString[iFile] <> ".dat";
+Print["Input file: ", inputFile];
 input = Import[inputFile,{"CSV", "RawData"}];
 
 basePath = "/nBodyData/mathSim/";
@@ -36,12 +37,15 @@ WriteString[headerStr, ExportString[validationDatapoints, "CSV"]];
 Close[headerStr];
 
 nDataPoints = Length[input]*timeStampsPerEvent;
+If[nDataPoints < 1, Print["Error: no data input"]; Quit[]]
 Print["Making ", nDataPoints, " total data points"];
 WriteString[$Output, "# of events (10s): "];
 
 For[iEvent=0, iEvent < Length[input], iEvent += 1;
 
-    If[Mod[events, 10] == 0, WriteString[$Output, ToString[events/10]]];
+    flag = False;
+    If[iEvent > 9, flag = True];
+    If[Mod[iEvent, 10] == 0, WriteString[$Output, ToString[iEvent/10]]]; 
 
     (*
     v indices: 
@@ -73,11 +77,11 @@ For[iEvent=0, iEvent < Length[input], iEvent += 1;
     G =  6.674*(10**-11);
 
     (*f=ma*)
-    eqn1ax = m1 x1''[t] ==  ((m1 m2 (x1[t] - x2[t]))/((x1[t] - x2[t])^2 + (y1[t] - y2[t])^2)^(3/2)) - ((m1 m3 (x1[t] - x3[t]))/((x1[t] - x3[t])^2 + (y1[t] - y3[t])^2)^(3/2));
-    eqn1ay = m1 y1''[t] ==  ((m1 m2 (y1[t] - y2[t]))/((x1[t] - x2[t])^2 + (y1[t] - y2[t])^2)^(3/2)) - ((m1 m3 (y1[t] - y3[t]))/((x1[t] - x3[t])^2 + (y1[t] - y3[t])^2)^(3/2));
+    eqn1ax = m1 x1''[t] ==  ((m1 m2 (x2[t] - x1[t]))/((x1[t] - x2[t])^2 + (y2[t] - y1[t])^2)^(3/2)) + ((m1 m3 (x3[t] - x1[t]))/((x1[t] - x3[t])^2 + (y1[t] - y3[t])^2)^(3/2));
+    eqn1ay = m1 y1''[t] ==  ((m1 m2 (y2[t] - y1[t]))/((x1[t] - x2[t])^2 + (y2[t] - y1[t])^2)^(3/2)) + ((m1 m3 (y3[t] - y1[t]))/((x1[t] - x3[t])^2 + (y1[t] - y3[t])^2)^(3/2));
     
-    eqn2ax = m2 x2''[t] ==  ((m1 m2 (x1[t] - x2[t]))/((x1[t] - x2[t])^2 + (y1[t] - y2[t])^2)^(3/2)) - ((m2 m3 (x2[t] - x3[t]))/((x2[t] - x3[t])^2 + (y2[t] - y3[t])^2)^(3/2));
-    eqn2ay = m2 y2''[t] ==  ((m1 m2 (y1[t] - y2[t]))/((x1[t] - x2[t])^2 + (y1[t] - y2[t])^2)^(3/2)) - ((m2 m3 (y2[t] - y3[t]))/((x2[t] - x3[t])^2 + (y2[t] - y3[t])^2)^(3/2));
+    eqn2ax = m2 x2''[t] ==  ((m1 m2 (x1[t] - x2[t]))/((x1[t] - x2[t])^2 + (y1[t] - y2[t])^2)^(3/2)) + ((m2 m3 (x3[t] - x2[t]))/((x2[t] - x3[t])^2 + (y2[t] - y3[t])^2)^(3/2));
+    eqn2ay = m2 y2''[t] ==  ((m1 m2 (y1[t] - y2[t]))/((x1[t] - x2[t])^2 + (y1[t] - y2[t])^2)^(3/2)) + ((m2 m3 (y3[t] - y2[t]))/((x2[t] - x3[t])^2 + (y2[t] - y3[t])^2)^(3/2));
 
     eqn3ax = m3 x3''[t] ==  ((m1 m3 (x1[t] - x3[t]))/((x1[t] - x3[t])^2 + (y1[t] - y3[t])^2)^(3/2)) + ((m2 m3 (x2[t] - x3[t]))/((x2[t] - x3[t])^2 + (y2[t] - y3[t])^2)^(3/2));
     eqn3ay = m3 y3''[t] ==  ((m1 m3 (y1[t] - y3[t]))/((x1[t] - x3[t])^2 + (y1[t] - y3[t])^2)^(3/2)) + ((m2 m3 (y2[t] - y3[t]))/((x2[t] - x3[t])^2 + (y2[t] - y3[t])^2)^(3/2));
@@ -102,18 +106,11 @@ For[iEvent=0, iEvent < Length[input], iEvent += 1;
     eqn3vxI = x3'[0] == v3o[[1]];
     eqn3vyI = y3'[0] == v3o[[2]];
 
-    soln = NDSolve[{ 
-    WhenEvent[Abs[((x1[t] - x3[t])^2 + (y1[t] - y3[t])^2)] < delta, 
-        "StopIntegration"], 
-    WhenEvent[Abs[((x2[t] - x3[t])^2 + (y2[t] - y3[t])^2)] < delta, 
-        "StopIntegration"], 
-    WhenEvent[Abs[((x1[t] - x2[t])^2 + (y1[t] - y2[t])^2)] < delta, 
-        "StopIntegration"], eqn1ax, eqn1ay, eqn2ax, 
+    soln = Quiet[NDSolve[{ eqn1ax, eqn1ay, eqn2ax, 
     eqn2ay, eqn3ax, eqn3ay, eqn1xI, eqn1yI, eqn2xI, eqn2yI, eqn3xI, 
     eqn3yI, eqn1vxI, eqn1vyI, eqn2vxI, eqn2vyI, eqn3vxI, 
     eqn3vyI}, {x1[t], y1[t], x2[t], y2[t], x3[t], y3[t]}, {t, 0, 
-    Tend}];
-
+    Tend}]];
 
     mx1[t_] = x1[t] /. soln[[1]][[1]];
     my1[t_] = y1[t] /. soln[[1]][[2]];
@@ -127,16 +124,29 @@ For[iEvent=0, iEvent < Length[input], iEvent += 1;
     tEndtime = Subdivide[Tstart, Tend, timeStampsPerEvent];
 
     thisEvent = {};
+
+    (* If[flag, Print["hmm2"]]; *)
     For[i=1, i < Length[tEndtime]+1,
+
+        (* If[isDivEvent, Break]; *)
+
         Quiet[
             point = {eventID, m1, m2, m3, x1o[[1]], x2o[[1]], x3o[[1]], x1o[[2]], x2o[[2]], x3o[[2]], 
-            tEndtime[[i]], mx1[tEndtime[[i]]], mx2[tEndtime[[i]]], mx3[tEndtime[[i]]], 
-            my1[tEndtime[[i]]], my2[tEndtime[[i]]], my3[tEndtime[[i]]] };
+                tEndtime[[i]], mx1[tEndtime[[i]]], mx2[tEndtime[[i]]], mx3[tEndtime[[i]]], 
+                my1[tEndtime[[i]]], my2[tEndtime[[i]]], my3[tEndtime[[i]]] };
 
+            testPoint = {mx1[tEndtime[[i]]], mx2[tEndtime[[i]]], mx3[tEndtime[[i]]], 
+                my1[tEndtime[[i]]], my2[tEndtime[[i]]], my3[tEndtime[[i]]] };
+        
             (* divDatapoint = {m1, m2, m3, x1o[[1]], x2o[[1]], x3o[[1]], x1o[[2]], x2o[[2]], x3o[[2]]}; *)
-            (* If[Length[Select[# > divergentEventCutOff&][point]]>0, ++i; ++divergentDatapoints; divData = AppendTo[divData, divDatapoint]; *)
             point[[1]] = eventID+i; 
-            thisEvent = Append[thisEvent,point];
+            (* If[flag, Print[point]]; *)
+
+            If[
+                Length[Select[# > divergentEventCutOff&][testPoint]]>0, ++i; Break, thisEvent = Append[thisEvent,point]
+            ]; 
+            (* If[flag, Print[point]]; *)
+
             ]; ++i;
         ];
 
