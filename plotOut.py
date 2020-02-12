@@ -11,7 +11,7 @@ def Extract(mylist, index):
 
 meta = "3_1"
 in_df = util.prepData("/nBodyData/",meta)
-# print(in_df.head())
+print(in_df.head())
 # pd.DataFrame.to_csv(in_df, "combined_"+meta+".csv")
 
 
@@ -19,7 +19,7 @@ in_df = util.prepData("/nBodyData/",meta)
 r.seed(1)
 indexArray = np.array(in_df['eventID'])
 indexArray = np.unique((indexArray/ 10000).astype(int))
-# print(indexArray)
+print(indexArray)
 index = np.random.choice(indexArray)*10000
 # index = 20000
 # index = r.randint(1,len(in_df.index))
@@ -66,9 +66,9 @@ for temprow in tempdf.itertuples():
     x2_fSim.append([temprow.x2tEnd, temprow.y2tEnd])
     x3_fSim.append([temprow.x3tEnd, temprow.y3tEnd])
 
-    # x1_fNN.append([temprow.x1tEnd_p, temprow.y1tEnd_p])
-    # x2_fNN.append([temprow.x2tEnd_p, temprow.y2tEnd_p])
-    # x3_fNN.append([temprow.x3tEnd_p, temprow.y3tEnd_p]) 
+    x1_fNN.append([temprow.x1tEnd_p, temprow.y1tEnd_p])
+    x2_fNN.append([temprow.x2tEnd_p, temprow.y2tEnd_p])
+    x3_fNN.append([temprow.x3tEnd_p, temprow.y3tEnd_p]) 
 
     x1_fBrut.append([temprow.x1tEnd_b, temprow.y1tEnd_b])
     x2_fBrut.append([temprow.x2tEnd_b, temprow.y2tEnd_b])
@@ -81,12 +81,12 @@ p2y_sim = Extract(x2_fSim, 1)
 p3x_sim = Extract(x3_fSim, 0)
 p3y_sim = Extract(x3_fSim, 1)
 
-# p1x_NN = Extract(x1_fNN, 0)
-# p1y_NN = Extract(x1_fNN, 1)
-# p2x_NN = Extract(x2_fNN, 0)
-# p2y_NN = Extract(x2_fNN, 1)
-# p3x_NN = Extract(x3_fNN, 0)
-# p3y_NN = Extract(x3_fNN, 1)
+p1x_NN = Extract(x1_fNN, 0)
+p1y_NN = Extract(x1_fNN, 1)
+p2x_NN = Extract(x2_fNN, 0)
+p2y_NN = Extract(x2_fNN, 1)
+p3x_NN = Extract(x3_fNN, 0)
+p3y_NN = Extract(x3_fNN, 1)
 
 p1x_Brut = Extract(x1_fBrut, 0)
 p1y_Brut = Extract(x1_fBrut, 1)
@@ -106,27 +106,31 @@ df3_Brut = pd.DataFrame({'Brut x3':p3x_Brut, 'Brut y3': p3y_Brut})
 
 # print(df1_Brut.head())
 
-# df1_NN = pd.DataFrame({'NN x1':p1x_NN, 'NN y1': p1y_NN})
-# df2_NN = pd.DataFrame({'NN x2':p2x_NN, 'NN y2': p2y_NN})
-# df3_NN = pd.DataFrame({'NN x3':p3x_NN, 'NN y3': p3y_NN})
+df1_NN = pd.DataFrame({'NN x1':p1x_NN, 'NN y1': p1y_NN})
+df2_NN = pd.DataFrame({'NN x2':p2x_NN, 'NN y2': p2y_NN})
+df3_NN = pd.DataFrame({'NN x3':p3x_NN, 'NN y3': p3y_NN})
 
 p1_i = pd.DataFrame({'Initial x1': [x1_i[0][0]], 'Initial y1': [x1_i[0][1]]})
 p2_i = pd.DataFrame({'Initial x2': [x2_i[0][0]], 'Initial y2': [x2_i[0][1]]})
 p3_i = pd.DataFrame({'Initial x3': [x3_i[0][0]], 'Initial y3': [x3_i[0][1]]})
 
 # print(p1_i, p2_i, p3_i)
+tsize = 0
+plt.plot('Sim x1', 'Sim y1', data=df1_sim, color='blue', marker='o',linewidth=1, markersize=tsize, markevery=30)
+plt.plot('Sim x2', 'Sim y2', data=df2_sim, color='red', marker='o',linewidth=1, markersize=tsize, markevery=30)
+plt.plot('Sim x3', 'Sim y3', data=df3_sim, color='green', marker='o',linewidth=1, markersize=tsize, markevery=30)
 
-plt.plot('Sim x1', 'Sim y1', data=df1_sim, color='blue', marker='o',linewidth=1, markersize=3, markevery=30)
-plt.plot('Sim x2', 'Sim y2', data=df2_sim, color='red', marker='o',linewidth=1, markersize=3, markevery=30)
-plt.plot('Sim x3', 'Sim y3', data=df3_sim, color='green', marker='o',linewidth=1, markersize=3, markevery=30)
-
-plt.plot('Brut x1', 'Brut y1', data=df1_Brut, color='blue', marker='x', linestyle='dashed', linewidth=1, markersize=5, markevery=30)
-plt.plot('Brut x2', 'Brut y2', data=df2_Brut, color='red', marker='x', linestyle='dashed', linewidth=1, markersize=5, markevery=30)
-plt.plot('Brut x3', 'Brut y3', data=df3_Brut, color='green', marker='x', linestyle='dashed', linewidth=1, markersize=5, markevery=30)
+plt.plot('Brut x1', 'Brut y1', data=df1_Brut, color='blue', marker='x', linestyle='dashed', linewidth=1, markersize=tsize, markevery=30)
+plt.plot('Brut x2', 'Brut y2', data=df2_Brut, color='red', marker='x', linestyle='dashed', linewidth=1, markersize=tsize, markevery=30)
+plt.plot('Brut x3', 'Brut y3', data=df3_Brut, color='green', marker='x', linestyle='dashed', linewidth=1, markersize=tsize, markevery=30)
 
 # plt.plot('NN x1', 'NN y1', data=df1_NN, color='blue', linestyle='dashed', marker='v')
 # plt.plot('NN x2', 'NN y2', data=df2_NN, color='red', linestyle='dashed', marker='v')
 # plt.plot('NN x3', 'NN y3', data=df3_NN, color='green',linestyle='dashed', marker='v')
+
+plt.plot('NN x1', 'NN y1', data=df1_NN, color='blue', marker='x', linestyle=':', linewidth=1, markersize=tsize, markevery=30)
+plt.plot('NN x2', 'NN y2', data=df2_NN, color='red', marker='x', linestyle=':', linewidth=1, markersize=tsize, markevery=30)
+plt.plot('NN x3', 'NN y3', data=df3_NN, color='green', marker='x', linestyle=':', linewidth=1, markersize=tsize, markevery=30)
 
 plt.plot('Initial x1', 'Initial y1', data=p1_i, color='black', marker='s')
 plt.plot('Initial x2', 'Initial y2', data=p2_i, color='black', marker='s')

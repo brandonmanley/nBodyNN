@@ -23,12 +23,12 @@ from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.layers import Dense, Dropout, Activation
 import preputil as util
 
-workDir = "/Users/brandonmanley/Desktop/nBody/"
+workDir = "/nBodyData/"
 
 #Import data
-fname = workDir + "data/mathSim/"
+fname = workDir + "mathSim/"
 
-df = util.concatCSV(fname+'batch', "1")
+df = util.concatCSV(fname+'batch', "3")
 
 dfShuffle = shuffle(df,random_state=42)
 print(dfShuffle.head)
@@ -67,14 +67,14 @@ network = models.Sequential()
 network.add(layers.Dense(hidden_nodes,activation='relu',input_dim=7))
 network.add(layers.Dense(6,activation='linear'))
 network.compile(optimizer=optimizer,loss=loss,metrics=['accuracy'])
-network.save_weights(workDir + 'weights/model_init.h5')
+network.save_weights('/Users/brandonmanley/Desktop/nBody/weights/model_init.h5')
 
 history = network.fit(X_train,y_train,
                               epochs=n_epochs,
                               batch_size=128,
                               verbose=1,
                               validation_data=(X_test,y_test))
-network.save_weights(workDir + 'weights/model_final1.h5')
+network.save_weights('/Users/brandonmanley/Desktop/nBody/weights/model_final1.h5')
 
 # loss2 = 'mean_squared_error'
 # network2 = models.Sequential()
@@ -108,7 +108,7 @@ plt.title('Model accuracy')
 plt.ylabel('Accuracy')
 plt.xlabel('Epoch')
 plt.legend(['Train', 'Test'], loc='upper left')
-plt.savefig(workDir + 'model_accuracy.png')
+plt.savefig('/Users/brandonmanley/Desktop/nBody/model_accuracy.png')
 plt.show()
 
 # Plot training & validation loss values
@@ -118,7 +118,7 @@ plt.title('Model loss')
 plt.ylabel('Loss')
 plt.xlabel('Epoch')
 plt.legend(['Train', 'Test'], loc='upper left')
-plt.savefig(workDir + 'model_loss.png')
+plt.savefig('/Users/brandonmanley/Desktop/nBody/model_loss.png')
 plt.show()
 
 
@@ -145,4 +145,4 @@ print("Predicted inaccurately",bad_pred)
 pred_out = np.asarray(predictions)
 id_list = np.reshape(id_list,(id_list.shape[0],1))
 pred_out = np.concatenate((pred_out,id_list),axis=1)
-np.savetxt(workDir+ "predicted_paths.csv", pred_out, delimiter=",")
+np.savetxt(workDir+ "pred/predicted_paths_3_1.csv", pred_out, delimiter=",")

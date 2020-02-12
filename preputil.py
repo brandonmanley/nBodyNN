@@ -6,11 +6,11 @@ def prepData(dir, meta):
     math_file = dir+"mathSim/batch"+meta+".csv"
     brut_file = dir+"brutusSim/batch_brutus"+meta+".csv"
 
-    # pred_file = "predicted_paths"+meta+".csv"
+    pred_file = dir+"pred/predicted_paths_"+meta+".csv"
 
     # read sim/prediction csvs and label the columns of prediction
-    # pred_df = pd.read_csv(pred_file, header=None)
-    # pred_df.rename(columns={0: 'x1tEnd', 1: 'x2tEnd', 2: 'x3tEnd', 3: 'y1tEnd', 4: 'y2tEnd', 5: 'y3tEnd', 6: 'eventID'}, inplace=True)
+    pred_df = pd.read_csv(pred_file, header=None)
+    pred_df.rename(columns={0: 'x1tEnd', 1: 'x2tEnd', 2: 'x3tEnd', 3: 'y1tEnd', 4: 'y2tEnd', 5: 'y3tEnd', 6: 'eventID'}, inplace=True)
     
     math_df = pd.read_csv(math_file)
     brut_df = pd.read_csv(brut_file)
@@ -22,8 +22,8 @@ def prepData(dir, meta):
     # for row in brut_df.itertuples():
     #     print(row)
     # set event id to be an int and sort by event id
-    # pred_df.eventID = pred_df.eventID.astype(int)
-    # pred_df.sort_values(["eventID"], axis=0, ascending=True, inplace= True) 
+    pred_df.eventID = pred_df.eventID.astype(int)
+    pred_df.sort_values(["eventID"], axis=0, ascending=True, inplace= True) 
     brut_df["eventID"] = pd.to_numeric(brut_df["eventID"])
     
     for i in range(1,4):
@@ -37,10 +37,13 @@ def prepData(dir, meta):
     # combine data frames into 1
     for col in ['x1tEnd', 'x2tEnd', 'x3tEnd', 'y1tEnd', 'y2tEnd', 'y3tEnd']:
         math_df[col+'_b'] = math_df['eventID'].map(brut_df.set_index('eventID')[col])
-        # math_df[col+'_p'] = math_df['eventID'].map(pred_df.set_index('eventID')[col])
+        math_df[col+'_p'] = math_df['eventID'].map(pred_df.set_index('eventID')[col])
 
     # remove any null predictions
-    return math_df[pd.notnull(math_df["x1tEnd_b"])]
+    math_df = math_df[pd.notnull(math_df["x1tEnd_b"])]
+    math_df = math_df[pd.notnull(math_df["x1tEnd_p"])]
+    
+    return math_df
     # math_df.to_csv("data/prepared_"+meta+".csv")
 
 
