@@ -177,5 +177,3 @@ Export[metaDataString, {"Batch number"->batchNum, "File number"->iFile, "Events"
                         "Data points"->Length[validationDatapoints], "Time start"->Tstart, "Time end"->Tend, 
                         "Divergent data points"->divergentDatapoints, "Divergent event cut off"->divergentEventCutOff, 
                         "Delta"->delta, "Date created"->dateCreated}]; *)
-
-
