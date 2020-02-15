@@ -21,10 +21,8 @@ indexArray = np.array(in_df['eventID'])
 indexArray = np.unique((indexArray/ 10000).astype(int))
 print(indexArray)
 index = np.random.choice(indexArray)*10000
-# index = 20000
-# index = 20000
-# index = r.randint(1,len(in_df.index))
-# eventNum = in_df.iloc[index].eventID
+index = 10000
+
 eventNum = index
 print('event:', int(eventNum/10000))
 
