@@ -1,13 +1,29 @@
+if length(ARGS) < 1
+    println("Usage: filenum")
+    exit()
+end 
+
+batchNum = 3
+fileNum = ARGS[1]
+# try 
+#     fileNum = ARGS[1]
+# catch 
+#     println("Enter valid filenum")
+#     exit()
+# end
+
+inputString = "/nBodyData/inputs/indat_$(batchNum)_$(fileNum).dat"
+if !isfile(inputString)
+    println("Could not find input: $(inputString)")
+    exit()
+end 
+
 using DifferentialEquations, DelimitedFiles, Plots, DataFrames, CSV, ProgressMeter
 
 tspan = (0.0,10.0)  
 dt = 0.00390625
 tol = 1e-11
 
-fileNum = 1
-batchNum = 3
-
-inputString = "/nBodyData/inputs/indat_$(batchNum)_$(fileNum).dat"
 outputString = "/nBodyData/julSim/julia_batch$(batchNum)_$(fileNum).csv"
 try
     run(`rm $(outputString)`)
@@ -24,7 +40,7 @@ inA = readdlm(inputString, ',', Float64, '\n')
 @showprogress 1 "Working..." for i = 1:100
 
     iE = i 
-    globalID = 1000*iE
+    globalID = 10000*iE
     m1, m2, m3 = inA[iE,1], inA[iE,8], inA[iE,15]
     g = 1 # G not g 
 
@@ -89,7 +105,7 @@ inA = readdlm(inputString, ',', Float64, '\n')
     df = DataFrame(eventID=eventID, m1=m1a, m2=m2a, m3=m3a,
                     x1=x1, x2=x2, x3=x3, y1=y1, y2=y2, y3=y3, tEnd=tEnd, 
                     x1tEnd=x1f, x2tEnd=x2f, x3tEnd=x3f, y1tEnd=y1f, y2tEnd=y2f, y3tEnd=y3f)
-    CSV.write(outputString, df, append=true)
+    CSV.write(outputString, df; append=true)
 
 end #end event loop
 

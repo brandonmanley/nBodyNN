@@ -15,14 +15,11 @@ print(in_df.head())
 # pd.DataFrame.to_csv(in_df, "combined_"+meta+".csv")
 
 
-
 r.seed(1)
 indexArray = np.array(in_df['eventID'])
 indexArray = np.unique((indexArray/ 10000).astype(int))
 print(indexArray)
 index = np.random.choice(indexArray)*10000
-index = 10000
-
 eventNum = index
 print('event:', int(eventNum/10000))
 
