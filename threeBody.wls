@@ -1,6 +1,14 @@
 #!/usr/bin/env wolframscript
 
 batchNum = 4;
+iFile = 0;
+If[Length[$ScriptCommandLine]<2, Print["Usage: fileNum"]; Quit[], iFile=$ScriptCommandLine[[2]]]
+Print["Starting file: ", iFile];
+
+inputFile = "/nBodyData/inputs/indat_"<>ToString[batchNum]<>"_" <> ToString[iFile] <> ".dat";
+basePath = "/nBodyData/mathSim/";
+
+
 (* nEventsPerFile = 1;  *)
 timeStampsPerEvent = 2560;
 Tend = 10.0;
@@ -10,22 +18,15 @@ divergentEventCutOff = 10^5;
 delta = 0.01;
 dateCreated = DateString["ISODate"];
 
-iFile = 0;
-If[Length[$ScriptCommandLine]<2, Print["Usage: fileNum"]; Quit[], iFile=$ScriptCommandLine[[2]]]
-Print["Starting file: ", iFile];
-
 (* divData = {};
 divData = Append[divData, {"m1", "m2", "m3", "x1", "x2", "x3", "y1", "y2", "y3", "tEnd"}]; *)
 
 eventID = 10000;
 events = 0;
 
-inputFile = "/nBodyData/inputs/indat_"<>ToString[batchNum]<>"_" <> ToString[iFile] <> ".dat";
 Print["Input file: ", inputFile];
 input = Import[inputFile,{"CSV", "RawData"}];
 
-
-basePath = "/nBodyData/mathSim/";
 fileString = "batch" <> ToString[batchNum] <> "_" <> ToString[iFile] <> ".csv";
 exportString = basePath <> fileString;
 DeleteFile[exportString];

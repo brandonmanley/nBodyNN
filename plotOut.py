@@ -9,7 +9,7 @@ import preputil as util
 def Extract(mylist, index): 
     return [item[index] for item in mylist] 
 
-meta = "3_1"
+meta = "4_1"
 in_df = util.prepData("/nBodyData/",meta)
 print(in_df.head())
 # pd.DataFrame.to_csv(in_df, "combined_"+meta+".csv")

@@ -5,20 +5,16 @@ end
 
 batchNum = 4
 fileNum = ARGS[1]
-# try 
-#     fileNum = ARGS[1]
-# catch 
-#     println("Enter valid filenum")
-#     exit()
-# end
 
 inputString = "/nBodyData/inputs/indat_$(batchNum)_$(fileNum).dat"
+outputString = "/nBodyData/julSim/julia_batch$(batchNum)_$(fileNum).csv"
+
 if !isfile(inputString)
     @warn "Could not find input: $(inputString)"
     exit()
 end 
 
-outputString = "/nBodyData/julSim/julia_batch$(batchNum)_$(fileNum).csv"
+
 try
     run(`rm $(outputString)`)
 catch
