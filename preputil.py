@@ -4,7 +4,7 @@ import glob
 
 def prepData(dir, meta):
     math_file = dir+"mathSim/batch"+meta+".csv"
-    # brut_file = dir+"brutusSim/batch_brutus"+meta+".csv"
+    math_file = dir+"brutusSim/batch_brutus"+meta+".csv"
     brut_file = dir+"julSim/julia_batch"+meta+".csv"
 
     pred_file = dir+"pred/predicted_paths_"+meta+".csv"
@@ -15,7 +15,6 @@ def prepData(dir, meta):
     brut_df = pd.read_csv(brut_file, header=None)
 
     pred_df.rename(columns={0: 'x1tEnd', 1: 'x2tEnd', 2: 'x3tEnd', 3: 'y1tEnd', 4: 'y2tEnd', 5: 'y3tEnd', 6: 'eventID'}, inplace=True)
-
     brut_df.rename(columns={0: 'eventID', 1:'m1', 2:'m2', 3:'m3', 4: 'x1', 5: 'x2', 6: 'x3', 7: 'y1', 8: 'y2', 9: 'y3', 10:'tEnd', 11: 'x1tEnd', 12: 'x2tEnd', 13: 'x3tEnd', 14: 'y1tEnd', 15: 'y2tEnd', 16: 'y3tEnd'}, inplace=True)
     
    

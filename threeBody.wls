@@ -1,6 +1,6 @@
 #!/usr/bin/env wolframscript
 
-batchNum = 3;
+batchNum = 4;
 (* nEventsPerFile = 1;  *)
 timeStampsPerEvent = 2560;
 Tend = 10.0;
@@ -24,6 +24,7 @@ inputFile = "/nBodyData/inputs/indat_"<>ToString[batchNum]<>"_" <> ToString[iFil
 Print["Input file: ", inputFile];
 input = Import[inputFile,{"CSV", "RawData"}];
 
+
 basePath = "/nBodyData/mathSim/";
 fileString = "batch" <> ToString[batchNum] <> "_" <> ToString[iFile] <> ".csv";
 exportString = basePath <> fileString;
@@ -39,13 +40,13 @@ Close[headerStr];
 nDataPoints = Length[input]*timeStampsPerEvent;
 If[nDataPoints < 1, Print["Error: no data input"]; Quit[]]
 Print["Making ", nDataPoints, " total data points"];
-WriteString[$Output, "# of events (10s): "];
+WriteString[$Output, "# of events (1000s): "];
 
 For[iEvent=0, iEvent < Length[input], iEvent += 1;
 
     flag = False;
     If[iEvent > 9, flag = True];
-    If[Mod[iEvent, 10] == 0, WriteString[$Output, ToString[iEvent/10]]]; 
+    If[Mod[iEvent, 1000] == 0, WriteString[$Output, ToString[iEvent/10]]]; 
 
     (*
     v indices: 

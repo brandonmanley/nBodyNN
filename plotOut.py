@@ -20,6 +20,8 @@ indexArray = np.array(in_df['eventID'])
 indexArray = np.unique((indexArray/ 10000).astype(int))
 print(indexArray)
 index = np.random.choice(indexArray)*10000
+# index = 40000
+
 eventNum = index
 print('event:', int(eventNum/10000))
 
@@ -120,13 +122,9 @@ plt.plot('Brut x1', 'Brut y1', data=df1_Brut, color='blue', marker='x', linestyl
 plt.plot('Brut x2', 'Brut y2', data=df2_Brut, color='red', marker='x', linestyle='dashed', linewidth=1, markersize=tsize, markevery=30)
 plt.plot('Brut x3', 'Brut y3', data=df3_Brut, color='green', marker='x', linestyle='dashed', linewidth=1, markersize=tsize, markevery=30)
 
-# plt.plot('NN x1', 'NN y1', data=df1_NN, color='blue', linestyle='dashed', marker='v')
-# plt.plot('NN x2', 'NN y2', data=df2_NN, color='red', linestyle='dashed', marker='v')
-# plt.plot('NN x3', 'NN y3', data=df3_NN, color='green',linestyle='dashed', marker='v')
-
-plt.plot('NN x1', 'NN y1', data=df1_NN, color='blue', marker='x', linestyle=':', linewidth=1, markersize=tsize, markevery=30)
-plt.plot('NN x2', 'NN y2', data=df2_NN, color='red', marker='x', linestyle=':', linewidth=1, markersize=tsize, markevery=30)
-plt.plot('NN x3', 'NN y3', data=df3_NN, color='green', marker='x', linestyle=':', linewidth=1, markersize=tsize, markevery=30)
+# plt.plot('NN x1', 'NN y1', data=df1_NN, color='blue', marker='x', linestyle=':', linewidth=1, markersize=tsize, markevery=30)
+# plt.plot('NN x2', 'NN y2', data=df2_NN, color='red', marker='x', linestyle=':', linewidth=1, markersize=tsize, markevery=30)
+# plt.plot('NN x3', 'NN y3', data=df3_NN, color='green', marker='x', linestyle=':', linewidth=1, markersize=tsize, markevery=30)
 
 plt.plot('Initial x1', 'Initial y1', data=p1_i, color='black', marker='s')
 plt.plot('Initial x2', 'Initial y2', data=p2_i, color='black', marker='s')

@@ -3,7 +3,7 @@ if length(ARGS) < 1
     exit()
 end 
 
-batchNum = 3
+batchNum = 4
 fileNum = ARGS[1]
 # try 
 #     fileNum = ARGS[1]
@@ -14,15 +14,9 @@ fileNum = ARGS[1]
 
 inputString = "/nBodyData/inputs/indat_$(batchNum)_$(fileNum).dat"
 if !isfile(inputString)
-    println("Could not find input: $(inputString)")
+    @warn "Could not find input: $(inputString)"
     exit()
 end 
-
-using DifferentialEquations, DelimitedFiles, Plots, DataFrames, CSV, ProgressMeter
-
-tspan = (0.0,10.0)  
-dt = 0.00390625
-tol = 1e-11
 
 outputString = "/nBodyData/julSim/julia_batch$(batchNum)_$(fileNum).csv"
 try
@@ -31,13 +25,22 @@ catch
     @warn "$(outputString) not found"
 end
 
+println("Using input $(inputString)")
+
+using DifferentialEquations, DelimitedFiles, Plots, DataFrames, CSV, ProgressMeter
+
+tspan = (0.0,10.0)  
+dt = 0.00390625
+tol = 1e-11
+
 #     v indices: 
 #     0: m1    1: p1x  2: p1y    3: p1z   4: p1vx   5: p1vy   6: p1vz
 #     7: m2    8: p2x  9: p2y   10: p2z  11: p2vx  12: p2vy  13: p2vz
 #     14: m3  15: p3x  16: p3y  17: p3z  18: p3vx  19: p3vy  20: p3vz
 inA = readdlm(inputString, ',', Float64, '\n')
+numLines = countlines(inputString)
 
-@showprogress 1 "Working..." for i = 1:100
+@showprogress 1 "Working..." for i = 1:numLines
 
     iE = i 
     globalID = 10000*iE
