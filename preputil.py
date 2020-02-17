@@ -56,9 +56,10 @@ def prepData(dir, meta):  # prep data for analysis (enforce headers, ensure colu
 
 
 
-def concatCSV(dir, batch): # returns a fully joined pandas df for a single batch
-    extension = 'csv'
-    all_filenames = [i for i in glob.glob(dir+'{0}_*.{1}'.format(batch,extension))]
+
+
+def concatCSV(filename): # returns a fully joined pandas df for a single batch
+    all_filenames = [i for i in glob.glob(dir+'*.csv']
     return pd.concat([pd.read_csv(f) for f in all_filenames ])
     # combined_csv.to_csv(workDir+"combined_data.csv", index=False, encoding='utf-8-sig')
 

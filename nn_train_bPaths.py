@@ -26,9 +26,9 @@ import preputil as util
 workDir = "/nBodyData/"
 
 #Import data
-fname = workDir + "mathSim/"
-
-df = util.concatCSV(fname+'batch', "3")
+# fname = workDir 
+# df = pd.read_csv(fname)
+df = util.concatCSV(workDir+'julSim/julia_batch3')
 
 dfShuffle = shuffle(df,random_state=42)
 print(dfShuffle.head)
@@ -67,26 +67,26 @@ network = models.Sequential()
 network.add(layers.Dense(hidden_nodes,activation='relu',input_dim=7))
 network.add(layers.Dense(6,activation='linear'))
 network.compile(optimizer=optimizer,loss=loss,metrics=['accuracy'])
-network.save_weights('/Users/brandonmanley/Desktop/nBody/weights/model_init.h5')
+network.save_weights(workDir + 'weights/model_init.h5')
 
 history = network.fit(X_train,y_train,
                               epochs=n_epochs,
                               batch_size=128,
                               verbose=1,
                               validation_data=(X_test,y_test))
-network.save_weights('/Users/brandonmanley/Desktop/nBody/weights/model_final1.h5')
+network.save_weights(workDir + 'weights/model_final1.h5')
 
-# loss2 = 'mean_squared_error'
-# network2 = models.Sequential()
-# network2.add(layers.Dense(hidden_nodes,activation='relu',input_dim=7))
-# network2.add(layers.Dense(6,activation='linear'))
-# network2.compile(optimizer=optimizer,loss=loss2,metrics=['accuracy'])
-# network2.load_weights(workDir + 'weights/model_final1.h5')
-# history = network2.fit(X_train,y_train,
-#                               epochs=n_epochs,
-#                               batch_size=128,
-#                               verbose=1,
-#                               validation_data=(X_test,y_test))
+loss2 = 'mean_squared_error'
+network2 = models.Sequential()
+network2.add(layers.Dense(hidden_nodes,activation='relu',input_dim=7))
+network2.add(layers.Dense(6,activation='linear'))
+network2.compile(optimizer=optimizer,loss=loss2,metrics=['accuracy'])
+network2.load_weights(workDir + 'weights/model_final1.h5')
+history = network2.fit(X_train,y_train,
+                              epochs=n_epochs,
+                              batch_size=128,
+                              verbose=1,
+                              validation_data=(X_test,y_test))
 
 training_vals_acc = history.history['accuracy']
 training_vals_loss = history.history['loss']
@@ -108,7 +108,7 @@ plt.title('Model accuracy')
 plt.ylabel('Accuracy')
 plt.xlabel('Epoch')
 plt.legend(['Train', 'Test'], loc='upper left')
-plt.savefig('/Users/brandonmanley/Desktop/nBody/model_accuracy.png')
+plt.savefig(workDir + 'model_accuracy.png')
 plt.show()
 
 # Plot training & validation loss values
@@ -118,7 +118,7 @@ plt.title('Model loss')
 plt.ylabel('Loss')
 plt.xlabel('Epoch')
 plt.legend(['Train', 'Test'], loc='upper left')
-plt.savefig('/Users/brandonmanley/Desktop/nBody/model_loss.png')
+plt.savefig(workDir + 'model_loss.png')
 plt.show()
 
 
@@ -145,4 +145,4 @@ print("Predicted inaccurately",bad_pred)
 pred_out = np.asarray(predictions)
 id_list = np.reshape(id_list,(id_list.shape[0],1))
 pred_out = np.concatenate((pred_out,id_list),axis=1)
-np.savetxt(workDir+ "pred/predicted_paths_3_1.csv", pred_out, delimiter=",")
+np.savetxt(workDir+"pred/predicted_paths.csv", pred_out, delimiter=",")

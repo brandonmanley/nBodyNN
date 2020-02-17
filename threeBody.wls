@@ -1,6 +1,6 @@
 #!/usr/bin/env wolframscript
 
-batchNum = 4;
+batchNum = 3;
 iFile = 0;
 If[Length[$ScriptCommandLine]<2, Print["Usage: fileNum"]; Quit[], iFile=$ScriptCommandLine[[2]]]
 Print["Starting file: ", iFile];
@@ -47,7 +47,7 @@ For[iEvent=0, iEvent < Length[input], iEvent += 1;
 
     flag = False;
     If[iEvent > 9, flag = True];
-    If[Mod[iEvent, 1000] == 0, WriteString[$Output, ToString[iEvent/10]]]; 
+    If[Mod[iEvent, 10] == 0, WriteString[$Output, ToString[iEvent/10]]]; 
 
     (*
     v indices: 
@@ -141,7 +141,10 @@ For[iEvent=0, iEvent < Length[input], iEvent += 1;
                 my1[tEndtime[[i]]], my2[tEndtime[[i]]], my3[tEndtime[[i]]] };
         
             (* divDatapoint = {m1, m2, m3, x1o[[1]], x2o[[1]], x3o[[1]], x1o[[2]], x2o[[2]], x3o[[2]]}; *)
-            point[[1]] = eventID+i; 
+
+            (* ex: 1109000002560 -> step 2560 of event 900000 of file 1 of batch 1 *)
+            (* globalID = 1e9*batchNum + 1e8*fileNum + 1e4*iE *)
+            point[[1]] = (10^9)*batchNum + (10^8)*ToExpression[iFile] + eventID+i; 
             (* If[flag, Print[point]]; *)
 
             If[

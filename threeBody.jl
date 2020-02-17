@@ -3,7 +3,7 @@ if length(ARGS) < 1
     exit()
 end 
 
-batchNum = 4
+batchNum = 3
 fileNum = ARGS[1]
 
 inputString = "/nBodyData/inputs/indat_$(batchNum)_$(fileNum).dat"
@@ -13,6 +13,9 @@ if !isfile(inputString)
     @warn "Could not find input: $(inputString)"
     exit()
 end 
+
+# parse(Int, batchNum)
+fileNum = parse(Int, fileNum)
 
 
 try
@@ -39,7 +42,9 @@ numLines = countlines(inputString)
 @showprogress 1 "Working..." for i = 1:numLines
 
     iE = i 
-    globalID = 10000*iE
+    
+    # ex: 1109000002560 -> step 2560 of event 900000 of file 1 of batch 1
+    globalID = 1e9*batchNum + 1e8*fileNum + 1e4*iE
     m1, m2, m3 = inA[iE,1], inA[iE,8], inA[iE,15]
     g = 1 # G not g 
 
