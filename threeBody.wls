@@ -1,6 +1,6 @@
 #!/usr/bin/env wolframscript
 
-batchNum = 3;
+batchNum = 4;
 iFile = 0;
 If[Length[$ScriptCommandLine]<2, Print["Usage: fileNum"]; Quit[], iFile=$ScriptCommandLine[[2]]]
 Print["Starting file: ", iFile];
