@@ -1,5 +1,0 @@
-Starting file: 1
-Input file: /nBodyData/inputs/indat_4_1.dat
-Exported path: /nBodyData/mathSim/batch4_1.csv
-Making 1280000000 total data points
-# of events (1000s): 
