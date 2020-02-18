@@ -56,10 +56,10 @@ def prepData(dir, meta):  # prep data for analysis (enforce headers, ensure colu
 
 
 
-
+# concatCSV example usage:    df = concatCSV("/nBodyData/mathSim/batch3")
 
 def concatCSV(filename): # returns a fully joined pandas df for a single batch
-    all_filenames = [i for i in glob.glob(dir+'*.csv']
+    all_filenames = [i for i in glob.glob(filename+'*.csv')]
     return pd.concat([pd.read_csv(f) for f in all_filenames ])
     # combined_csv.to_csv(workDir+"combined_data.csv", index=False, encoding='utf-8-sig')
 
