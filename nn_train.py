@@ -21,18 +21,18 @@ from keras import models
 from keras import layers
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.layers import Dense, Dropout, Activation
+import preputil as util
 
-workDir = "/mnt/c/Users/llave/Documents/nBody/"
+workDir = "/users/PAS1585/llavez99/work/nbody/"
+dataDir = "/users/PAS1585/llavez99/data/nbody/"
 
 #Import data
-fname = workDir + "data/batch1_1.csv"
-df = pd.read_csv(fname)
+df = util.concatCSV(dataDir+'batch3')
+print(df.shape)
 
 dfShuffle = shuffle(df,random_state=42)
 print(dfShuffle.head)
 
-#X1 = dfShuffle.as_matrix(columns=["x1", "x2", "x3", "y1", "y2", "y3", "tEnd"])
-#y1 = dfShuffle.as_matrix(columns=["x1tEnd", "x2tEnd", "x3tEnd", "y1tEnd", "y2tEnd", "y3tEnd","eventID"])
 X1 = dfShuffle.as_matrix(columns=["x1", "x2", "x3", "y1", "y2", "y3", "tEnd"])
 y1 = dfShuffle.as_matrix(columns=["x1tEnd", "x2tEnd", "x3tEnd", "y1tEnd", "y2tEnd", "y3tEnd","eventID"])
 
@@ -45,46 +45,39 @@ id_list = y_test[:,6]
 y_train = np.delete(y_train,6,1)
 y_test = np.delete(y_test,6,1)
 
-X_train = X_train.astype('float32')
-X_test = X_test.astype('float32')
-y_train = y_train.astype('float32')
-y_test = y_test.astype('float32')
-
+X_train = X_train.astype('float64')
+X_test = X_test.astype('float64')
+y_train = y_train.astype('float64')
+y_test = y_test.astype('float64')
 
 print(y_train.shape,y_test.shape)
 
-#FIXME: add kfold validation to optimize nodes, epochs, layers
-
-#Run the neural network with the best number of hidden nodes and epochs
-hidden_nodes = 50   
-n_epochs = 200
+#Run the neural network with the best number of hidden nodes and epochs  
+n_epochs = 300
 optimizer = 'adam'
-loss = 'mean_squared_logarithmic_error'
+loss = 'mean_squared_error'
 
 network = models.Sequential()
-network.add(layers.Dense(hidden_nodes,activation='relu',input_dim=7))
+network.add(layers.Dense(128,activation='relu',input_dim=7))
+network.add(layers.Dense(128,activation='relu'))
+network.add(layers.Dense(128,activation='relu'))
+network.add(layers.Dense(128,activation='relu'))
+network.add(layers.Dense(128,activation='relu'))
+network.add(layers.Dense(128,activation='relu'))
+network.add(layers.Dense(128,activation='relu'))
+network.add(layers.Dense(128,activation='relu'))
+network.add(layers.Dense(128,activation='relu'))
+network.add(layers.Dense(128,activation='relu'))
 network.add(layers.Dense(6,activation='linear'))
 network.compile(optimizer=optimizer,loss=loss,metrics=['accuracy'])
-network.save_weights(workDir + 'weights/model_init.h5')
+network.save_weights(workDir + '/weights/model_init.h5')
 
 history = network.fit(X_train,y_train,
-                              epochs=n_epochs,
+                              callbacks = callbacks,
+                              epochs=max_epochs,
                               batch_size=128,
-                              verbose=1,
-                              validation_data=(X_test,y_test))
-network.save_weights(workDir + 'weights/model_final1.h5')
-
-loss2 = 'mean_squared_error'
-network2 = models.Sequential()
-network2.add(layers.Dense(hidden_nodes,activation='relu',input_dim=7))
-network2.add(layers.Dense(6,activation='linear'))
-network2.compile(optimizer=optimizer,loss=loss2,metrics=['accuracy'])
-network2.load_weights(workDir + 'weights/model_final1.h5')
-history = network2.fit(X_train,y_train,
-                              epochs=n_epochs,
-                              batch_size=128,
-                              verbose=1,
-                              validation_data=(X_test,y_test))
+                              validation_data=(X_test,y_test),
+                              verbose = 0)
 
 training_vals_acc = history.history['accuracy']
 training_vals_loss = history.history['loss']
@@ -121,26 +114,8 @@ plt.show()
 
 
 predictions = network.predict(X_test)
-epsilon = 0.1
-good_pred=0
-bad_pred=0
-
-i=0
-for pred, true in zip(predictions, y_test):
-  for pred_coord, true_coord in zip(pred, true):
-    if abs(pred_coord-true_coord) > epsilon:
-      bad_pred+=1
-    else:
-      good_pred+=1
-  i+=1
-  print(pred,true)
-  if(i>10): break
-
-print("Epsilon",epsilon)
-print("Precicted accurately",good_pred)
-print("Predicted inaccurately",bad_pred)
 
 pred_out = np.asarray(predictions)
 id_list = np.reshape(id_list,(id_list.shape[0],1))
 pred_out = np.concatenate((pred_out,id_list),axis=1)
-np.savetxt("/mnt/c/Users/llave/Desktop/predicted_paths.csv", pred_out, delimiter=",")
+np.savetxt(workDir+"predicted_paths.csv", pred_out, delimiter=",")
