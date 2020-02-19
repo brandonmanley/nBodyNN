@@ -3,7 +3,7 @@ if length(ARGS) < 1
     exit()
 end 
 
-batchNum = 4
+batchNum = 3
 fileNum = ARGS[1]
 
 inputString = "/nBodyData/inputs/indat_$(batchNum)_$(fileNum).dat"

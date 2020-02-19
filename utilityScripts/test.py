@@ -1,7 +1,15 @@
+import os
 import pandas as pd 
-import preputil as prep 
+import math
+import numpy as np 
+import matplotlib.pyplot as plt
+import random as r 
+import preputil as util 
+import progressbar
 
-meta = "3_1"
-df = prep.prepData("/nBodyData/", meta)
-# df = prep.concatCSV("/nBodyData/mathSim/batch3")
-# print(len(df.index))
+# for i in progressbar.progressbar(range(1, 10)):
+#     util.relabelData("/nBodyData/", "3_{0}".format(i))
+
+util.prepData("/nBodyData/")
+
+

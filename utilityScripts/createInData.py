@@ -4,8 +4,8 @@ from random import random
 
 def create_data(batch, filenum, nEPerFile):
     seed(1)
-    mins = [[-5,3], [-1,-7], [7,3]]
-    maxs = [[-2.5,5], [2,-2], [20,15]]
+    mins = [[-1,-1], [-1,-1], [-1,-1]]
+    maxs = [[1,1], [1,1], [1,1]]
     for ifile in range(1,filenum+1):
         filename = "/nBodyData/inputs/indat_{0}_{1}.dat".format(batch, ifile)
         inp = open(filename, "w+")
@@ -31,30 +31,11 @@ def create_data(batch, filenum, nEPerFile):
 
 if __name__ == "__main__":
     # configurable sim parameters 
-    batch = 4
-    nFiles = 10
-    nEventsPerFile = 1000000
+    batch = 3
+    nFiles = 1
+    nEventsPerFile = 1000
     timeStampsPerEvent = 2560 
     tEnd = 10
     pMax = 4
 
     create_data(batch, nFiles, nEventsPerFile)
-
-    
-
-    
-''' 
-FIXME: 
-This script:
-- add config file
-- add drive sync command
-
-Mathematica: 
-- Read config file
-
-Brutus:
-- Read config file
-''' 
-
-    # os.system("make main.exe")
-    # os.system("./main.exe")
