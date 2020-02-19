@@ -17,8 +17,10 @@ from keras import models
 from keras import layers
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.layers import Dense, Dropout, Activation
+import preputil as util
 
-workDir = "/mnt/c/Users/llave/Documents/nBody/"
+workDir = "/users/PAS1585/llavez99/work/nbody/"
+dataDir = "/users/PAS1585/llavez99/data/nbody/"
 
 def nested_defaultdict(default_factory, depth=1):
     result = partial(defaultdict, default_factory)
@@ -28,20 +30,29 @@ def nested_defaultdict(default_factory, depth=1):
 
 def kfold_network(X, y, hidden_nodes,activation='relu',optimizer='adam'):
 
-    max_epochs = 500
+    max_epochs = 300
     
     numSplits = 0
     
     network = models.Sequential()
     network.add(layers.Dense(hidden_nodes,activation='relu',input_dim=7))
+    network.add(layers.Dense(128,activation='relu'))
+    network.add(layers.Dense(128,activation='relu'))
+    network.add(layers.Dense(128,activation='relu'))
+    network.add(layers.Dense(128,activation='relu'))
+    network.add(layers.Dense(128,activation='relu'))
+    network.add(layers.Dense(128,activation='relu'))
+    network.add(layers.Dense(128,activation='relu'))
+    network.add(layers.Dense(128,activation='relu'))
+    network.add(layers.Dense(128,activation='relu'))
     network.add(layers.Dense(6,activation='linear'))
-    network.compile(optimizer=optimizer,loss='mean_squared_logarithmic_error',metrics=['accuracy'])
+    network.compile(optimizer=optimizer,loss='mean_squared_error',metrics=['accuracy'])
     network.save_weights(workDir + '/weights/model_init.h5')
     
     #early stopping
-    patienceCount = 10
+    patienceCount = 20
     callbacks = [EarlyStopping(monitor='val_loss', patience=patienceCount),
-                 ModelCheckpoint(filepath='best_model_split'+str(numSplits)+'_nhidden'+str(hidden_nodes)+'.h5', monitor='val_loss', save_best_only=True)]
+                 ModelCheckpoint(filepath=workDir+'/weights/best_model_split'+str(numSplits)+'_nhidden'+str(hidden_nodes)+'.h5', monitor='val_loss', save_best_only=True)]
 
     #k-fold validation with 4 folds
     kfolds = 4
@@ -59,6 +70,9 @@ def kfold_network(X, y, hidden_nodes,activation='relu',optimizer='adam'):
     numEvents = X.shape[0]
     numEventsSplit = int(numEvents/4)
     indeces = [numEventsSplit, numEventsSplit*2,numEventsSplit*3]
+
+    #Testing
+    print(X.shape[0], indeces)
 
     X_s1=X[:indeces[0],:]
     X_s2=X[indeces[0]:indeces[1],:]
@@ -101,7 +115,12 @@ def kfold_network(X, y, hidden_nodes,activation='relu',optimizer='adam'):
                               verbose = 0)
         
         network.save(workDir + '/weights/trained_model_split'+str(numSplits)+'_nhidden'+str(hidden_nodes)+'.h5')
-    
+
+        plt.clf()
+        plt.plot(history.history['accuracy'])
+        plt.plot(history.history['val_accuracy'])
+        plt.savefig(workDir + '/plots/nodes'+str(hidden_nodes)+'_split'+str(numSplits)+'_accuracy.png')
+        
         #save the metrics for the best epoch, or the last one
         if(len(history.history['accuracy']) == max_epochs):
             iterations += max_epochs
@@ -117,7 +136,7 @@ def kfold_network(X, y, hidden_nodes,activation='relu',optimizer='adam'):
             valid_vals_acc += history.history['val_accuracy'][i]
             valid_vals_loss += history.history['val_loss'][i]
            
-        
+        	
     training_vals_acc /= numSplits
     training_vals_loss /= numSplits
     valid_vals_acc /= numSplits
@@ -139,38 +158,28 @@ def kfold_network(X, y, hidden_nodes,activation='relu',optimizer='adam'):
 
 
 #Import data
-fname = workDir + "/data/batch1_1.csv"
-df = pd.read_csv(fname)
-
-dfShuffle = shuffle(df,random_state=42)
-X1 = dfShuffle.as_matrix(columns=["x1", "x2", "x3", "y1", "y2", "y3", "tEnd"])
-y1 = dfShuffle.as_matrix(columns=["x1tEnd", "x2tEnd", "x3tEnd", "y1tEnd", "y2tEnd", "y3tEnd","eventID"])
-
-X_train,X_test,y_train,y_test = train_test_split(X1,y1, test_size=0.2, random_state=42)
-print(X_train.shape, y_train.shape)
-print(X_test.shape,y_test.shape)
-
-#extract id list from the y arrays
-id_list = y_test[:,6]
-y_train = np.delete(y_train,6,1)
-y_test = np.delete(y_test,6,1)
-
-X_train = X_train.astype('float32')
-X_test = X_test.astype('float32')
-y_train = y_train.astype('float32')
-y_test = y_test.astype('float32')
+df = util.concatCSV(dataDir+'batch3')
+print(df.shape)
 
 acc_list = []
 loss_list = []
 iterations_list = []
+nodes_list = [128]
 
 # Determine best number of hidden nodes for one charge, and apply it for other charges
-for nodes in [10,20,30,50,100,200]:
+for nodes in nodes_list:
+
+    dfShuffle = shuffle(df,random_state=42)
+    X = dfShuffle.as_matrix(columns=["x1", "x2", "x3", "y1", "y2", "y3", "tEnd"])
+    y = dfShuffle.as_matrix(columns=["x1tEnd", "x2tEnd", "x3tEnd", "y1tEnd", "y2tEnd", "y3tEnd"])
+
+    X = X.astype('float64')
+    y = y.astype('float64')
     
     print("Nodes", nodes)
     
     #run train data through the network
-    avg_acc,avg_loss,avg_iterations = kfold_network(X_train, y_train, nodes)
+    avg_acc,avg_loss,avg_iterations = kfold_network(X, y, nodes)
     
     #store and output results
     acc_list.append(avg_acc)
@@ -179,19 +188,20 @@ for nodes in [10,20,30,50,100,200]:
     
     print(avg_acc, avg_loss, avg_iterations)
 
-plt.plot([10,20,30,50,100],acc_list)
+plt.clf()
+plt.plot(nodes_list,acc_list)
 plt.ylabel('Accuracy')
 plt.xlabel('Number of Hidden Nodes')
-plt.savefig(workDir+"accuracy_nodes.png")
+plt.savefig(workDir+"/plots/accuracy_nodes.png")
 
 plt.clf()
-plt.plot([10,20,30,50,100],loss_list)
+plt.plot(nodes_list,loss_list)
 plt.ylabel('Loss')
 plt.xlabel('Number of Hidden Nodes')
-plt.savefig(workDir+"loss_nodes.png")
+plt.savefig(workDir+"/plots/loss_nodes.png")
 
 plt.clf()
-plt.plot([10,20,30,50,100],iterations_list)
+plt.plot(nodes_list,iterations_list)
 plt.ylabel('Iterations (Epochs)')
 plt.xlabel('Number of Hidden Nodes')
-plt.savefig(workDir+"iterations_nodes.png")
+plt.savefig(workDir+"/plots/iterations_nodes.png")
