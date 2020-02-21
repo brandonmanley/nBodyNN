@@ -73,8 +73,7 @@ network.compile(optimizer=optimizer,loss=loss,metrics=['accuracy'])
 network.save_weights(workDir + '/weights/model_init.h5')
 
 history = network.fit(X_train,y_train,
-                              callbacks = callbacks,
-                              epochs=max_epochs,
+                              epochs=300,
                               batch_size=128,
                               validation_data=(X_test,y_test),
                               verbose = 0)
