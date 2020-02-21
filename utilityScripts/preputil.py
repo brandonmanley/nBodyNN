@@ -151,9 +151,6 @@ def concatCSV(filename): # returns a fully joined pandas df for a single batch
     all_filenames = [i for i in glob.glob(filename+'*.csv')]
     return pd.concat([pd.read_csv(f) for f in all_filenames])
 
-def concatDF(workDir, batch):
-    for file in os.listdir(workDir+dataSource)
-
 # def combineCSV(filename)
 #     # combined_csv.to_csv(workDir+"combined_data.csv", index=False, encoding='utf-8-sig')
 

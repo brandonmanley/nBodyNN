@@ -1,13 +1,20 @@
-if length(ARGS) < 1
-    println("Usage: filenum")
-    exit()
-end 
+# if length(ARGS) < 1
+#     println("Usage: filenum")
+#     exit()
+# end 
 
 batchNum = 3
-fileNum = ARGS[1]
+# fileNum = ARGS[1]
+fileNum = 1
 
-inputString = "/nBodyData/inputs/indat_$(batchNum)_$(fileNum).dat"
-outputString = "/nBodyData/julSim/julia_batch$(batchNum)_$(fileNum).csv"
+sciPath = "/home/idies/workspace/Storage/manley_329/persistent/"
+# inputString = "/nBodyData/inputs/indat_$(batchNum)_$(fileNum).dat"
+# outputString = "/nBodyData/julSim/julia_batch$(batchNum)_$(fileNum).csv"
+# inputString = sciPath+"indat_$(batchNum)_$(fileNum).dat"
+# outputString = sciPath+"julia_batch$(batchNum)_$(fileNum).csv"
+
+inputString = "/home/idies/workspace/Storage/manley_329/persistent/indat_3_1.dat"
+outputString = "/home/idies/workspace/Storage/manley_329/persistent/julia_batch3_1.csv"
 
 if !isfile(inputString)
     @warn "Could not find input: $(inputString)"
