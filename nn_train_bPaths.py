@@ -27,8 +27,7 @@ workDir = "/nBodyData/"
 dataDir = workDir
 
 #Import data
-# df = util.concatCSV(dataDir+'julbatch3')
-df = pd.read_csv(workDir+"mathSim/batch3_combined.csv")
+df = pd.read_csv(dataDir+'mathSim/batch3_1.csv')
 print(df.shape)
 
 dfShuffle = shuffle(df,random_state=42)
@@ -71,11 +70,10 @@ network.add(layers.Dense(128,activation='relu'))
 network.add(layers.Dense(128,activation='relu'))
 network.add(layers.Dense(6,activation='linear'))
 network.compile(optimizer=optimizer,loss=loss,metrics=['accuracy'])
-network.save_weights(workDir + 'weights/model_init.h5')
+network.save_weights(workDir + '/weights/model_init.h5')
 
 history = network.fit(X_train,y_train,
-                              callbacks = callbacks,
-                              epochs=max_epochs,
+                              epochs=300,
                               batch_size=128,
                               validation_data=(X_test,y_test),
                               verbose = 0)
@@ -119,4 +117,4 @@ predictions = network.predict(X_test)
 pred_out = np.asarray(predictions)
 id_list = np.reshape(id_list,(id_list.shape[0],1))
 pred_out = np.concatenate((pred_out,id_list),axis=1)
-np.savetxt(workDir+"pred/predicted_paths_batch3_combined.csv", pred_out, delimiter=",")
+np.savetxt(workDir+"pred/predicted_paths_batch_3_1.csv", pred_out, delimiter=",")
