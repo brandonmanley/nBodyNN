@@ -41,7 +41,8 @@ print(X_train.shape, y_train.shape)
 print(X_test.shape,y_test.shape)
 
 #extract id list from the y arrays
-id_list = y_test[:,6]
+id_list_train = y_train[:,6]
+id_list_test = y_test[:,6]
 y_train = np.delete(y_train,6,1)
 y_test = np.delete(y_test,6,1)
 
@@ -115,6 +116,10 @@ plt.show()
 predictions = network.predict(X_test)
 
 pred_out = np.asarray(predictions)
-id_list = np.reshape(id_list,(id_list.shape[0],1))
-pred_out = np.concatenate((pred_out,id_list),axis=1)
+id_list_test = np.reshape(id_list_test,(id_list_test.shape[0],1))
+pred_out = np.concatenate((pred_out,id_list_test),axis=1)
 np.savetxt(workDir+"predicted_paths.csv", pred_out, delimiter=",")
+
+sim_out = np.asarray(y_test)
+sim_out = np.concatenate((sim_out,id_list_test),axis=1)
+np.savetxt(workDir+"sim_paths.csv", pred_out, delimiter=",")
