@@ -22,7 +22,7 @@ if !isfile(inputString)
 end 
 
 # parse(Int, batchNum)
-fileNum = parse(Int, fileNum)
+# fileNum = parse(Int, fileNum)
 
 
 try
