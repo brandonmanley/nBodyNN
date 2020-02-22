@@ -3,7 +3,7 @@
 #     exit()
 # end 
 
-batchNum = 3
+batchNum = 4
 # fileNum = ARGS[1]
 fileNum = 1
 
