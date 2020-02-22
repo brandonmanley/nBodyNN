@@ -21,6 +21,7 @@ from keras import models
 from keras import layers
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.layers import Dense, Dropout, Activation
+from keras.models import load_model
 import utilityScripts.preputil as util
 
 workDir = "/nBodyData/"
@@ -28,17 +29,17 @@ dataDir = workDir
 
 #Import data
 df = pd.read_csv(dataDir+'mathSim/batch3_1.csv')
-print(df.shape)
+# print(df.shape)
 
 dfShuffle = shuffle(df,random_state=42)
-print(dfShuffle.head)
+# print(dfShuffle.head)
 
 X1 = dfShuffle.as_matrix(columns=["x1", "x2", "x3", "y1", "y2", "y3", "tEnd"])
 y1 = dfShuffle.as_matrix(columns=["x1tEnd", "x2tEnd", "x3tEnd", "y1tEnd", "y2tEnd", "y3tEnd","eventID"])
 
 X_train,X_test,y_train,y_test = train_test_split(X1,y1, test_size=0.2, random_state=42)
-print(X_train.shape, y_train.shape)
-print(X_test.shape,y_test.shape)
+# print(X_train.shape, y_train.shape)
+# print(X_test.shape,y_test.shape)
 
 #extract id list from the y arrays
 id_list = y_test[:,6]
@@ -50,10 +51,10 @@ X_test = X_test.astype('float64')
 y_train = y_train.astype('float64')
 y_test = y_test.astype('float64')
 
-print(y_train.shape,y_test.shape)
+# print(y_train.shape,y_test.shape)
 
 #Run the neural network with the best number of hidden nodes and epochs  
-n_epochs = 300
+n_epochs = 10
 optimizer = 'adam'
 loss = 'mean_squared_error'
 
@@ -72,11 +73,10 @@ network.add(layers.Dense(6,activation='linear'))
 network.compile(optimizer=optimizer,loss=loss,metrics=['accuracy'])
 network.save_weights(workDir + '/weights/model_init.h5')
 
-history = network.fit(X_train,y_train,
-                              epochs=300,
-                              batch_size=128,
-                              validation_data=(X_test,y_test),
-                              verbose = 0)
+es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=10)
+mc = ModelCheckpoint(workDir + '/weights/best_model.h5', monitor='val_accuracy', mode='max', verbose=1, save_best_only=True)
+
+history = network.fit(X_train,y_train, epochs=n_epochs, batch_size=128, validation_data=(X_test,y_test), verbose = 1, callbacks=[es,mc])
 
 training_vals_acc = history.history['accuracy']
 training_vals_loss = history.history['loss']
@@ -111,8 +111,9 @@ plt.legend(['Train', 'Test'], loc='upper left')
 plt.savefig(workDir + 'model_loss.png')
 plt.show()
 
-
-predictions = network.predict(X_test)
+best_network = load_model(workDir + '/weights/best_model.h5')
+predictions = best_network.predict(X_test)
+# predictions = network.predict(X_test)
 
 pred_out = np.asarray(predictions)
 id_list = np.reshape(id_list,(id_list.shape[0],1))

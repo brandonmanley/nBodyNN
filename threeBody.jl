@@ -13,8 +13,8 @@ sciPath = "/home/idies/workspace/Storage/manley_329/persistent/"
 # inputString = sciPath+"indat_$(batchNum)_$(fileNum).dat"
 # outputString = sciPath+"julia_batch$(batchNum)_$(fileNum).csv"
 
-inputString = "/home/idies/workspace/Storage/manley_329/persistent/indat_3_1.dat"
-outputString = "/home/idies/workspace/Storage/manley_329/persistent/julia_batch3_1.csv"
+inputString = "indat_3_1.dat"
+outputString = "julia_batch3_1.csv"
 
 if !isfile(inputString)
     @warn "Could not find input: $(inputString)"
