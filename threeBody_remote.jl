@@ -1,14 +1,14 @@
-if length(ARGS) < 1
-    println("Usage: filenum")
-    exit()
-end 
+# if length(ARGS) < 1
+#     println("Usage: filenum")
+#     exit()
+# end 
 
-batchNum = 5
-fileNum = ARGS[1]
-# fileNum = 1
+batchNum = 4
+#fileNum = ARGS[1]
+fileNum = 1
 
-inputString = "/nBodyData/inputs/indat_$(batchNum)_$(fileNum).dat"
-outputString = "/nBodyData/julSim/julia_batch$(batchNum)_$(fileNum).csv"
+inputString = "/users/PAS1585/llavez99/work/nbody/indat_$(batchNum)_$(fileNum).dat"
+outputString = "/users/PAS1585/llavez99/work/nbody/julia_batch$(batchNum)_$(fileNum).csv"
 
 if !isfile(inputString)
     @warn "Could not find input: $(inputString)"
@@ -16,7 +16,7 @@ if !isfile(inputString)
 end 
 
 # parse(Int, batchNum)
-fileNum = parse(Int, fileNum)
+# fileNum = parse(Int, fileNum)
 
 try
     run(`rm $(outputString)`)
@@ -26,7 +26,7 @@ end
 
 println("Using input $(inputString)")
 
-using DifferentialEquations, DelimitedFiles, Plots, DataFrames, CSV, ProgressMeter
+using DifferentialEquations, DelimitedFiles, Plots, DataFrames, CSV
 
 tspan = (0.0,10.0)  
 dt = 0.00390625
@@ -39,7 +39,7 @@ tol = 1e-11
 inA = readdlm(inputString, ',', Float64, '\n')
 numLines = countlines(inputString)
 
-@showprogress 1 "Working..." for i = 1:numLines
+for i = 1:numLines
 
     iE = i 
     
@@ -123,9 +123,22 @@ numLines = countlines(inputString)
     if i == 1
         CSV.write(outputString, df; header=["eventID", "m1", "m2", "m3", "x1", "x2", "x3", "y1", "y2", "y3",
                                             "tEnd", "x1tEnd", "x2tEnd", "x3tEnd", "y1tEnd", "y2tEnd", "y3tEnd",
-                                            "dx1tEnd", "dx2tEnd", "dx3tEnd", "dy1tEnd", "dy2tEnd", "dy3tEnd"])
+                                            "dx1tEnd", "dx2tEnd", "dx3tEnd", "dy1tEnd", "dy2tEnd", "dy3tEnd"], 
+                                            types=[Int, Float64, Float64, Float64, Float64, Float64, Float64, Float64, Float64,
+                                            Float64, Float64, Float64, Float64,Float64, Float64,Float64, Float64,Float64, Float64, Float64, Float64, Float64, Float64])
     else
-        CSV.write(outputString, df; append=true)
+        CSV.write(outputString, df; append=true, types=[Int, Float64, Float64, Float64, Float64, Float64, Float64, Float64, Float64,
+        Float64, Float64, Float64, Float64,Float64, Float64,Float64, Float64,Float64, Float64, Float64, Float64, Float64, Float64])
     end
 
 end #end event loop
+
+################
+#### plot ######
+################
+
+# using Plots
+# plotly()
+# display(plot(sol, vars=(1,4)))
+# display(plot!(sol, vars=(2,5)))
+# display(plot!(sol, vars=(3,6)))

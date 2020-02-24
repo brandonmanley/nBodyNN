@@ -7,7 +7,7 @@ def create_data(batch, filenum, nEPerFile):
     mins = [[-5,3], [-1,-7], [7,3]]
     maxs = [[-2.5,5], [2,-2], [20,15]]
     for ifile in range(1,filenum+1):
-        filename = "/nBodyData/inputs/indat_{0}_{1}.dat".format(batch, ifile)
+        filename = "/users/PAS1585/llavez99/work/nbody/indat_{0}_{1}.dat".format(batch, ifile)
         inp = open(filename, "w+")
 
         for iev in range(1,nEPerFile+1):
@@ -32,8 +32,8 @@ def create_data(batch, filenum, nEPerFile):
 if __name__ == "__main__":
     # configurable sim parameters 
     batch = 4
-    nFiles = 10
-    nEventsPerFile = 1000000
+    nFiles = 1
+    nEventsPerFile = 10000
     timeStampsPerEvent = 2560 
     tEnd = 10
     pMax = 4
