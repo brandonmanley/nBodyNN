@@ -1,0 +1,138 @@
+#Using imput data of three body motion, trains neural network to predict
+#the positions of the bodies at a given time using initial positions
+#By Luca Lavezzo, Brandon Manley, Jan. 2020
+
+import pandas as pd
+from plotly.offline import iplot
+import plotly.graph_objs as go
+import numpy as np
+from sklearn import metrics
+import math
+import matplotlib.pyplot as plt
+from collections import defaultdict
+from functools import partial
+from itertools import repeat
+from sklearn.utils import shuffle
+from sklearn.model_selection import train_test_split
+from sklearn.model_selection import StratifiedKFold
+from sklearn.metrics import roc_curve, auc
+from keras.utils import to_categorical
+from keras import models
+from keras import layers
+from keras.callbacks import EarlyStopping, ModelCheckpoint
+from keras.layers import Dense, Dropout, Activation
+import preputil as util
+import keras.backend as K
+
+def mse_energy_loss(y_true,y_pred):
+	p0 = y_true[:,:5]
+	y_true2 = y_true[:,7:]
+	p1 = y_pred
+	delta_energy=0
+	#delta_energy = p0[0]-p1[0]
+	mse = K.mean(K.square(y_pred-y_true2),axis=-1)
+	return mse + delta_energy
+
+workDir = "/users/PAS1585/llavez99/work/nbody/"
+dataDir = "/users/PAS1585/llavez99/data/nbody/"
+
+#Import data
+df = util.concatCSV(dataDir+'batch3')
+print(df.shape)
+
+dfShuffle = shuffle(df,random_state=42)
+print(dfShuffle.head)
+
+i_col = ["x1", "x2", "x3", "y1", "y2", "y3", "tEnd"]
+o_col = ["x1tEnd", "x2tEnd", "x3tEnd", "y1tEnd", "y2tEnd", "y3tEnd","eventID"]
+
+
+X1 = dfShuffle.as_matrix(columns=i_col)
+y1 = dfShuffle.as_matrix(columns=i_col+o_col)
+
+X_train,X_test,y_train,y_test = train_test_split(X1,y1, test_size=0.2, random_state=42)
+print(X_train.shape, y_train.shape)
+print(X_test.shape,y_test.shape)
+
+#extract id list from the y arrays
+id_list_train = y_train[:,6]
+id_list_test = y_test[:,6]
+y_train = np.delete(y_train,6,1)
+y_test = np.delete(y_test,6,1)
+
+X_train = X_train.astype('float64')
+X_test = X_test.astype('float64')
+y_train = y_train.astype('float64')
+y_test = y_test.astype('float64')
+
+print(y_train.shape,y_test.shape)
+
+#Run the neural network with the best number of hidden nodes and epochs  
+n_epochs = 300
+optimizer = 'adam'
+
+network = models.Sequential()
+network.add(layers.Dense(128,activation='relu',input_dim=7))
+network.add(layers.Dense(128,activation='relu'))
+network.add(layers.Dense(128,activation='relu'))
+network.add(layers.Dense(128,activation='relu'))
+network.add(layers.Dense(128,activation='relu'))
+network.add(layers.Dense(128,activation='relu'))
+network.add(layers.Dense(128,activation='relu'))
+network.add(layers.Dense(128,activation='relu'))
+network.add(layers.Dense(128,activation='relu'))
+network.add(layers.Dense(128,activation='relu'))
+network.add(layers.Dense(6,activation='linear'))
+network.compile(optimizer=optimizer,loss=mse_energy_loss,metrics=['accuracy'])
+network.save_weights(workDir + '/weights/model_init.h5')
+
+history = network.fit(X_train,y_train,
+                              epochs=300,
+                              batch_size=128,
+                              validation_data=(X_test,y_test),
+                              verbose = 0)
+
+training_vals_acc = history.history['accuracy']
+training_vals_loss = history.history['loss']
+valid_vals_acc = history.history['val_accuracy']
+valid_vals_loss = history.history['val_loss']
+iterations = len(training_vals_acc)
+print("Number of iterations:",iterations)
+print("Epoch\t Train Loss\t Train Acc\t Val Loss\t Val Acc")
+i = 0
+for tl,ta,vl,va in zip(training_vals_loss,training_vals_acc,valid_vals_loss,valid_vals_acc):
+    print(i,'\t',round(tl,5),'\t',round(ta,5),'\t',round(vl,5),'\t',round(va,5))
+    i += 1
+
+# Plot training & validation accuracy values
+print(history.history.keys())
+plt.plot(history.history['accuracy'])
+plt.plot(history.history['val_accuracy'])
+plt.title('Model accuracy')
+plt.ylabel('Accuracy')
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Test'], loc='upper left')
+plt.savefig(workDir + 'model_accuracy.png')
+plt.show()
+
+# Plot training & validation loss values
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.title('Model loss')
+plt.ylabel('Loss')
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Test'], loc='upper left')
+plt.savefig(workDir + 'model_loss.png')
+plt.show()
+
+
+predictions = network.predict(X_test)
+
+pred_out = np.asarray(predictions)
+id_list_test = np.reshape(id_list_test,(id_list_test.shape[0],1))
+pred_out = np.concatenate((pred_out,id_list_test),axis=1)
+np.savetxt(workDir+"predicted_paths.csv", pred_out, delimiter=",")
+
+sim_out = np.asarray(y_test)
+sim_out = np.concatenate((sim_out,id_list_test),axis=1)
+np.savetxt(workDir+"sim_paths.csv", pred_out, delimiter=",")
