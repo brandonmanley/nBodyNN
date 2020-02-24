@@ -19,20 +19,37 @@ from sklearn.metrics import roc_curve, auc
 from keras.utils import to_categorical
 from keras import models
 from keras import layers
+from keras.models import Model
 from keras.callbacks import EarlyStopping, ModelCheckpoint
-from keras.layers import Dense, Dropout, Activation
+from keras.layers import Input, Dense, Dropout, Activation
 import preputil as util
 import keras.backend as K
 
-def mse_energy_loss(input_layer):
+m1 = 150
+m2 = 120
+m3 = 130
+def mse_energy_loss(i_layer):
 	def loss(y_true, y_pred):
-		p0 = [input_layer[2], input_layer[9], input_layer[16], input_layer[3], input_layer[10], input_layer[17], input_layer[5], input_layer[12], input_layer[19], input_layer[6], input_layer[13], input_layer[20]]
-		p0 = [y_pred[2], y_pred[9], y_pred[16], y_pred[3], y_pred[10], y_pred[17], y_pred[5], y_pred[12], y_pred[19], y_pred[6], y_pred[13], y_pred[20]]
-		energy_i = -(2*(m1*m3)/((((p0[1]-p0[3])^2)+ ((p0[4]-p0[6])^2))^0.5)) - (2*(m2*m3)/((((p0[1]-p0[3])^2)+ ((p0[4]-p0[6])^2))^0.5)) - (2*(m1*m2)/((((p0[2]-p0[3])^2)+ ((p0[5]-p0[6])^2))^0.5))
-		energy_f = -(2*(m1*m3)/((((p1[1]-p1[3])^2)+ ((p1[4]-p1[6])^2))^0.5)) - (2*(m2*m3)/((((p1[1]-p1[3])^2)+ ((p1[4]-p1[6])^2))^0.5)) - (2*(m1*m2)/((((p1[2]-p1[3])^2)+ ((p1[5]-p1[6])^2))^0.5))
+		p0=i_layer
+		p1=y_pred
+		energy_i = p0[0]
+		energy_f = p1[0]
 		mse = K.mean(K.square(y_pred-y_true),axis=-1)
 		delta_energy = abs(energy_i-energy_f)
-		return mse + delta_energy
+		total_loss = mse + delta_energy
+		return total_loss
+	return loss
+
+def test_loss(initial):
+	def loss(y_true,y_pred):
+		energy_i = initial[0]
+		energy_f = y_true[0]
+		delta_energy = 0
+		#delta_energy = energy_f-energy_i
+		mse = K.mean(K.square(y_pred-y_true),axis=-1)
+		total_loss = mse + delta_energy
+		return total_loss
+	return loss
 
 workDir = "/users/PAS1585/llavez99/work/nbody/"
 dataDir = "/users/PAS1585/llavez99/data/nbody/"
@@ -68,24 +85,23 @@ print(y_train.shape,y_test.shape)
 n_epochs = 300
 optimizer = 'adam'
 
-network = models.Sequential()
-input_layer = Input(shape=(7,))
-network.add(input_layer)
-network.add(layers.Dense(128,activation='relu'))
-network.add(layers.Dense(128,activation='relu'))
-network.add(layers.Dense(128,activation='relu'))
-network.add(layers.Dense(128,activation='relu'))
-network.add(layers.Dense(128,activation='relu'))
-network.add(layers.Dense(128,activation='relu'))
-network.add(layers.Dense(128,activation='relu'))
-network.add(layers.Dense(128,activation='relu'))
-network.add(layers.Dense(128,activation='relu'))
-network.add(layers.Dense(128,activation='relu'))
-network.add(layers.Dense(6,activation='linear'))
-network.compile(optimizer=optimizer,loss=mse_energy_loss(input_layer),metrics=['accuracy'])
-network.save_weights(workDir + '/weights/model_init.h5')
+input_l = Input(shape=(7,))
+x1 = Dense(128,activation='relu')(input_l)
+x2 = Dense(128,activation='relu')(x1)
+x3 = Dense(128,activation='relu')(x2)
+x4 = Dense(128,activation='relu')(x3)
+x5 = Dense(128,activation='relu')(x4)
+x6 = Dense(128,activation='relu')(x5)
+x7 = Dense(128,activation='relu')(x6)
+x8 = Dense(128,activation='relu')(x7)
+x9 = Dense(128,activation='relu')(x8)
+x10 = Dense(128,activation='relu')(x9)
+output_l = Dense(6,activation='linear')(x10)
+model = Model(input_l,output_l)
+model.compile(optimizer=optimizer,loss=test_loss(input_l),metrics=['accuracy'])
+model.save_weights(workDir + '/weights/model_init.h5')
 
-history = network.fit(X_train,y_train,
+history = model.fit(X_train,y_train,
                               epochs=300,
                               batch_size=128,
                               validation_data=(X_test,y_test),
@@ -125,7 +141,7 @@ plt.savefig(workDir + 'model_loss.png')
 plt.show()
 
 
-predictions = network.predict(X_test)
+predictions = model.predict(X_test)
 
 pred_out = np.asarray(predictions)
 id_list_test = np.reshape(id_list_test,(id_list_test.shape[0],1))
