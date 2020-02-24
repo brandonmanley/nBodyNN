@@ -24,15 +24,14 @@ from keras.layers import Dense, Dropout, Activation
 import preputil as util
 import keras.backend as K
 
-def mse_energy_loss(input_layer):
-	def loss(y_true, y_pred):
-		p0 = [input_layer[2], input_layer[9], input_layer[16], input_layer[3], input_layer[10], input_layer[17], input_layer[5], input_layer[12], input_layer[19], input_layer[6], input_layer[13], input_layer[20]]
-		p0 = [y_pred[2], y_pred[9], y_pred[16], y_pred[3], y_pred[10], y_pred[17], y_pred[5], y_pred[12], y_pred[19], y_pred[6], y_pred[13], y_pred[20]]
-		energy_i = -(2*(m1*m3)/((((p0[1]-p0[3])^2)+ ((p0[4]-p0[6])^2))^0.5)) - (2*(m2*m3)/((((p0[1]-p0[3])^2)+ ((p0[4]-p0[6])^2))^0.5)) - (2*(m1*m2)/((((p0[2]-p0[3])^2)+ ((p0[5]-p0[6])^2))^0.5))
-		energy_f = -(2*(m1*m3)/((((p1[1]-p1[3])^2)+ ((p1[4]-p1[6])^2))^0.5)) - (2*(m2*m3)/((((p1[1]-p1[3])^2)+ ((p1[4]-p1[6])^2))^0.5)) - (2*(m1*m2)/((((p1[2]-p1[3])^2)+ ((p1[5]-p1[6])^2))^0.5))
-		mse = K.mean(K.square(y_pred-y_true),axis=-1)
-		delta_energy = abs(energy_i-energy_f)
-		return mse + delta_energy
+def mse_energy_loss(y_true,y_pred):
+	p0 = y_true[:,:5]
+	y_true2 = y_true[:,7:]
+	p1 = y_pred
+	delta_energy=0
+	#delta_energy = p0[0]-p1[0]
+	mse = K.mean(K.square(y_pred-y_true2),axis=-1)
+	return mse + delta_energy
 
 workDir = "/users/PAS1585/llavez99/work/nbody/"
 dataDir = "/users/PAS1585/llavez99/data/nbody/"
@@ -44,8 +43,12 @@ print(df.shape)
 dfShuffle = shuffle(df,random_state=42)
 print(dfShuffle.head)
 
-X1 = dfShuffle.as_matrix(columns=["x1", "x2", "x3", "y1", "y2", "y3", "tEnd"])
-y1 = dfShuffle.as_matrix(columns=["x1tEnd", "x2tEnd", "x3tEnd", "y1tEnd", "y2tEnd", "y3tEnd","eventID"])
+i_col = ["x1", "x2", "x3", "y1", "y2", "y3", "tEnd"]
+o_col = ["x1tEnd", "x2tEnd", "x3tEnd", "y1tEnd", "y2tEnd", "y3tEnd","eventID"]
+
+
+X1 = dfShuffle.as_matrix(columns=i_col)
+y1 = dfShuffle.as_matrix(columns=i_col+o_col)
 
 X_train,X_test,y_train,y_test = train_test_split(X1,y1, test_size=0.2, random_state=42)
 print(X_train.shape, y_train.shape)
@@ -69,9 +72,7 @@ n_epochs = 300
 optimizer = 'adam'
 
 network = models.Sequential()
-input_layer = Input(shape=(7,))
-network.add(input_layer)
-network.add(layers.Dense(128,activation='relu'))
+network.add(layers.Dense(128,activation='relu',input_dim=7))
 network.add(layers.Dense(128,activation='relu'))
 network.add(layers.Dense(128,activation='relu'))
 network.add(layers.Dense(128,activation='relu'))
@@ -82,7 +83,7 @@ network.add(layers.Dense(128,activation='relu'))
 network.add(layers.Dense(128,activation='relu'))
 network.add(layers.Dense(128,activation='relu'))
 network.add(layers.Dense(6,activation='linear'))
-network.compile(optimizer=optimizer,loss=mse_energy_loss(input_layer),metrics=['accuracy'])
+network.compile(optimizer=optimizer,loss=mse_energy_loss,metrics=['accuracy'])
 network.save_weights(workDir + '/weights/model_init.h5')
 
 history = network.fit(X_train,y_train,
