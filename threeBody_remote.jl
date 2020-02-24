@@ -4,17 +4,11 @@
 # end 
 
 batchNum = 4
-# fileNum = ARGS[1]
+#fileNum = ARGS[1]
 fileNum = 1
 
-# sciPath = "/home/idies/workspace/Storage/manley_329/persistent/"
-# inputString = "/nBodyData/inputs/indat_$(batchNum)_$(fileNum).dat"
-# outputString = "/nBodyData/julSim/julia_batch$(batchNum)_$(fileNum).csv"
-# inputString = sciPath+"indat_$(batchNum)_$(fileNum).dat"
-# outputString = sciPath+"julia_batch$(batchNum)_$(fileNum).csv"
-
-inputString = "indat_4_1.dat"
-outputString = "julia_batch4_1.csv"
+inputString = "/users/PAS1585/llavez99/work/nbody/indat_$(batchNum)_$(fileNum).dat"
+outputString = "/users/PAS1585/llavez99/work/nbody/julia_batch$(batchNum)_$(fileNum).csv"
 
 if !isfile(inputString)
     @warn "Could not find input: $(inputString)"
@@ -24,7 +18,6 @@ end
 # parse(Int, batchNum)
 # fileNum = parse(Int, fileNum)
 
-
 try
     run(`rm $(outputString)`)
 catch
@@ -33,7 +26,7 @@ end
 
 println("Using input $(inputString)")
 
-using DifferentialEquations, DelimitedFiles, Plots, DataFrames, CSV, ProgressMeter
+using DifferentialEquations, DelimitedFiles, Plots, DataFrames, CSV
 
 tspan = (0.0,10.0)  
 dt = 0.00390625
@@ -46,7 +39,7 @@ tol = 1e-11
 inA = readdlm(inputString, ',', Float64, '\n')
 numLines = countlines(inputString)
 
-@showprogress 1 "Working..." for i = 1:numLines
+for i = 1:numLines
 
     iE = i 
     
@@ -87,6 +80,7 @@ numLines = countlines(inputString)
     eventID,m1a,m2a,m3a = [],[],[],[]
     x1,x2,x3,y1,y2,y3 = [],[],[],[],[],[]
     x1f,x2f,x3f,y1f,y2f,y3f = [],[],[],[],[],[]
+    dx1f,dx2f,dx3f,dy1f,dy2f,dy3f = [],[],[],[],[],[]
 
     for (i,step) in enumerate(sol)
         if i == 1
@@ -111,12 +105,31 @@ numLines = countlines(inputString)
         append!(y1f, step[i][4])
         append!(y2f, step[i][5])
         append!(y3f, step[i][6])
+
+        append!(dx1f, step[i][7])
+        append!(dx2f, step[i][8])
+        append!(dx3f, step[i][9])
+        append!(dy1f, step[i][10])
+        append!(dy2f, step[i][11])
+        append!(dy3f, step[i][12])
+
     end
 
     df = DataFrame(eventID=eventID, m1=m1a, m2=m2a, m3=m3a,
                     x1=x1, x2=x2, x3=x3, y1=y1, y2=y2, y3=y3, tEnd=tEnd, 
-                    x1tEnd=x1f, x2tEnd=x2f, x3tEnd=x3f, y1tEnd=y1f, y2tEnd=y2f, y3tEnd=y3f)
-    CSV.write(outputString, df; append=true)
+                    x1tEnd=x1f, x2tEnd=x2f, x3tEnd=x3f, y1tEnd=y1f, y2tEnd=y2f, y3tEnd=y3f,
+                    dx1tEnd=dx1f, dx2tEnd=dx2f, dx3tEnd=dx3f, dy1tEnd=dy1f, dy2tEnd=dy2f, dy3tEnd=dy3f)
+    
+    if i == 1
+        CSV.write(outputString, df; header=["eventID", "m1", "m2", "m3", "x1", "x2", "x3", "y1", "y2", "y3",
+                                            "tEnd", "x1tEnd", "x2tEnd", "x3tEnd", "y1tEnd", "y2tEnd", "y3tEnd",
+                                            "dx1tEnd", "dx2tEnd", "dx3tEnd", "dy1tEnd", "dy2tEnd", "dy3tEnd"], 
+                                            types=[Int, Float64, Float64, Float64, Float64, Float64, Float64, Float64, Float64,
+                                            Float64, Float64, Float64, Float64,Float64, Float64,Float64, Float64,Float64, Float64, Float64, Float64, Float64, Float64])
+    else
+        CSV.write(outputString, df; append=true, types=[Int, Float64, Float64, Float64, Float64, Float64, Float64, Float64, Float64,
+        Float64, Float64, Float64, Float64,Float64, Float64,Float64, Float64,Float64, Float64, Float64, Float64, Float64, Float64])
+    end
 
 end #end event loop
 
