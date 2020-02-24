@@ -1,11 +1,3 @@
-/*
- * The parallel version of the N-Body problem
- * 
- * Author: Dileban Karunamoorthy (dileban@gmail.com)
- *
- */
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
