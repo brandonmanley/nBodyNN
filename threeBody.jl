@@ -1,7 +1,7 @@
-# if length(ARGS) < 1
-#     println("Usage: filenum")
-#     exit()
-# end 
+if length(ARGS) < 1
+    println("Usage: filenum")
+    exit()
+end 
 
 batchNum = 5
 fileNum = ARGS[1]
@@ -123,12 +123,9 @@ numLines = countlines(inputString)
     if i == 1
         CSV.write(outputString, df; header=["eventID", "m1", "m2", "m3", "x1", "x2", "x3", "y1", "y2", "y3",
                                             "tEnd", "x1tEnd", "x2tEnd", "x3tEnd", "y1tEnd", "y2tEnd", "y3tEnd",
-                                            "dx1tEnd", "dx2tEnd", "dx3tEnd", "dy1tEnd", "dy2tEnd", "dy3tEnd"], 
-                                            types=[Int, Float64, Float64, Float64, Float64, Float64, Float64, Float64, Float64,
-                                            Float64, Float64, Float64, Float64,Float64, Float64,Float64, Float64,Float64, Float64, Float64, Float64, Float64, Float64])
+                                            "dx1tEnd", "dx2tEnd", "dx3tEnd", "dy1tEnd", "dy2tEnd", "dy3tEnd"])
     else
-        CSV.write(outputString, df; append=true, types=[Int, Float64, Float64, Float64, Float64, Float64, Float64, Float64, Float64,
-        Float64, Float64, Float64, Float64,Float64, Float64,Float64, Float64,Float64, Float64, Float64, Float64, Float64, Float64])
+        CSV.write(outputString, df; append=true)
     end
 
 end #end event loop
