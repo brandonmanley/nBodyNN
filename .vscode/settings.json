@@ -76,7 +76,8 @@
         "utility": "cpp",
         "*.tcc": "cpp",
         "memory_resource": "cpp",
-        "cinttypes": "cpp"
+        "cinttypes": "cpp",
+        "bhNbody.C": "cpp"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }
