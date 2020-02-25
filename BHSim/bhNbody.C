@@ -3,6 +3,8 @@
 #include <math.h>
 #include <time.h> 
 #include <mpi.h> 
+#include <string.h> 
+#include <iostream>
 
 #define DEFAULT_N 3   // Number of particles
 #define DEFAULT_TIME 2560 // Number if iterations
@@ -92,7 +94,7 @@ double generate_rand_ex(){
  * are given a random locaton (px, py, pz), velocity (vx, vy, vz)
  * and random mass. 
  */
-void initialize_space() {   
+void initialize_space(int *p0) {   
    int i;
 
    // Inner bounds to prevent generating a particle whose
@@ -102,15 +104,31 @@ void initialize_space() {
    double izbound = ZBOUND - RBOUND;
 
    for (i = 0; i < N; i++) {
-      mass[i] = MASS_OF_UNKNOWN * generate_rand();
+      // mass[i] = MASS_OF_UNKNOWN * generate_rand();
+      // radius[i] = RBOUND * generate_rand();
+      // position[i].px = generate_rand() * ixbound;
+      // position[i].py = generate_rand() * iybound;
+      // position[i].pz = generate_rand() * izbound;
+      // ivelocity[i].vx = generate_rand_ex();
+      // ivelocity[i].vy = generate_rand_ex();
+      // ivelocity[i].vz = generate_rand_ex();;
+
+      mass[i] = p0[i*7];
       radius[i] = RBOUND * generate_rand();
-      position[i].px = generate_rand() * ixbound;
-      position[i].py = generate_rand() * iybound;
-      position[i].pz = generate_rand() * izbound;
-      ivelocity[i].vx = generate_rand_ex();
-      ivelocity[i].vy = generate_rand_ex();
-      ivelocity[i].vz = generate_rand_ex();; 
+      position[i].px = p0[(i*7)+1];
+      position[i].py = p0[(i*7)+2];
+      position[i].pz = p0[(i*7)+3];
+      ivelocity[i].vx = p0[(i*7)+4];
+      ivelocity[i].vy = p0[(i*7)+5];
+      ivelocity[i].vz = p0[(i*7)+6];
    }
+
+   //     v indices: 
+//     0: m1    1: p1x  2: p1y    3: p1z   4: p1vx   5: p1vy   6: p1vz
+//    7: m2    8: p2x  9: p2y   10: p2z  11: p2vx  12: p2vy  13: p2vz
+//   14: m3  15: p3x  16: p3y  17: p3z  18: p3vx  19: p3vy  20: p3vz
+
+
 }
 
 
@@ -743,67 +761,81 @@ int main(int argc, char* argv[]){
    // Initialize MPI execution env.
    MPI_Init(&argc, &argv);
 
-   
-   // Initialise problem parameters
-   if (argc >= 2) 
-      sscanf(argv[1], "%i", &N);
-   else
-      N = DEFAULT_N;
+   int buffSize = 256;
+   FILE *fp;
+   char buff[buffSize];
+   int numLines = 100;
 
-   if (argc >= 3)
-      sscanf(argv[2], "%i", &TIME);
-   else
+   fp = fopen("/nBodyData/inputs/indat_3_1.dat", "r");
+  
+   for(int j=0; j< numLines; ++j){
+      if(j!=0) continue; // testing
+
+      fgets(buff, buffSize, (FILE*)fp);
+
+      char *token = std::strtok(buff, ",");
+      int p0[21];
+      int iNum = 0;
+      while (token != NULL){ 
+         char *ptr;
+         double ret = 0.0;
+         ret = std::strtod(token, &ptr);
+         p0[iNum] = ret;
+         token = std::strtok(NULL, ","); 
+         ++iNum;
+      }
+
+
+      // Initialise problem parameters
+      N = DEFAULT_N;
       TIME = DEFAULT_TIME;
 
 
-   // Get rank and size
-   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-   MPI_Comm_size(MPI_COMM_WORLD, &size);
+      // Get rank and size
+      MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+      MPI_Comm_size(MPI_COMM_WORLD, &size);
 
 
-   // Create and commit new MPI Types
-   MPI_Type_contiguous(3, MPI_DOUBLE, &MPI_POSITION);
-   MPI_Type_contiguous(3, MPI_DOUBLE, &MPI_VELOCITY);
-   MPI_Type_commit(&MPI_POSITION);
-   MPI_Type_commit(&MPI_VELOCITY);
+      // Create and commit new MPI Types
+      MPI_Type_contiguous(3, MPI_DOUBLE, &MPI_POSITION);
+      MPI_Type_contiguous(3, MPI_DOUBLE, &MPI_VELOCITY);
+      MPI_Type_commit(&MPI_POSITION);
+      MPI_Type_commit(&MPI_VELOCITY);
 
 
-   // Identify processor
-   MPI_Get_processor_name(name, &name_length);
-   //printf("Rank=%d, Processor=%s, N=%d, TIME=%d\n", rank, name, N, TIME);
+      // Identify processor
+      MPI_Get_processor_name(name, &name_length);
+      //printf("Rank=%d, Processor=%s, N=%d, TIME=%d\n", rank, name, N, TIME);
 
 
-   // Number of bodies each processor is responsible for
-   part_size = N / size;
+      // Number of bodies each processor is responsible for
+      part_size = N / size;
 
 
-   // Determine index into array structures for each process
-   pindex = rank * part_size;
+      // Determine index into array structures for each process
+      pindex = rank * part_size;
 
 
-   // Allocate memory for mass, disance, velocity and force arrays
-   mass = (double *) malloc(N * sizeof(double));
-   radius = (double *) malloc(N * sizeof(double));
-   position = (Position *) malloc(N * sizeof(Position));
-   ivelocity = (Velocity *) malloc(N * sizeof(Velocity));
-   velocity = (Velocity *) malloc(part_size * sizeof(Velocity));
-   force = (Force *) malloc(part_size * sizeof(Force));
+      // Allocate memory for mass, disance, velocity and force arrays
+      mass = (double *) malloc(N * sizeof(double));
+      radius = (double *) malloc(N * sizeof(double));
+      position = (Position *) malloc(N * sizeof(Position));
+      ivelocity = (Velocity *) malloc(N * sizeof(Velocity));
+      velocity = (Velocity *) malloc(part_size * sizeof(Velocity));
+      force = (Force *) malloc(part_size * sizeof(Force));
 
+      // Initialize velocity array for each process
+      init_velocity();
 
-   // Initialize velocity array for each process
-   init_velocity();
+      // Let the master initialize the space
+      if (rank == 0){
+         initialize_space(p0);
+      }
+      
+      // Run the N-body simulation
+      run_simulation();
 
-
-   // Let the master initialize the space
-   if (rank == 0){
-      initialize_space();
    }
-   
-   
-   // Run the N-body simulation
-   run_simulation();
-
-
    // Terminate MPI execution env.
    MPI_Finalize();
 
