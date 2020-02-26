@@ -24,15 +24,6 @@ from keras.layers import Dense, Dropout, Activation
 import preputil as util
 import keras.backend as K
 
-def mse_energy_loss(input_layer):
-	def loss(y_true, y_pred):
-		p0 = [input_layer[2], input_layer[9], input_layer[16], input_layer[3], input_layer[10], input_layer[17], input_layer[5], input_layer[12], input_layer[19], input_layer[6], input_layer[13], input_layer[20]]
-		p0 = [y_pred[2], y_pred[9], y_pred[16], y_pred[3], y_pred[10], y_pred[17], y_pred[5], y_pred[12], y_pred[19], y_pred[6], y_pred[13], y_pred[20]]
-		energy_i = -(2*(m1*m3)/((((p0[1]-p0[3])^2)+ ((p0[4]-p0[6])^2))^0.5)) - (2*(m2*m3)/((((p0[1]-p0[3])^2)+ ((p0[4]-p0[6])^2))^0.5)) - (2*(m1*m2)/((((p0[2]-p0[3])^2)+ ((p0[5]-p0[6])^2))^0.5))
-		energy_f = -(2*(m1*m3)/((((p1[1]-p1[3])^2)+ ((p1[4]-p1[6])^2))^0.5)) - (2*(m2*m3)/((((p1[1]-p1[3])^2)+ ((p1[4]-p1[6])^2))^0.5)) - (2*(m1*m2)/((((p1[2]-p1[3])^2)+ ((p1[5]-p1[6])^2))^0.5))
-		mse = K.mean(K.square(y_pred-y_true),axis=-1)
-		delta_energy = abs(energy_i-energy_f)
-		return mse + delta_energy
 
 workDir = "/users/PAS1585/llavez99/work/nbody/"
 dataDir = "/users/PAS1585/llavez99/data/nbody/"
@@ -44,18 +35,23 @@ print(df.shape)
 dfShuffle = shuffle(df,random_state=42)
 print(dfShuffle.head)
 
-X1 = dfShuffle.as_matrix(columns=["x1", "x2", "x3", "y1", "y2", "y3", "tEnd"])
-y1 = dfShuffle.as_matrix(columns=["x1tEnd", "x2tEnd", "x3tEnd", "y1tEnd", "y2tEnd", "y3tEnd","eventID"])
+i_col = ["m1","m2","m3","x1", "x2", "x3", "y1", "y2", "y3", "tEnd"]
+o_col = ["x1tEnd", "x2tEnd", "x3tEnd", "y1tEnd", "y2tEnd", "y3tEnd",
+		"dx1tEnd", "dx2tEnd", "dx3tEnd", "dy1tEnd", "dy2tEnd", "dy3tEnd",
+		"eventID"]
+
+X1 = dfShuffle.as_matrix(columns=i_col)
+y1 = dfShuffle.as_matrix(columns=i_col+o_col)
 
 X_train,X_test,y_train,y_test = train_test_split(X1,y1, test_size=0.2, random_state=42)
 print(X_train.shape, y_train.shape)
 print(X_test.shape,y_test.shape)
 
 #extract id list from the y arrays
-id_list_train = y_train[:,6]
-id_list_test = y_test[:,6]
-y_train = np.delete(y_train,6,1)
-y_test = np.delete(y_test,6,1)
+id_list_train = y_train[:,len(i_col+out_col)-1]
+id_list_test = y_test[:,len(i_col+out_col)-1]
+y_train = np.delete(y_train,len(i_col+out_col)-1,1)
+y_test = np.delete(y_test,len(i_col+out_col)-1,1)
 
 X_train = X_train.astype('float64')
 X_test = X_test.astype('float64')
@@ -64,30 +60,58 @@ y_test = y_test.astype('float64')
 
 print(y_train.shape,y_test.shape)
 
-#Run the neural network with the best number of hidden nodes and epochs  
-n_epochs = 300
+
+def modified_mse(y_true,y_pred):
+
+	masses = y_true[:,3]
+
+	#initial positions
+	p0 = y_true[:,3:8] 
+
+	#final positions and velocities
+	y_true = y_true[:,10:]
+
+	#predicted final positions and velocities
+	p1 = y_pred
+
+	#mean squared error between predicted and true
+	mse = K.mean(K.square(y_pred-y_true),axis=-1)
+
+	#intial and final CM, delta
+	cm_x_i = (masses[0]*p0[0]+masses[1]*p0[1]+masses[2]*p0[2])/(masses[0]+masses[1]+masses[2])
+	cm_y_i = (masses[0]*p0[3]+masses[1]*p0[4]+masses[2]*p0[4])/(masses[0]+masses[1]+masses[2])
+	cm_x_f = (masses[0]*p1[0]+masses[1]*p1[1]+masses[2]*p1[2])/(masses[0]+masses[1]+masses[2])
+	cm_y_f = (masses[0]*p1[3]+masses[1]*p1[4]+masses[2]*p1[4])/(masses[0]+masses[1]+masses[2])
+	delta_cm_x = abs(cm_x_i-cm_x_f)
+	delta_cm_y = abs(cm_y_i-cm_y_f)
+
+	return mse
+
+
+
+#parameters 
+max_epochs = 300
 optimizer = 'adam'
+batch_size = 128         #FIXME: paper used 5000 for 10000 events
+loss_function = 'mse'    #or modified_mse
+
+#early stopping
+patienceCount = 20
+callbacks = [EarlyStopping(monitor='val_loss', patience=patienceCount),
+             ModelCheckpoint(filepath=workDir+'/weights/best_model.h5', monitor='val_loss', save_best_only=True)]
 
 network = models.Sequential()
-input_layer = Input(shape=(7,))
-network.add(input_layer)
-network.add(layers.Dense(128,activation='relu'))
-network.add(layers.Dense(128,activation='relu'))
-network.add(layers.Dense(128,activation='relu'))
-network.add(layers.Dense(128,activation='relu'))
-network.add(layers.Dense(128,activation='relu'))
-network.add(layers.Dense(128,activation='relu'))
-network.add(layers.Dense(128,activation='relu'))
-network.add(layers.Dense(128,activation='relu'))
-network.add(layers.Dense(128,activation='relu'))
-network.add(layers.Dense(128,activation='relu'))
-network.add(layers.Dense(6,activation='linear'))
-network.compile(optimizer=optimizer,loss=mse_energy_loss(input_layer),metrics=['accuracy'])
+network.add(layers.Dense(128,activation='relu',input_dim=len(i_col)))
+for i in range(9):
+	network.add(layers.Dense(128,activation='relu'))
+network.add(layers.Dense(12,activation='linear'))
+network.compile(optimizer=optimizer,loss=loss_function,metrics=['accuracy'])
 network.save_weights(workDir + '/weights/model_init.h5')
 
 history = network.fit(X_train,y_train,
-                              epochs=300,
-                              batch_size=128,
+                              epochs=max_epochs,
+                              callbacks = callbacks,
+                              batch_size=batch_size,
                               validation_data=(X_test,y_test),
                               verbose = 0)
 
