@@ -784,8 +784,10 @@ int main(int argc, char* argv[]){
          token = std::strtok(NULL, ","); 
          ++iNum;
       }
+      // int lengthp0 = std::sizeof(p0)/std::sizeof(p0[0]);
+      printf("len: %d",p0[20]);
 
-
+   
       // Initialise problem parameters
       N = DEFAULT_N;
       TIME = DEFAULT_TIME;

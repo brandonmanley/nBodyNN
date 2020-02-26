@@ -28,7 +28,7 @@ workDir = "/nBodyData/"
 dataDir = workDir
 
 #Import data
-df = pd.read_csv(dataDir+'mathSim/batch3_1.csv')
+df = pd.read_csv(dataDir+'mathSim/batch5_1.csv')
 # print(df.shape)
 
 dfShuffle = shuffle(df,random_state=42)
@@ -118,4 +118,4 @@ predictions = best_network.predict(X_test)
 pred_out = np.asarray(predictions)
 id_list = np.reshape(id_list,(id_list.shape[0],1))
 pred_out = np.concatenate((pred_out,id_list),axis=1)
-np.savetxt(workDir+"pred/predicted_paths_batch_3_1.csv", pred_out, delimiter=",")
+np.savetxt(workDir+"pred/predicted_paths_batch_5_1.csv", pred_out, delimiter=",")
