@@ -4,8 +4,9 @@ from random import random
 
 def create_data(batch, filenum, nEPerFile):
     seed(1)
-    mins = [[-1,-1], [-1,-1], [-1,-1]]
-    maxs = [[1,1], [1,1], [1,1]]
+    bound = 10
+    mins = [[-bound,-bound], [-bound,-bound], [-bound,-bound]]
+    maxs = [[bound,bound], [bound,bound], [bound,bound]]
     for ifile in range(1,filenum+1):
         filename = "/nBodyData/inputs/indat_{0}_{1}.dat".format(batch, ifile)
         inp = open(filename, "w+")
