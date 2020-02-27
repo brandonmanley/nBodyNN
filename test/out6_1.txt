@@ -1,0 +1,6 @@
+
+Starting params: n=3 tend=10 dt=0.00390625 eps=1e-11 lw=128 pmax=4
+Using input: /nBodyData/inputs/indat_6_1.dat
+Using output: /nBodyData/brutusSim/batch_brutus6_1.csv
+Evolving model: 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950
+Diverged at 3.38448

@@ -1,0 +1,28 @@
+
+
+Starting params: # n=3 tend=10 dt=0.00390625 eps=1e-11 lw=128 pmax=4
+Using input: /nBodyData/inputs/indat_5_1.dat
+Using output: /nBodyData/brutusSim/batch_brutus5_1.csv
+Evolving model: 1Not converged at 0.185452!
+23456Not converged at 0.442488!
+7Not converged at 0.395701!
+8Not converged at 1.02154!
+9101112Not converged at 2.73006!
+13Not converged at 3.48068!
+1415Not converged at 0.214817!
+16Not converged at 0.496547!
+1718Not converged at 6.96749!
+1920Not converged at 0.983713!
+21Not converged at 0.442159!
+222324Not converged at 0.376602!
+2526Not converged at 0.266495!
+27Not converged at 0.64995!
+28Not converged at 3.61479!
+293031323334Not converged at 0.562805!
+35363738Not converged at 0.86032!
+394041Not converged at 0.430856!
+424344Not converged at 0.567549!
+4546Not converged at 3.28394!
+47Not converged at 1.40242!
+4849Not converged at 0.246668!
+50
