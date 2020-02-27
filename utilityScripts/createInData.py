@@ -23,7 +23,8 @@ def create_data(batch, filenum, nEPerFile):
 
         for iev in range(1,nEPerFile+1):
 
-            n = randint(2,nb)
+            # n = randint(2,nb)
+            n =3 
             pxdata, pydata, pzdata, mdata, vxdata, vydata, vzdata = [], [], [], [], [], [], []
 
             for k in range(0,n):
@@ -55,7 +56,7 @@ def create_data(batch, filenum, nEPerFile):
 
 if __name__ == "__main__":
     # configurable data parameters 
-    batch = 7
+    batch = 8
     nFiles = 1
-    nEventsPerFile = 10
+    nEventsPerFile = 50
     create_data(batch, nFiles, nEventsPerFile)

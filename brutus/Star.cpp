@@ -11,6 +11,3 @@ Star::Star(mpreal m, vector<mpreal> r, vector<mpreal> v) {
   this->r = r;
   this->v = v;
 }
-
-
-

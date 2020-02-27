@@ -31,7 +31,7 @@ def create_data(batch, filenum, nEPerFile):
 
 if __name__ == "__main__":
     # configurable sim parameters 
-    batch = 4
+    batch = 8
     nFiles = 1
     nEventsPerFile = 10000
     timeStampsPerEvent = 2560 
