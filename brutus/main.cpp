@@ -117,6 +117,7 @@ int main(int argc, char* argv[]) {
 
   cout << "Evolving model... " << std::flush;
   int eventID = 10000;
+  int previousEvent = 0;
 
   for(int iEvent=0; iEvent < events.size(); ++iEvent){
 
@@ -152,7 +153,8 @@ int main(int argc, char* argv[]) {
 
     int count = 0;
     string eventString = "";
-    int previousEvent = 0;
+
+    // FIXME: output iterator broken, file num broken
 
     while(t<t_end){
       t+=dt;
@@ -169,7 +171,7 @@ int main(int argc, char* argv[]) {
 
       v = brutus.get_data_string();
 
-      eventString += tostr(fileNum) + "," + tostr(eventID+count) + ",";
+      eventString += to_string(fileNum) + "," + tostr(eventID+count) + ",";
       string mass_str(""), xpos(""), ypos(""), zpos(""), vxstr(""), vystr(""), vzstr(""), estr("");
 
       for(int i=0; i < v.size()/7; ++i){
