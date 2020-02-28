@@ -55,18 +55,16 @@ int main(int argc, char* argv[]) {
   }
 
   int fileNum = atoi(argv[1]);
-  int batchNum = 7;
+  int batchNum = 8;
   string filename = "/nBodyData/inputs/indat_"+tostr(batchNum)+"_"+tostr(fileNum)+".dat";
   string nfilename = "/nBodyData/inputs/n_indat_"+tostr(batchNum)+"_"+tostr(fileNum)+".dat";
-  
+
   mpreal t_end = "10.0";
-  double t_endd = 10.0;
   mpreal eta = "0.24";
   mpreal epsilon = "1e-11"; // = "1e-6"; // Bulirsch-Stoer tolerance
   int numBits = 128;
   double dt = 0.00390625;
   int pmax = 4;
-  int nsteps = t_endd / dt;
 
   cout << "\nStarting params: ";
   cout << " tend=" << t_end <<  " dt=" << dt << " eps=" << epsilon  <<  " lw=" << numBits << " pmax=" << pmax <<endl;
@@ -85,6 +83,7 @@ int main(int argc, char* argv[]) {
     exit(1);
   }
 
+
   vector<vector<string>> events = {};
   CSVReader reader(filename);
   events = reader.getData();
@@ -100,6 +99,7 @@ int main(int argc, char* argv[]) {
 
   file.close();
   nfile.close();
+   cout << "file 0: " << fileNum << endl;
 
   cout << "Using inputs: " << filename << ", " << nfilename << endl;
 
@@ -108,6 +108,8 @@ int main(int argc, char* argv[]) {
   strcpy(fileChar, fileString.c_str());
   remove(fileChar);
   cout << "Using output: " << fileString << endl;
+
+  fileNum = atoi(argv[1]);
 
   // std::ofstream fB; 
   // fB.open(fileString, ios_base::app);
@@ -122,7 +124,12 @@ int main(int argc, char* argv[]) {
   for(int iEvent=0; iEvent < events.size(); ++iEvent){
 
     vector<string> vec = events[iEvent];
-    int n = particleSizes[iEvent];
+    if(vec.size() < 1){
+      cerr << "Error: event not found!" << endl;
+      continue;
+    }
+    int n = stoi(vec[vec.size()-1]);
+    vec.pop_back();
 
     mpreal t = "0";
     vector<double> data(7*n);
@@ -132,10 +139,14 @@ int main(int argc, char* argv[]) {
       cerr << "Input file not read correctly." << endl;
       exit(1);
     }
+    if(vec.size() != data.size()){
+      cerr << "Input file is incorrect size" << endl;
+      exit(1);
+    }
 
-    for(int idat=0; idat < vec.size(); ++idat){
-      data[idat] = stod(vec[idat]);
-      datmp[idat] = (mpreal)data[idat];
+    for(int iDatapoint=0; iDatapoint < vec.size(); iDatapoint++){
+      data[iDatapoint] = stod(vec[iDatapoint]);
+      datmp[iDatapoint] = (mpreal)data[iDatapoint];
     }
 
     Brutus brutus = Brutus(t, datmp, epsilon, numBits, pmax);
@@ -153,8 +164,6 @@ int main(int argc, char* argv[]) {
 
     int count = 0;
     string eventString = "";
-
-    // FIXME: output iterator broken, file num broken
 
     while(t<t_end){
       t+=dt;

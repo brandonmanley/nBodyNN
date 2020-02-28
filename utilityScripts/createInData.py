@@ -23,8 +23,8 @@ def create_data(batch, filenum, nEPerFile):
 
         for iev in range(1,nEPerFile+1):
 
-            # n = randint(2,nb)
-            n =3 
+            n = randint(2,nb)
+            # n = 3 
             pxdata, pydata, pzdata, mdata, vxdata, vydata, vzdata = [], [], [], [], [], [], []
 
             for k in range(0,n):
@@ -45,7 +45,7 @@ def create_data(batch, filenum, nEPerFile):
                 if k != n-1:
                     inp.write("{0},{1},{2},{3},{4},{5},{6},".format(mdata[k], pxdata[k], pydata[k], pzdata[k], vxdata[k], vydata[k], vzdata[k]))
                 else:
-                    inp.write("{0},{1},{2},{3},{4},{5},{6}\n".format(mdata[k], pxdata[k], pydata[k], pzdata[k], vxdata[k], vydata[k], vzdata[k]))
+                    inp.write("{0},{1},{2},{3},{4},{5},{6},{7}\n".format(mdata[k], pxdata[k], pydata[k], pzdata[k], vxdata[k], vydata[k], vzdata[k], n))
                     
             ninp.write("{0}\n".format(n))
         
