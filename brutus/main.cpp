@@ -57,7 +57,6 @@ int main(int argc, char* argv[]) {
   int fileNum = atoi(argv[1]);
   int batchNum = 8;
   string filename = "/nBodyData/inputs/indat_"+tostr(batchNum)+"_"+tostr(fileNum)+".dat";
-  string nfilename = "/nBodyData/inputs/n_indat_"+tostr(batchNum)+"_"+tostr(fileNum)+".dat";
 
   mpreal t_end = "10.0";
   mpreal eta = "0.24";
@@ -69,13 +68,6 @@ int main(int argc, char* argv[]) {
   cout << "\nStarting params: ";
   cout << " tend=" << t_end <<  " dt=" << dt << " eps=" << epsilon  <<  " lw=" << numBits << " pmax=" << pmax <<endl;
 
-  std::ifstream nfile;
-  nfile.open(nfilename);
-  if(nfile.fail()){
-    cout << "Could not open input file: " << nfilename << endl;
-    exit(1);
-  }
-
   std::ifstream file;
   file.open(filename); 
   if(file.fail()){
@@ -83,25 +75,12 @@ int main(int argc, char* argv[]) {
     exit(1);
   }
 
-
   vector<vector<string>> events = {};
   CSVReader reader(filename);
   events = reader.getData();
-
-  ifstream is(nfilename);
-  istream_iterator<int> start(is), end;
-  vector<int> particleSizes(start, end);
-  
-  if(particleSizes.size() != events.size()){
-    cerr << "Error: particleSize/events misaligned" << endl;
-    exit(1);
-  }
-
   file.close();
-  nfile.close();
-   cout << "file 0: " << fileNum << endl;
 
-  cout << "Using inputs: " << filename << ", " << nfilename << endl;
+  cout << "Using input: " << filename << endl;
 
   string fileString = "/nBodyData/brutusSim/batch_brutus"+tostr(batchNum)+"_"+tostr(fileNum)+".csv";
   char fileChar [] = {};
