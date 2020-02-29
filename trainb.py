@@ -24,6 +24,9 @@ from keras.layers import Dense, Dropout, Activation
 import utilityScripts.preputil as util
 import keras.backend as K
 
+def concatCSV(filename):
+    all_filenames = [i for i in glob.glob(filename+'*.csv')]
+    return pd.concat([pd.read_csv(f) for f in all_filenames])
 
 workDir = "/nBodyData/"
 dataDir = "/nBodyData/julSim/julia_"
