@@ -26,9 +26,8 @@ import keras.backend as K
 
 
 workDir = "/nBodyData/"
-dataDir = "/nBodyData/mathSim/"
+dataDir = "/nBodyData/julSim/julia_"
 
-#Import data
 df = util.concatCSV(dataDir+'batch3')
 print(df.shape)
 
