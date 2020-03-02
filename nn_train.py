@@ -35,7 +35,8 @@ print(df.shape)
 dfShuffle = shuffle(df,random_state=42)
 print(dfShuffle.head)
 
-i_col = ["m1","m2","m3","x1", "x2", "x3", "y1", "y2", "y3", "tEnd"]
+i_col = ["m1","m2","m3","x1", "x2", "x3", "y1", "y2", "y3",
+		"dx1","dx2","dx3","dy1","dy2","dy3","tEnd"]
 o_col = ["x1tEnd", "x2tEnd", "x3tEnd", "y1tEnd", "y2tEnd", "y3tEnd",
 		"dx1tEnd", "dx2tEnd", "dx3tEnd", "dy1tEnd", "dy2tEnd", "dy3tEnd",
 		"eventID"]
@@ -48,10 +49,10 @@ print(X_train.shape, y_train.shape)
 print(X_test.shape,y_test.shape)
 
 #extract id list from the y arrays
-id_list_train = y_train[:,len(i_col+out_col)-1]
-id_list_test = y_test[:,len(i_col+out_col)-1]
-y_train = np.delete(y_train,len(i_col+out_col)-1,1)
-y_test = np.delete(y_test,len(i_col+out_col)-1,1)
+id_list_train = y_train[:,len(i_col+o_col)-1]
+id_list_test = y_test[:,len(i_col+o_col)-1]
+y_train = np.delete(y_train,len(i_col+o_col)-1,1)
+y_test = np.delete(y_test,len(i_col+o_col)-1,1)
 
 X_train = X_train.astype('float64')
 X_test = X_test.astype('float64')

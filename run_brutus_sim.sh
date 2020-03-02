@@ -1,7 +1,7 @@
 #PBS -N brutus_sim
-#PBS -l walltime=1:00:00
-#PBS -l nodes=1:ppn=10
-#PBS -l mem=10GB
+#PBS -l walltime=24:00:00
+#PBS -l nodes=1:ppn=40
+#PBS -l mem=50GB
 #PBS -j oe
 # uncomment if using qsub
 cd $PBS_O_WORKDIR
