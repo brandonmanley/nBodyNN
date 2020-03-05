@@ -23,8 +23,8 @@ def create_data(batch, filenum, nEPerFile):
 
         for iev in range(1,nEPerFile+1):
 
-            n = randint(2,nb)
-            # n = 3 
+            # n = randint(2,nb)
+            n = 3 
             pxdata, pydata, pzdata, mdata, vxdata, vydata, vzdata = [], [], [], [], [], [], []
 
             for k in range(0,n):
