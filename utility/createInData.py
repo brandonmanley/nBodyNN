@@ -51,7 +51,7 @@ def create_data(batch, filenum, nEPerFile):
 
 if __name__ == "__main__":
     # configurable data parameters 
-    batch = 8
+    batch = 9
     nFiles = 1
     nEventsPerFile = 50
     create_data(batch, nFiles, nEventsPerFile)

@@ -55,7 +55,7 @@ int main(int argc, char* argv[]) {
   }
 
   int fileNum = atoi(argv[1]);
-  int batchNum = 8;
+  int batchNum = 9;
   string filename = "/nBodyData/inputs/indat_"+tostr(batchNum)+"_"+tostr(fileNum)+".dat";
 
   mpreal t_end = "10.0";
@@ -162,7 +162,7 @@ int main(int argc, char* argv[]) {
       eventString += to_string(fileNum) + "," + tostr(eventID+count) + ",";
       string mass_str(""), xpos(""), ypos(""), zpos(""), vxstr(""), vystr(""), vzstr(""), estr(""), istrx(""), istry(""), istrz(""), istrvx(""), istrvy("");
 
-      for(int i=0; i < v.size()/7; ++i){
+      for(int i=0; i < n; ++i){
         mass_str += v[i*7] + ",";
 
         istrx += to_string(data[(i*7) + 1]) + ",";
@@ -186,18 +186,7 @@ int main(int argc, char* argv[]) {
       }
       string tstr = t.toString() + ",";
       
-      eventString += mass_str + istrx + istry + istrvx + istrvy + tstr + xpos + ypos + zpos + vxstr + vystr + vzstr;
-      // eventString += v[0]+ ","+ v[7]+ "," +v[14]+ ",";
-      // eventString += tostr(data[1]) +"," + tostr(data[8])+ ","+ tostr(data[15]) +",";
-      // eventString += tostr(data[2]) +","+ tostr(data[9])+ "," + tostr(data[16]) + ",";
-      // eventString += tostr(data[4]) +"," + tostr(data[11])+ ","+ tostr(data[18]) +",";
-      // eventString += tostr(data[5]) +","+ tostr(data[12])+ "," + tostr(data[19]) + ",";
-      // eventString += t.toString() + ",";
-      // eventString += v[1] +","+ v[8] +","+ v[15]+ ",";
-      // eventString += v[2] +","+ v[9]+ "," +v[16]+",";
-      // eventString += v[4] +","+ v[11]+ "," +v[18]+",";
-      // eventString += v[5] +","+ v[12]+ "," +v[19]+",";
-      // eventString += vE[0] +","+ vE[1]+ "," +vE[2]+",\n";
+      eventString += mass_str + istrx + istry + istrvx + istrvy + tstr + xpos + ypos + vxstr + vystr;
     }
 
     eventID += 10000;
