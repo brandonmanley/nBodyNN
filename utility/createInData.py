@@ -17,9 +17,7 @@ def create_data(batch, filenum, nEPerFile):
     for ifile in range(1,filenum+1):
 
         filename = "/nBodyData/inputs/indat_{0}_{1}.dat".format(batch, ifile)
-        nfilename = "/nBodyData/inputs/n_indat_{0}_{1}.dat".format(batch, ifile)
         inp = open(filename, "w+")
-        ninp = open(nfilename, "w+")
 
         for iev in range(1,nEPerFile+1):
 
@@ -47,11 +45,8 @@ def create_data(batch, filenum, nEPerFile):
                 else:
                     inp.write("{0},{1},{2},{3},{4},{5},{6},{7}\n".format(mdata[k], pxdata[k], pydata[k], pzdata[k], vxdata[k], vydata[k], vzdata[k], n))
                     
-            ninp.write("{0}\n".format(n))
-        
         inp.close()
-        ninp.close()
-        print("files created: {0}, {1}".format(filename, nfilename))
+        print("files created: {0}".format(filename))
 
 
 if __name__ == "__main__":

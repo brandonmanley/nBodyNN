@@ -160,10 +160,17 @@ int main(int argc, char* argv[]) {
       v = brutus.get_data_string();
 
       eventString += to_string(fileNum) + "," + tostr(eventID+count) + ",";
-      string mass_str(""), xpos(""), ypos(""), zpos(""), vxstr(""), vystr(""), vzstr(""), estr("");
+      string mass_str(""), xpos(""), ypos(""), zpos(""), vxstr(""), vystr(""), vzstr(""), estr(""), istrx(""), istry(""), istrz(""), istrvx(""), istrvy("");
 
       for(int i=0; i < v.size()/7; ++i){
         mass_str += v[i*7] + ",";
+
+        istrx += to_string(data[(i*7) + 1]) + ",";
+        istry += to_string(data[(i*7) + 2]) + ",";
+        istrz += to_string(data[(i*7) + 3]) + ",";
+        istrvx += to_string(data[(i*7) + 4]) + ",";
+        istrvy += to_string(data[(i*7) + 5]) + ",";
+
         xpos += v[(i*7) + 1] + ",";
         ypos += v[(i*7) + 2] + ",";
         zpos += v[(i*7) + 3] + ",";
@@ -177,8 +184,9 @@ int main(int argc, char* argv[]) {
           vzstr += v[(i*7) + 6] + ",";
         }
       }
-
-      eventString += mass_str + xpos + ypos + zpos + vxstr + vystr + vzstr;
+      string tstr = t.toString() + ",";
+      
+      eventString += mass_str + istrx + istry + istrvx + istrvy + tstr + xpos + ypos + zpos + vxstr + vystr + vzstr;
       // eventString += v[0]+ ","+ v[7]+ "," +v[14]+ ",";
       // eventString += tostr(data[1]) +"," + tostr(data[8])+ ","+ tostr(data[15]) +",";
       // eventString += tostr(data[2]) +","+ tostr(data[9])+ "," + tostr(data[16]) + ",";
