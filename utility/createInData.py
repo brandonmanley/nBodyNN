@@ -9,9 +9,9 @@ def grnum(minValue,maxValue):
 def create_data(batch, filenum, nEPerFile):
     seed(1)
 
-    pb = 10    # bounds for position
-    vb = 1     # bounds for velocity
-    mb = 100   # bounds for mass
+    pb = 100   # bounds for position
+    vb = 100     # bounds for velocity
+    mb = 100000   # bounds for mass
     nb = 10    # upper bound for # of pls
 
     for ifile in range(1,filenum+1):
@@ -28,13 +28,13 @@ def create_data(batch, filenum, nEPerFile):
             for k in range(0,n):
                 pxdata.append(grnum(-pb,pb))
                 pydata.append(grnum(-pb,pb))
-                pzdata.append(0)
-                # pzdata.append(grnum(-b,b))
+                # pzdata.append(0)
+                pzdata.append(grnum(-pb,pb))
 
                 vxdata.append(grnum(-vb, vb))
                 vydata.append(grnum(-vb, vb))
-                vzdata.append(0)
-                # vzdata.append(grnum(-b/10,b/10))
+                # vzdata.append(0)
+                vzdata.append(grnum(-vb, vb))
 
                 mdata.append(grnum(0.001, mb))
 
@@ -51,7 +51,7 @@ def create_data(batch, filenum, nEPerFile):
 
 if __name__ == "__main__":
     # configurable data parameters 
-    batch = 9
+    batch = 10
     nFiles = 1
-    nEventsPerFile = 50
+    nEventsPerFile = 100000
     create_data(batch, nFiles, nEventsPerFile)
