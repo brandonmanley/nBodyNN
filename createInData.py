@@ -1,60 +1,92 @@
 import os, sys 
 from random import seed 
-from random import random 
+from random import SystemRandom
+from random import randint
+import numpy as np
+from keras import models
+from keras import layers
 
-def create_data(batch, filenum, nEPerFile):
+workDir = '/mnt/c/users/llave/Documents/nBody'
+fileDir = '/mnt/c/users/llave/Documents/nBody'
+
+def grnum(minValue,maxValue):
+    return SystemRandom().uniform(minValue, maxValue)
+
+def create_data(batch, filenum, nEPerFile,epsilon):
     seed(1)
-    mins = [[-5,3], [-1,-7], [7,3]]
-    maxs = [[-2.5,5], [2,-2], [20,15]]
+
+    pb = 10    # bounds for position
+    vb = 1     # bounds for velocity
+    mb = 100   # bounds for mass
+    nb = 10    # upper bound for # of pls
+
     for ifile in range(1,filenum+1):
-        filename = "/users/PAS1585/llavez99/work/nbody/indat_{0}_{1}.dat".format(batch, ifile)
+
+        filename = fileDir + "/indat_{0}_{1}.dat".format(batch, ifile)
         inp = open(filename, "w+")
 
-        for iev in range(1,nEPerFile+1):
-            # seed(random())
-            rvx1, rvx2, rvx3 = mins[0][0]+(random()*(maxs[0][0] - mins[0][0])), mins[1][0]+(random()*(maxs[1][0] - mins[1][0])), mins[2][0]+(random()*(maxs[2][0] - mins[2][0]))
-            rvy1, rvy2, rvy3 = mins[0][1]+(random()*(maxs[0][1] - mins[0][1])), mins[1][1]+(random()*(maxs[1][1] - mins[1][1])), mins[2][1]+(random()*(maxs[2][1] - mins[2][1]))
-            # print(rvx1, rvx2, rvx3, rvy1, rvy2, rvy3)
-            
-            # continue
-            m = [150,120,130]
-            p = [[rvx1,rvy1,0], [rvx2,rvy2,0], [rvx3,rvy3,0]]
-            v = [[0,0,0], [0,0,0], [0,0,0]]
+        iev = 0
+        #for iev in range(1,nEPerFile+1):
+        while iev < nEPerFile+1:
+
+            # n = randint(2,nb)
+            n = 3 
+            pxdata, pydata, pzdata, mdata, vxdata, vydata, vzdata = [], [], [], [], [], [], []
+
+            for k in range(0,n):
+                pxdata.append(grnum(-pb,pb))
+                pydata.append(grnum(-pb,pb))
+                pzdata.append(0)
+                # pzdata.append(grnum(-pb,pb))
+
+                vxdata.append(grnum(-vb, vb))
+                vydata.append(grnum(-vb, vb))
+                vzdata.append(0)
+                # vzdata.append(grnum(-vb, vb))
+
+                mdata.append(grnum(0.001, mb))
+
+            testArray = np.concatenate([mdata,pxdata,pydata,vxdata,vydata])
+            div = testDiv(testArray,epsilon)
+            if(div): 
+            	continue
 
             # create input file
-            inp.write("{0},{1},{2},{3},0,0,0,".format(m[0], p[0][0], p[0][1], p[0][2]))
-            inp.write("{0},{1},{2},{3},0,0,0,".format(m[1], p[1][0], p[1][1], p[1][2]))
-            inp.write("{0},{1},{2},{3},0,0,0\n".format(m[2], p[2][0], p[2][1], p[2][2]))
-        inp.close()
-        print("file created: {0}".format(filename))
+            for k in range(0, n):
+                if k != n-1:
+                    inp.write("{0},{1},{2},{3},{4},{5},{6},".format(mdata[k], pxdata[k], pydata[k], pzdata[k], vxdata[k], vydata[k], vzdata[k]))
+                else:
+                    inp.write("{0},{1},{2},{3},{4},{5},{6},{7}\n".format(mdata[k], pxdata[k], pydata[k], pzdata[k], vxdata[k], vydata[k], vzdata[k], n))
+            
+            iev += 1
+            if(iev%100==0): print(iev)
 
+        inp.close()
+        print("files created: {0}".format(filename))
+
+def testDiv(testArray,epsilon):
+
+	testArray = testArray.astype('float64')
+
+	activation = 'tanh'
+	optimizer = 'adam'
+	batch_size = 20      
+	network = models.Sequential()
+	network.add(layers.Dense(64,activation=activation,input_shape=(15,)))
+	network.add(layers.Dense(2,activation='softmax'))
+	network.compile(optimizer=optimizer,loss='categorical_crossentropy',metrics=['accuracy'])
+	network.load_weights(workDir + '/weights/div_weights.h5')
+
+	pred = network.predict(np.array([testArray]))
+	if(pred[0][1] > epsilon): div = True
+	else: div = False
+
+	return div
 
 if __name__ == "__main__":
-    # configurable sim parameters 
-    batch = 8
+    # configurable data parameters 
+    batch = 0
     nFiles = 1
-    nEventsPerFile = 10000
-    timeStampsPerEvent = 2560 
-    tEnd = 10
-    pMax = 4
-
-    create_data(batch, nFiles, nEventsPerFile)
-
-    
-
-    
-''' 
-FIXME: 
-This script:
-- add config file
-- add drive sync command
-
-Mathematica: 
-- Read config file
-
-Brutus:
-- Read config file
-''' 
-
-    # os.system("make main.exe")
-    # os.system("./main.exe")
+    nEventsPerFile = 1000
+    epsilon = 0.1
+    create_data(batch, nFiles, nEventsPerFile,epsilon)
