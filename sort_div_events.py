@@ -75,6 +75,8 @@ X_test = X_test.astype('float64')
 y_train_cat = to_categorical(y_train)
 y_test_cat = to_categorical(y_test)
 
+print("TESTING",X_train.shape)
+
 #parameters 
 max_epochs = 50
 activation = 'tanh'
@@ -89,10 +91,12 @@ network.compile(optimizer=optimizer,loss='categorical_crossentropy',metrics=['ac
 network.save_weights(workDir + '/weights/model_init.h5')
 
 history = network.fit(X_train,y_train_cat,
-                              epochs=max_epochs,
+                              epochs=max_epochs,  
                               batch_size=batch_size,
                               validation_data=(X_test,y_test_cat),
-                              verbose = 1)
+                              verbose = 0)
+
+network.save_weights(workDir + '/weights/div_weights.h5')
 
 training_vals_acc = history.history['accuracy']
 training_vals_loss = history.history['loss']
