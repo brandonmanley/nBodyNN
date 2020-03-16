@@ -19,11 +19,11 @@ from keras import models
 from keras import layers
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.layers import Dense, Dropout, Activation
-sns.set()
 pd.options.mode.chained_assignment = None  # default='warn'
 
-simfilepath = "/mnt/c/Users/llave/Downloads/batch_brutus9_1.csv"
-workDir = '/mnt/c/users/llave/Documents/nBody'
+simfilepath = "/nBodyData/brutusSim/batch_brutus9_1.csv"
+workDir = '/nBodyData/'
+
 names = ["eventID","m1", "m2", "m3", 
          "x1", "x2", "x3", "y1", "y2", "y3", "dx1", "dx2", "dx3", "dy1", "dy2", "dy3",
          "tEnd",
@@ -37,22 +37,29 @@ n_div = 0
 div_col = []
 
 n_div = 0
+n_good = 0
 
-for i in range(int(df.shape[0]/2560+1)):
+print("nevents:", int((df.shape[0]/2560)+1))
+
+for i in range(int((df.shape[0]/2560)+1)):
     
     index_i = i*10000
     index_f = i*10000+2560
     event_pdf = df[(df['eventID'] >= index_i) & (df['eventID'] <= (index_f))]
+    print(event_pdf.shape[0])
+    if(event_pdf.shape[0] < 1): continue
 
-    if(event_pdf.shape[0] <1): continue
     tmp_df = event_pdf[inputCols]
-    df_new.loc[i]=tmp_df.iloc[0,:]
+    df_new.loc[i] = tmp_df.iloc[0,:]
 
     if(event_pdf.shape[0]<2560):
         div_col.append("1")
-        n_div+=1
+        n_div += 1
     else:
-        div_col.append("0")
+        div_col.append("0") 
+        n_good += 1
+
+print(n_div, n_good)
 print(len(div_col),df_new.shape)
 df_new["div"] = div_col
 print(n_div)

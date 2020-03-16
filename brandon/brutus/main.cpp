@@ -12,6 +12,7 @@ using namespace mpfr;
 #include <string>
 #include <algorithm>
 #include <boost/algorithm/string.hpp>
+#include <chrono>
 
 string tostr(int x);
 string tostr(double x);
@@ -56,7 +57,7 @@ int main(int argc, char* argv[]) {
 
 	int fileNum = atoi(argv[1]);
 	int batchNum = 10;
-	string filename = "/nBodyData/inputs/indat_"+tostr(batchNum)+"_"+tostr(fileNum)+".dat";
+	string filename = "/Users/brandonmanley/Documents/nBody/data/inputs/indat_"+tostr(batchNum)+"_"+tostr(fileNum)+".dat";
 
 	mpreal t_end = "10.0";
 	mpreal eta = "0.24";
@@ -82,7 +83,7 @@ int main(int argc, char* argv[]) {
 
 	cout << "Using input: " << filename << endl;
 
-	string fileString = "/nBodyData/brutusSim/batch_brutus"+tostr(batchNum)+"_"+tostr(fileNum)+".csv";
+	string fileString = "/Users/brandonmanley/Documents/nBody/data/brutusSim/batch_brutus"+tostr(batchNum)+"_"+tostr(fileNum)+".csv";
 	char fileChar [] = {};
 	strcpy(fileChar, fileString.c_str());
 	remove(fileChar);
@@ -99,6 +100,9 @@ int main(int argc, char* argv[]) {
 	cout << "Evolving model... " << std::flush;
 	int eventID = 10000;
 	int previousEvent = 0;
+
+	vector<double> event_durations;
+	vector<int> divergent_values;
 
 	for(int iEvent=0; iEvent < events.size(); ++iEvent){
 
@@ -144,6 +148,10 @@ int main(int argc, char* argv[]) {
 		int count = 0;
 		string eventString = "";
 
+		bool converged = true;
+
+		auto t1 = std::chrono::high_resolution_clock::now();
+
 		while(t<t_end){
 			t+=dt;
  
@@ -154,8 +162,10 @@ int main(int argc, char* argv[]) {
 
 			count += 1;
 			
-			bool converged = brutus.evolve((mpreal)t);
-			if(!converged){ break; }
+			converged = brutus.evolve((mpreal)t);
+			if(!converged){ 
+				break; 
+			}
 
 			v = brutus.get_data_string();
 
@@ -181,9 +191,18 @@ int main(int argc, char* argv[]) {
 			}
 			string tstr = t.toString() + ",";
 			
-			eventString += mass_str + istrx + istry + istrz + istrvx + istrvy + istrvz;
-			eventString += tstr + xpos + ypos + zpos + vxstr + vystr + vzstr + "\n";
+			// eventString += mass_str + istrx + istry + istrz + istrvx + istrvy + istrvz;
+			// eventString += tstr + xpos + ypos + zpos + vxstr + vystr + vzstr + "\n";
+			eventString += mass_str + istrx + istry + istrvx + istrvy;
+			eventString += tstr + xpos + ypos + vxstr + vystr + "\n";
+
 		}
+		
+		auto t2 = std::chrono::high_resolution_clock::now();
+		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2-t1).count();
+		
+		event_durations.push_back(duration);
+		divergent_values.push_back(converged);
 
 		eventID += 10000;
 
@@ -192,6 +211,11 @@ int main(int argc, char* argv[]) {
 		fB.open(fileString, ios_base::app);
 		fB << eventString << endl;
 		fB.close();
+
+		std::ofstream fT;
+		fT.open("times.txt", ios_base::app);
+		fT << duration << "," << converged << endl;
+		fT.close();
 		// cout << " Finished writing" << std::flush;
 	}
 
