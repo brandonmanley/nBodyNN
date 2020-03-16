@@ -16,7 +16,7 @@ def create_data(batch, filenum, nEPerFile):
 
     for ifile in range(1,filenum+1):
 
-        filename = "/nBodyData/inputs/indat_{0}_{1}.dat".format(batch, ifile)
+        filename = "/Users/brandonmanley/Documents/nBody/data/inputs/indat_{0}_{1}.dat".format(batch, ifile)
         inp = open(filename, "w+")
 
         for iev in range(1,nEPerFile+1):
@@ -52,6 +52,6 @@ def create_data(batch, filenum, nEPerFile):
 if __name__ == "__main__":
     # configurable data parameters 
     batch = 10
-    nFiles = 5
-    nEventsPerFile = 100000
+    nFiles = 1
+    nEventsPerFile = 1000
     create_data(batch, nFiles, nEventsPerFile)
