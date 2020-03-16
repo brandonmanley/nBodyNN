@@ -3,8 +3,6 @@ from random import seed
 from random import SystemRandom
 from random import randint
 import numpy as np
-from keras import models
-from keras import layers
 
 fileDir = '/mnt/c/users/llave/Documents/nBody'
 
