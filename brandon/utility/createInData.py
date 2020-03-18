@@ -6,23 +6,22 @@ from random import randint
 def grnum(minValue,maxValue):
     return SystemRandom().uniform(minValue, maxValue)
 
-def create_data(batch, filenum, nEPerFile):
-    seed(1)
+def create_data(batch, filenum, nEPerFile, nBodies):
+    seed(0)
+
+    n = nBodies
 
     pb = 10    # bounds for position
     vb = 1     # bounds for velocity
     mb = 100   # bounds for mass
-    nb = 10    # upper bound for # of pls
 
     for ifile in range(1,filenum+1):
 
-        filename = "/Users/brandonmanley/Documents/nBody/data/inputs/indat_{0}_{1}.dat".format(batch, ifile)
+        filename = "/Users/brandonmanley/Documents/nBody/data/inputs/indat_{0}_{1}_{2}.dat".format(batch, ifile, n)
         inp = open(filename, "w+")
 
         for iev in range(1,nEPerFile+1):
 
-            n = randint(2,3)
-    
             pxdata, pydata, pzdata, mdata, vxdata, vydata, vzdata = [], [], [], [], [], [], []
           
             for k in range(0, n):
@@ -36,7 +35,7 @@ def create_data(batch, filenum, nEPerFile):
                 vzdata.append(0)
                 # vzdata.append(grnum(-vb, vb))
 
-                mdata.append(grnum(0.001, mb))
+                mdata.append(grnum(1, mb))
 
             # create input file
             for k in range(0, n):
@@ -50,8 +49,20 @@ def create_data(batch, filenum, nEPerFile):
 
 
 if __name__ == "__main__":
-    # configurable data parameters 
+	
+    nBodies = -1 
+    if len(sys.argv) < 2: 
+        print("Usage: createInData.py # of bodies")
+        exit()
+    else:
+        try:
+            nBodies = int(sys.argv[1])
+        except: 
+            print("Error: Enter positive integer")
+            exit()
+        
+    # configurable data parameters
     batch = 10
     nFiles = 1
-    nEventsPerFile = 1000
-    create_data(batch, nFiles, nEventsPerFile)
+    nEventsPerFile = 100
+    create_data(batch, nFiles, nEventsPerFile, nBodies)

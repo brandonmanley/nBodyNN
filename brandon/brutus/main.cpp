@@ -50,14 +50,17 @@ std::vector<std::vector<std::string> > CSVReader::getData(){
 
 int main(int argc, char* argv[]) {
 
-	if(argc != 2){
-		cerr << "Enter file no" << endl;
+	if(argc != 3){
+		cerr << "Usage: ./main.exe file nbodies" << endl;
 		exit(1);
 	}
 
 	int fileNum = atoi(argv[1]);
+	int numberOfBodies = atoi(argv[2]);
 	int batchNum = 10;
-	string filename = "/Users/brandonmanley/Documents/nBody/data/inputs/indat_"+tostr(batchNum)+"_"+tostr(fileNum)+".dat";
+	string inputDir = "/Users/brandonmanley/Documents/nBody/data/inputs/";
+	string outputDir = "/Users/brandonmanley/Documents/nBody/data/brutusSim/";
+	string filename = inputDir+"indat_"+tostr(batchNum)+"_"+tostr(fileNum)+"_"+tostr(numberOfBodies)+".dat";
 
 	mpreal t_end = "10.0";
 	mpreal eta = "0.24";
@@ -83,19 +86,35 @@ int main(int argc, char* argv[]) {
 
 	cout << "Using input: " << filename << endl;
 
-	string fileString = "/Users/brandonmanley/Documents/nBody/data/brutusSim/batch_brutus"+tostr(batchNum)+"_"+tostr(fileNum)+".csv";
+	string fileString = outputDir + "brutus"+tostr(batchNum)+"_"+tostr(fileNum)+"_"+tostr(numberOfBodies)+".csv";
 	char fileChar [] = {};
 	strcpy(fileChar, fileString.c_str());
 	remove(fileChar);
 	cout << "Using output: " << fileString << endl;
 
 	fileNum = atoi(argv[1]);
+	numberOfBodies = atoi(argv[2]);
 
-	// std::ofstream fB; 
-	// fB.open(fileString, ios_base::app);
-	// string headerString = "file,eventID,m1,m2,m3,x1,x2,x3,y1,y2,y3,dx1,dx2,dx3,dy1,dy2,dy3,tEnd,x1tEnd,x2tEnd,x3tEnd,y1tEnd,y2tEnd,y3tEnd,dx1tEnd,dx2tEnd,dx3tEnd,dy1tEnd,dy2tEnd,dy3tEnd,e1,e2,e3";
-	// fB << headerString << endl;
-	// fB.close();
+	std::ofstream fB;
+	fB.open(fileString, ios_base::app);
+	string headerString = "file,eventID,";
+	string massHead(""), xHead(""), yHead(""), dxHead(""), dyHead(""), xfHead(""), yfHead(""), dxfHead(""), dyfHead("");
+
+	for(int ibody=1; ibody <= numberOfBodies; ++ibody){
+		massHead += "m"+to_string(ibody) + ",";
+		xHead += "x"+to_string(ibody)+ ",";
+		yHead += "y"+to_string(ibody)+ ",";
+		dxHead += "dx"+to_string(ibody)+ ",";
+		dyHead += "dy"+to_string(ibody)+ ",";
+		xfHead += "xf"+to_string(ibody)+ ",";
+		yfHead += "yf"+to_string(ibody)+ ",";
+		dxfHead += "dxf"+to_string(ibody)+ ",";
+		dyfHead += "dyf"+to_string(ibody)+ ",";
+	}
+
+	headerString += massHead + xHead + yHead + dxHead + dyHead + "t," + xfHead + yfHead + dxfHead + dyfHead + "\n";
+	fB << headerString << endl;
+	fB.close();
 
 	cout << "Evolving model... " << std::flush;
 	int eventID = 10000;
@@ -136,7 +155,7 @@ int main(int argc, char* argv[]) {
 		vector<string> v = brutus.get_data_string();
 
 		/*
-		v indices: 
+		v indices:
 		0: m1    1: p1x  2: p1y    3: p1z   4: p1vx   5: p1vy   6: p1vz
 		7: m2    8: p2x  9: p2y   10: p2z  11: p2vx  12: p2vy  13: p2vz
 		14: m3  15: p3x  16: p3y  17: p3z  18: p3vx  19: p3vy  20: p3vz
@@ -149,8 +168,6 @@ int main(int argc, char* argv[]) {
 		string eventString = "";
 
 		bool converged = true;
-
-		auto t1 = std::chrono::high_resolution_clock::now();
 
 		while(t<t_end){
 			t+=dt;
@@ -197,26 +214,12 @@ int main(int argc, char* argv[]) {
 			eventString += tstr + xpos + ypos + vxstr + vystr + "\n";
 
 		}
-		
-		auto t2 = std::chrono::high_resolution_clock::now();
-		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2-t1).count();
-		
-		event_durations.push_back(duration);
-		divergent_values.push_back(converged);
-
 		eventID += 10000;
 
-		// cout << " Writing event to file.." << std::flush;
 		std::ofstream fB; 
 		fB.open(fileString, ios_base::app);
 		fB << eventString << endl;
 		fB.close();
-
-		std::ofstream fT;
-		fT.open("times.txt", ios_base::app);
-		fT << duration << "," << converged << endl;
-		fT.close();
-		// cout << " Finished writing" << std::flush;
 	}
 
 	return 0;

@@ -208,4 +208,3 @@ vector<mpreal> Cluster::get_data() {
   }	  
   return ddata;
 }
-
