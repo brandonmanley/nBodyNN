@@ -64,5 +64,5 @@ if __name__ == "__main__":
     # configurable data parameters
     batch = 10
     nFiles = 1
-    nEventsPerFile = 100
+    nEventsPerFile = 1000
     create_data(batch, nFiles, nEventsPerFile, nBodies)
