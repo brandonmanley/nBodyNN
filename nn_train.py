@@ -31,6 +31,8 @@ dataDir = "/users/PAS1585/llavez99/data/nbody/"
 #Import data
 df = util.concatCSV(dataDir+'batch3')
 print(df.shape)
+with pd.option_context('mode.use_inf_as_null', True):
+    df = df.dropna()
 
 dfShuffle = shuffle(df,random_state=42)
 print(dfShuffle.head)
