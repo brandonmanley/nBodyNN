@@ -18,8 +18,38 @@ from keras import layers
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.layers import Dense, Dropout, Activation
 
-workDir = "/users/PAS1585/llavez99/work/nbody/"
-dataDir = "/users/PAS1585/llavez99/data/nbody/"
+workDir = "/mnt/c/Users/llave/Documents/nBody/"
+
+#Import data
+fname = workDir + "data/batch_brutus10"
+numFiles = 5
+df = pd.DataFrame()
+
+for i in range(numFiles):
+	if i!=4: continue
+	dftemp = pd.DataFrame() 
+	dftemp = pd.read_csv(fname+"_"+str(i)+".csv")
+	df = pd.concat([df, dftemp])
+
+with pd.option_context('mode.use_inf_as_null', True):
+    df = df.dropna()
+
+dfShuffle = shuffle(df,random_state=42)
+
+i_col = ["m1","m2","m3","x1", "x2", "x3", "y1", "y2", "y3",
+		"dx1","dx2","dx3","dy1","dy2","dy3","tEnd"]
+o_col = ["x1tEnd", "x2tEnd", "x3tEnd", "y1tEnd", "y2tEnd", "y3tEnd",
+		"dx1tEnd", "dx2tEnd", "dx3tEnd", "dy1tEnd", "dy2tEnd", "dy3tEnd"]
+
+X1 = df.as_matrix(columns=i_col)
+y1 = df.as_matrix(columns=o_col)
+
+X1 = X1.astype('float64')
+y1 = y1.astype('float64')
+
+X_train,X_test,y_train,y_test = train_test_split(X1,y1, test_size=0.2, random_state=42)
+print(X_train.shape, y_train.shape)
+print(X_test.shape,y_test.shape)
 
 def nested_defaultdict(default_factory, depth=1):
     result = partial(defaultdict, default_factory)
@@ -29,26 +59,23 @@ def nested_defaultdict(default_factory, depth=1):
 
 def kfold_network(X, y, hidden_nodes,activation='relu',optimizer='adam'):
 
-    max_epochs = 300
+    max_epochs = 500
     
     numSplits = 0
     
     network = models.Sequential()
     network.add(layers.Dense(hidden_nodes,activation='relu',input_dim=16))
     for i in range(9):
-        network.add(layers.Dense(128,activation='relu'))
+        network.add(layers.Dense(hidden_nodes,activation='relu'))
     network.add(layers.Dense(12,activation='linear'))
     network.compile(optimizer=optimizer,loss='mean_squared_logarithmic_error',metrics=['accuracy'])
     network.save_weights(workDir + '/weights/model_init.h5')
     
     #early stopping
-    patienceCount = 20
+    patienceCount = 50
     callbacks = [EarlyStopping(monitor='val_loss', patience=patienceCount),
                  ModelCheckpoint(filepath=workDir+'/weights/best_model_split'+str(numSplits)+'_nhidden'+str(hidden_nodes)+'.h5', monitor='val_loss', save_best_only=True)]
 
-    #k-fold validation with 4 folds
-    kfolds = 4
-    
     training_vals_acc = 0
     training_vals_loss = 0
     valid_vals_acc = 0
@@ -120,31 +147,10 @@ def kfold_network(X, y, hidden_nodes,activation='relu',optimizer='adam'):
 
 
 
-
-
-workDir = "/mnt/c/Users/llave/Documents/nBody/"
-
-#Import data
-fname = workDir + "data/batch_brutus10_4.csv"
-df = pd.read_csv(fname)
-with pd.option_context('mode.use_inf_as_null', True):
-    df = df.dropna()
-
 acc_list = []
 loss_list = []
 iterations_list = []
-nodes_list = [128]
-
-#dfShuffle = shuffle(df,random_state=42)
-i_col = ["m1","m2","m3","x1", "x2", "x3", "y1", "y2", "y3",
-    "dx1","dx2","dx3","dy1","dy2","dy3","tEnd"]
-o_col = ["x1tEnd", "x2tEnd", "x3tEnd", "y1tEnd", "y2tEnd", "y3tEnd",
-         "dx1tEnd", "dx2tEnd", "dx3tEnd", "dy1tEnd", "dy2tEnd", "dy3tEnd"]
-X = df.as_matrix(columns=i_col)
-y = df.as_matrix(columns=o_col)
-
-X = X.astype('float64')
-y = y.astype('float64')
+nodes_list = [50,100,128,200,300]
 
 # Determine best number of hidden nodes for one charge, and apply it for other charges
 for nodes in nodes_list:
@@ -153,7 +159,7 @@ for nodes in nodes_list:
     print("Nodes:", nodes)
     
     #run train data through the network
-    avg_acc,avg_loss,avg_iterations = kfold_network(X, y, nodes)
+    avg_acc,avg_loss,avg_iterations = kfold_network(X_train, y_train, nodes)
     
     #store and output results
     acc_list.append(avg_acc)
@@ -161,6 +167,10 @@ for nodes in nodes_list:
     iterations_list.append(avg_iterations)
     
     print(avg_acc, avg_loss, avg_iterations)
+
+print(acc_list)
+print(loss_list)
+print(iterations_list)
 
 plt.clf()
 plt.plot(nodes_list,acc_list)
