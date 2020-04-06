@@ -26,7 +26,11 @@ workDir = "/users/PAS1585/llavez99/"
 
 def grab_data(full, cols, path):
     if full:
-        return pd.concat([pd.read_csv(path+file, index_col=False) for file in os.listdir(path)])
+        df = pd.DataFrame()
+        for file in os.listdir(path):
+            if ".csv" not in file: continue
+            dftemp =  pd.read_csv(path+file, index_col=False) 
+            df = pd.concat([df,dftemp])
     else:
         for file in os.listdir(path):
             if "10_4" not in file: continue
