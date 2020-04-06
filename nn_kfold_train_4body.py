@@ -32,6 +32,7 @@ def grab_data(full, cols, path):
             if "train" or "test" in file: continue
             dftemp =  pd.read_csv(path+file, index_col=False) 
             df = pd.concat([df,dftemp])
+        return df
     else:
         for file in os.listdir(path):
             if "10_4" not in file: continue
