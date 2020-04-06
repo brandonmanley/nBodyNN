@@ -68,7 +68,7 @@ def kfold_network(X, y, hidden_nodes,activation='relu',optimizer='adam'):
     for i in range(9):
         network.add(layers.Dense(hidden_nodes,activation='relu'))
     network.add(layers.Dense(12,activation='linear'))
-    network.compile(optimizer=optimizer,loss='mean_squared_logarithmic_error',metrics=['accuracy'])
+    network.compile(optimizer=optimizer,loss='mean_squared_logarithmic_error',metrics=['accuracy','mae'])
     network.save_weights(workDir + '/weights/model_init.h5')
     
     #early stopping
