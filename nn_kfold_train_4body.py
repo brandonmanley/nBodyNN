@@ -29,6 +29,7 @@ def grab_data(full, cols, path):
         df = pd.DataFrame()
         for file in os.listdir(path):
             if ".csv" not in file: continue
+            if "train" or "test" in file: continue
             dftemp =  pd.read_csv(path+file, index_col=False) 
             df = pd.concat([df,dftemp])
     else:
