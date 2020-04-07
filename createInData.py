@@ -4,7 +4,7 @@ from random import SystemRandom
 from random import randint
 import numpy as np
 
-fileDir = '/mnt/c/users/llave/Documents/nBody'
+fileDir = '/users/PAS1585/llavez99/data/nbody'
 
 def grnum(minValue,maxValue):
     return SystemRandom().uniform(minValue, maxValue)
@@ -54,7 +54,7 @@ def create_data(batch, filenum, nEPerFile):
 
 if __name__ == "__main__":
     # configurable data parameters 
-    batch = 0
-    nFiles = 2
-    nEventsPerFile = 50000
+    batch = 10
+    nFiles = 3
+    nEventsPerFile = 1000
     create_data(batch, nFiles, nEventsPerFile)

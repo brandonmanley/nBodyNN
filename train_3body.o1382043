@@ -1,0 +1,20 @@
+/users/PAS1585/llavez99/work/nbody/nBodyNN
+Using TensorFlow backend.
+WARNING:root:Limited tf.compat.v2.summary API due to missing TensorBoard installation.
+/var/spool/torque/mom_priv/jobs/1382043.pitzer-batch.ten.osc.edu.SC: line 26: 11513 Killed                  python /users/PAS1585/llavez99/work/nbody/nBodyNN/nn_kfold_train_3body.py
+****** p0161.ten.osc.edu: Excessive memory usage detected; job may have failed. ******
+
+-----------------------
+Resources requested:
+nodes=1:ppn=40
+mem=10000mb
+-----------------------
+Resources used:
+cput=00:01:17
+walltime=00:01:48
+mem=6.732GB
+vmem=9.925GB
+-----------------------
+Resource units charged (estimate):
+0.120 RUs
+-----------------------
