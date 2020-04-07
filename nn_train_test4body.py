@@ -52,14 +52,21 @@ for row in X_test:
     test_rows.append(i)
 
 dfTest = df.iloc[test_rows,:] 
+
+i_col = []
 o_col = []
-colNames = ["x", "y", "dx", "dy"]
+colNames = ["x", "y", "dx", "dy","m"]
 nBodies = 4
 for col in colNames:
     for n in range(1, nBodies+1):
-        o_col.append(col+"f"+str(n))
-
+        i_col.append(col+str(n))
+        if col != "m":
+            o_col.append(col+"f"+str(n))
+i_col.append("t")
+    
 df_y_test = dfTest[o_col]
+df_X_test = dfTest[i_col]
+X_test = df_X_test.to_numpy()
 y_test = df_y_test.to_numpy()
 
 print(X_test.shape,y_test.shape)

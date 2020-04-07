@@ -1,3 +1,7 @@
+#Using imput data of three body motion, trains neural network to predict
+#the positions of the bodies at a given time using initial positions
+#By Luca Lavezzo, Brandon Manley, Jan. 2020
+
 import pandas as pd
 from plotly.offline import iplot
 import plotly.graph_objs as go
@@ -18,45 +22,96 @@ from keras import layers
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.layers import Dense, Dropout, Activation
 
-workDir = "/mnt/c/Users/llave/Documents/nBody/"
-weightsFile = ''
+workDir = "/users/PAS1585/llavez99/"
 
 #Import data
-fname_test = workDir + "data/"
-dfTest = pd.read_csv(fname_test)
+dataPath = workDir + "data/nbody/5body/"
+        
+# df1 = pd.read_csv(dataPath+"brutus10_1_4.csv")
+# df2 = pd.read_csv(dataPath+"brutus10_2_4.csv")
+# df = pd.concat([df1,df2])
 
-#Train and test
-X_test = dfTest.as_matrix(columns=["x1", "x2", "x3", "y1", "y2", "y3", "tEnd"])
-y_test = dfTest.as_matrix(columns=["x1tEnd", "x2tEnd", "x3tEnd", "y1tEnd", "y2tEnd", "y3tEnd","eventID"])
+# df_test = df1.sample(2560*10)
 
-#extract id list from the y arrays
-id_list_test = y_test[:,6]
-y_test = np.delete(y_test,6,1)
-X_test = X_test.astype('float32')
-y_test = y_test.astype('float32')
+# i_col = []
+# o_col = []
+# colNames = ["m","x", "y", "dx", "dy"]
+# nBodies = 4
+# for col in colNames:
+#     for n in range(1, nBodies+1):
+#         i_col.append(col+str(n))
+#         if col != "m":
+#             o_col.append(col+"f"+str(n))
+# i_col.append("t")
 
+# df_y_test = df_test[o_col]
+# df_X_test = df_test[i_col]
+# X_test = df_X_test.to_numpy()
+# y_test = df_y_test.to_numpy()
+
+df_X_test = pd.read_csv(dataPath+"X_test_5body.csv")
+
+X_test = df_X_test.to_numpy()
+
+df1 = pd.read_csv(dataPath+"brutus10_1_5.csv")
+df2 = pd.read_csv(dataPath+"brutus10_2_5.csv")
+df = pd.concat([df1,df2])
+
+test_rows = []
+eps = 0.00001
+X_test = X_test.astype('float64')
+df = df.astype('float64')
+print(df.head())
+print(X_test)
+print(X_test.shape)
+for row in X_test:
+
+    i = df.loc[(df['m1'] < row[0] + eps) & (df['m1'] > row[0] - eps) & (df['t'] < row[25] + eps) & (df['t'] > row[25] - eps)].index[0]
+    test_rows.append(i)
+
+dfTest = df.iloc[test_rows,:] 
+
+i_col = []
+o_col = []
+colNames = ["m","x", "y", "dx", "dy"]
+nBodies = 5
+for col in colNames:
+    for n in range(1, nBodies+1):
+        i_col.append(col+str(n))
+        if col != "m":
+            o_col.append(col+"f"+str(n))
+i_col.append("t")
+    
+df_y_test = dfTest[o_col]
+df_X_test = dfTest[i_col]
+X_test = df_X_test.to_numpy()
+y_test = df_y_test.to_numpy()
 
 #Run the neural network with the best number of hidden nodes and epochs
-hidden_nodes = 50   
-n_epochs = 200
+hidden_nodes = 300   
+n_epochs = 300
 optimizer = 'adam'
-loss = 'mean_squared_logarithmic_error'
+loss = 'mse'
+n_layers = 9
 
 network = models.Sequential()
-network.add(layers.Dense(hidden_nodes,activation='relu',input_dim=7))
-network.add(layers.Dense(6,activation='linear'))
-network.compile(optimizer=optimizer,loss=loss,metrics=['accuracy'])
-network.load_weights(workDir + weightsFile)
+network.add(layers.Dense(hidden_nodes,activation='relu',input_dim=26))
+for i in range(n_layers):
+    network.add(layers.Dense(hidden_nodes,activation='relu'))
+network.add(layers.Dense(20,activation='linear'))
+network.compile(optimizer=optimizer,loss='mse',metrics=['mae'])
 
+network.load_weights(workDir + 'work/nbody/weights5/final_5body.h5')
 
-predictions = network.predict(X_test)
+# predictions = network.predict(y_test)
+# for true, pred in zip(y_test,predictions):
+#     for i in range(len(pred)):
+#         mae += pred[i] - true[i]
+#     mae /= len(pred)
+#     mae_list.append(mae)
 
-epsilon = 0.1
-print("Epsilon",epsilon)
-print("Precicted accurately",good_pred)
-print("Predicted inaccurately",bad_pred)
+scores = network.evaluate(X_test,y_test, verbose=0)
+print(network.metrics_names)
 
-pred_out = np.asarray(predictions)
-id_list_test = np.reshape(id_list_test,(id_list_test.shape[0],1))
-pred_out = np.concatenate((pred_out,id_list_test),axis=1)
-np.savetxt(workDir + "predicted_paths.csv", pred_out, delimiter=",")
+print(scores[0])
+print(scores[1])

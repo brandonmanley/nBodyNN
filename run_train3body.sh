@@ -1,7 +1,7 @@
 #PBS -N train_3body
-#PBS -l walltime=48:00:00
+#PBS -l walltime=8:00:00
 #PBS -l nodes=1:ppn=40
-#PBS -l mem=15GB
+#PBS -l mem=10GB
 #PBS -j oe
 
 # uncomment if using qsub
