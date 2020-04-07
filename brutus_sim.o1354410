@@ -1,0 +1,171 @@
+/users/PAS1585/llavez99/work/nbody/nBodyNN
+
+Starting params:  tend=10 dt=0.00390625 eps=1e-11 lw=128 pmax=4
+Using input: /users/PAS1585/llavez99/data/nbody/indat_10_1.dat
+Using output: /users/PAS1585/llavez99/data/nbody/brutus10_1_4.csv
+Evolving model... 0123
+Diverged at 4.51734
+45678
+Diverged at 2.22863
+910
+Diverged at 0.217078
+11
+Diverged at 1.84105
+12
+Diverged at 0.212967
+13141516
+Diverged at 1.08476
+171819
+Diverged at 4.61596
+20212223
+Diverged at 1.33779
+242526272829
+Diverged at 0.180188
+303132
+Diverged at 1.32816
+3334
+Diverged at 1.4849
+35363738394041
+Diverged at 0.049166
+424344
+Diverged at 3.14283
+45
+Diverged at 0.773283
+46
+Diverged at 3.15655
+474849
+Diverged at 1.12794
+50515253
+Diverged at 6.35095
+5455
+Diverged at 0.437837
+56575859
+Diverged at 6.27485
+60616263646566676869
+Diverged at 1.74946
+7071
+Diverged at 5.33039
+7273
+Diverged at 0.939584
+747576
+Diverged at 0.803228
+77787980
+Diverged at 1.89111
+818283
+Diverged at 2.85754
+8485
+Diverged at 5.79493
+86
+Diverged at 1.62389
+8788899091929394
+Diverged at 4.93416
+959697
+Diverged at 3.2608
+9899100101
+Diverged at 5.00826
+102103104105106107108109110111112
+Diverged at 2.83196
+113
+Diverged at 3.78839
+114
+Diverged at 0.770313
+115116117118119120
+Diverged at 0.104629
+121
+Diverged at 0.877278
+122123
+Diverged at 8.38614
+124125126
+Diverged at 0.187221
+127128129130131132133134
+Diverged at 1.40825
+135
+Diverged at 5.34369
+136
+Diverged at 2.20824
+137138
+Diverged at 5.93546
+139140
+Diverged at 0.581991
+141142143144145
+Diverged at 1.41112
+146147148149150151152153154155156157158
+Diverged at 0.11646
+159
+Diverged at 3.76258
+160161
+Diverged at 4.05574
+162163164165166167168169170171172
+Diverged at 0.181155
+173174
+Diverged at 6.28308
+175176177178
+Diverged at 1.76732
+179
+Diverged at 7.77544
+180181182183184185186187188
+Diverged at 3.58565
+189
+Diverged at 2.59316
+190
+Diverged at 0.0856036
+191192193194
+Diverged at 5.53949
+195196
+Diverged at 0.50324
+197
+Diverged at 1.42067
+198199
+Diverged at 4.06454
+200201202203204205206
+Diverged at 8.82485
+207208209210211212213214
+Diverged at 1.89252
+215216217
+Diverged at 0.439894
+218219
+Diverged at 0.668884
+220221222
+Diverged at 3.81373
+223224225
+Diverged at 6.20291
+226
+Diverged at 3.52506
+227228229230231232233234
+Diverged at 3.70698
+235
+Diverged at 4.01696
+236
+Diverged at 1.97773
+237238239240241242243244245246
+Diverged at 3.04765
+247248249250251252253254255256
+Diverged at 0.242055
+257258259260261
+Diverged at 1.19463
+262263
+Diverged at 0.126093
+264265
+Diverged at 4.87824
+266267
+Diverged at 6.63
+268269270271
+Diverged at 0.808418
+272273274275276277278279
+Diverged at 2.34057
+280281=>> PBS: job killed: walltime 86422 exceeded limit 86400
+
+-----------------------
+Resources requested:
+nodes=1:ppn=40
+mem=10gb
+-----------------------
+Resources used:
+cput=23:56:53
+walltime=24:00:22
+mem=0.006GB
+vmem=0.152GB
+-----------------------
+Resource units charged (estimate):
+96.024 RUs
+-----------------------

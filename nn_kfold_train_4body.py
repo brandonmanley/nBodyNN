@@ -28,8 +28,8 @@ def grab_data(full, cols, path):
     if full:
         df = pd.DataFrame()
         for file in os.listdir(path):
-            if ".csv" not in file: continue
-            if "train" or "test" in file: continue
+            if "brutus10" not in file: continue
+            if "train" in file or "test" in file: continue
             dftemp =  pd.read_csv(path+file, index_col=False) 
             df = pd.concat([df,dftemp])
         return df
@@ -55,11 +55,11 @@ for col in perParticleColumnsOutput:
         dataCols.append(col+str(i+1))
         
 df = grab_data(True, dataCols, dataPath)
-
+print(df.head())
 with pd.option_context('mode.use_inf_as_null', True):
-    #df = df.dropna(axis=1)
+    df = df.dropna(axis=1)
     df = df.dropna(axis=0)
-    
+print(df.head())
 dfShuffle = shuffle(df,random_state=42)
 
 i_col, o_col = [], []
@@ -94,22 +94,22 @@ def nested_defaultdict(default_factory, depth=1):
 
 def kfold_network(X, y, hidden_nodes,n_layers,activation='relu',optimizer='adam'):
 
-    max_epochs = 300
+    max_epochs = 100
     
     numSplits = 0
     
     network = models.Sequential()
-    network.add(layers.Dense(hidden_nodes,activation='relu',input_dim=16))
+    network.add(layers.Dense(hidden_nodes,activation='relu',input_dim=21))
     for i in range(n_layers):
         network.add(layers.Dense(hidden_nodes,activation='relu'))
-    network.add(layers.Dense(12,activation='linear'))
+    network.add(layers.Dense(16,activation='linear'))
     network.compile(optimizer=optimizer,loss='mse',metrics=['mae'])
-    network.save_weights(workDir + 'work/nbody/weights/model_init.h5')
+    network.save_weights(workDir + 'work/nbody/weights4/model_init.h5')
     
     #early stopping
-    patienceCount = 30
+    patienceCount = 20
     callbacks = [EarlyStopping(monitor='val_loss', patience=patienceCount),
-                 ModelCheckpoint(filepath=workDir+'work/nbody/weights/best_model_split'+str(numSplits)+'_nlayers'+str(n_layers)+'_nhidden'+str(hidden_nodes)+'.h5', monitor='val_loss', save_best_only=True)]
+                 ModelCheckpoint(filepath=workDir+'work/nbody/weights4/best_model_split'+str(numSplits)+'_nlayers'+str(n_layers)+'_nhidden'+str(hidden_nodes)+'.h5', monitor='val_loss', save_best_only=True)]
 
     training_vals_mae = 0
     training_vals_loss = 0
@@ -134,20 +134,20 @@ def kfold_network(X, y, hidden_nodes,n_layers,activation='relu',optimizer='adam'
         X_val = X[val_index]
         y_val = y[val_index]
 
-        network.load_weights(workDir + 'work/nbdoy/weights/model_init.h5')
+        network.load_weights(workDir + 'work/nbody/weights4/model_init.h5')
         history = network.fit(X_train,y_train,
                               callbacks = callbacks,
                               epochs=max_epochs,
-                              batch_size=1000,
+                              batch_size=2000,
                               validation_data=(X_val,y_val), 
-                              verbose = 1)
+                              verbose = 0)
         
-        network.save(workDir + 'work/nbody/weights/trained_model_split'+str(numSplits)+'_nhidden'+str(hidden_nodes)+'.h5')
+        network.save(workDir + 'work/nbody/weights4/trained_model_split'+str(numSplits)+'_nhidden'+str(hidden_nodes)+'.h5')
 
         plt.clf()
         plt.plot(history.history['mae'])
         plt.plot(history.history['val_mae'])
-        plt.savefig(workDir + 'work/nbody/plots/layers'+str(n_layers)+'_nodes'+str(hidden_nodes)+'_split'+str(numSplits)+'_mae.png')
+        plt.savefig(workDir + 'work/nbody/plots4/layers'+str(n_layers)+'_nodes'+str(hidden_nodes)+'_split'+str(numSplits)+'_mae.png')
         
         #save the metrics for the best epoch, or the last one
         if(len(history.history['mae']) == max_epochs):
@@ -186,11 +186,21 @@ mae_list = []
 loss_list = []
 iterations_list = []
 nodes_list = [50,128,200,300]
-layers_list = [1,5,10,15]
+layers_list = [4,9,14]
+mae_map = [
+    [0,0,0,0],
+    [0,0,0,0],
+    [0,0,0,0]
+]
+loss_map = [
+    [0,0,0,0],
+    [0,0,0,0],
+    [0,0,0,0]
+]
 
 # Determine best number of hidden nodes for one charge, and apply it for other charges
-for iLayer in layers_list:
-    for iNode in nodes_list:
+for i, iLayer in enumerate(layers_list):
+    for j, iNode in enumerate(nodes_list):
     
         print("Training:")
         print("Layers:",iLayer)
@@ -204,10 +214,18 @@ for iLayer in layers_list:
         mae_list.append(avg_mae)
         loss_list.append(avg_loss)
         iterations_list.append(avg_iterations)
+
+        mae_map[i][j] = avg_mae
+        loss_map[i][j] = avg_loss
         
         print(avg_mae, avg_loss, avg_iterations)
+
+np.savetxt(workDir+"data/nbody/4body/mae_map.csv", mae_map, delimiter=",")
+np.savetxt(workDir+"data/nbody/4body/loss_map.csv", loss_map, delimiter=",")
 
 print(parameters_list)
 print(mae_list)
 print(loss_list)
 print(iterations_list)
+array = [mae_list,loss_list,iterations_list]
+np.savetxt(workDir+"data/nbody/4body/results.csv", array, delimiter=",")

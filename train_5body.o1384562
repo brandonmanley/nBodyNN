@@ -1,0 +1,46 @@
+/users/PAS1585/llavez99/work/nbody/nBodyNN
+Using TensorFlow backend.
+WARNING:root:Limited tf.compat.v2.summary API due to missing TensorBoard installation.
+   file  eventID        m1  ...      dyf4      dyf5  Unnamed: 48
+0   1.0  10001.0  4.828762  ... -0.739343  0.309672          NaN
+1   1.0  10002.0  4.828762  ... -0.755528  0.325226          NaN
+2   1.0  10003.0  4.828762  ... -0.771745  0.340821          NaN
+3   1.0  10004.0  4.828762  ... -0.787995  0.356460          NaN
+4   1.0  10005.0  4.828762  ... -0.804280  0.372141          NaN
+
+[5 rows x 49 columns]
+[[ 6.03865344e+01  8.27363079e+01  8.34884859e+01 ... -6.42913000e-01
+   7.09420000e-01  1.35156250e+00]
+ [ 9.33620150e+01  4.82251023e+01  3.45092725e+01 ...  7.92527000e-01
+   3.14579000e-01  8.12109375e+00]
+ [ 6.65195969e+01  3.38888246e+01  3.41536470e+01 ...  3.67206000e-01
+  -6.55873000e-01  1.79296875e+00]
+ ...
+ [ 8.37399302e+01  5.06517880e+01  9.51991619e+01 ... -3.48375000e-01
+  -4.80602000e-01  7.78515625e+00]
+ [ 9.06237756e+01  8.48257820e+01  5.62686871e+01 ...  8.51349000e-01
+   4.88150000e-02  8.99609375e+00]
+ [ 5.19082213e+01  7.98107344e+01  4.77991354e+01 ...  3.12326000e-01
+  -5.95955000e-01  6.32812500e-01]]
+(8745, 26)
+Traceback (most recent call last):
+  File "/users/PAS1585/llavez99/work/nbody/nBodyNN/nn_train_test5body.py", line 51, in <module>
+    i = df.loc[(df['m1'] < row[0] + eps) & (df['m1'] > row[0] - eps) & (df['t'] < row[25] + eps) & (df['t'] > row[20] - eps)].index[0]
+  File "/users/PAS1585/llavez99/.local/lib/python3.6/site-packages/pandas/core/indexes/base.py", line 3958, in __getitem__
+    return getitem(key)
+IndexError: index 0 is out of bounds for axis 0 with size 0
+
+-----------------------
+Resources requested:
+nodes=1:ppn=10
+mem=5000mb
+-----------------------
+Resources used:
+cput=00:00:16
+walltime=00:00:20
+mem=0.402GB
+vmem=2.774GB
+-----------------------
+Resource units charged (estimate):
+0.005 RUs
+-----------------------

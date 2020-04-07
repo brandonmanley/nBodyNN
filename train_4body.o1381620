@@ -1,0 +1,16 @@
+/users/PAS1585/llavez99/work/nbody/nBodyNN
+
+-----------------------
+Resources requested:
+nodes=1:ppn=10
+mem=5000mb
+-----------------------
+Resources used:
+cput=01:34:08
+walltime=00:48:39
+mem=2.267GB
+vmem=6.890GB
+-----------------------
+Resource units charged (estimate):
+0.810 RUs
+-----------------------

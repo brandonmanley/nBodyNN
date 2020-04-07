@@ -1,0 +1,113 @@
+/users/PAS1585/llavez99/work/nbody/nBodyNN
+
+Starting params:  tend=10 dt=0.00390625 eps=1e-11 lw=128 pmax=4
+Using input: /users/PAS1585/llavez99/data/nbody/indat_10_1.dat
+Using output: /users/PAS1585/llavez99/data/nbody/brutus10_1_5.csv
+Evolving model... 0
+Diverged at 5.88784
+12345
+Diverged at 1.09211
+67
+Diverged at 1.09989
+8
+Diverged at 3.21392
+9101112131415
+Diverged at 2.52941
+16
+Diverged at 6.10313
+1718
+Diverged at 7.97127
+19
+Diverged at 1.60271
+20212223
+Diverged at 5.94465
+2425
+Diverged at 1.95341
+2627
+Diverged at 9.35363
+28
+Diverged at 1.35292
+2930
+Diverged at 4.78928
+3132
+Diverged at 0.841642
+3334353637
+Diverged at 2.32924
+38
+Diverged at 1.31396
+3940414243
+Diverged at 1.51905
+44
+Diverged at 9.08097
+454647
+Diverged at 7.72568
+4849
+Diverged at 2.36263
+5051
+Diverged at 3.37226
+525354
+Diverged at 1.21787
+5556
+Diverged at 4.06159
+57
+Diverged at 0.704416
+5859
+Diverged at 2.29358
+6061
+Diverged at 5.24425
+626364
+Diverged at 3.78189
+65
+Diverged at 6.05571
+66
+Diverged at 1.5642
+67686970
+Diverged at 2.35012
+7172
+Diverged at 0.0498784
+73
+Diverged at 0.284876
+7475
+Diverged at 4.82694
+7677787980
+Diverged at 1.34486
+818283848586
+Diverged at 0.743189
+8788
+Diverged at 4.36767
+8990
+Diverged at 1.57402
+91
+Diverged at 8.98279
+929394
+Diverged at 0.252897
+95
+Diverged at 6.46355
+9697
+Diverged at 0.0263671
+9899
+Diverged at 2.48736
+100
+Diverged at 3.69094
+101
+Diverged at 2.2308
+102103104105
+Diverged at 3.6755
+106107108
+Diverged at 0.325337
+109110=>> PBS: job killed: walltime 86428 exceeded limit 86400
+
+-----------------------
+Resources requested:
+nodes=1:ppn=20
+mem=10gb
+-----------------------
+Resources used:
+cput=23:56:59
+walltime=24:00:32
+mem=0.009GB
+vmem=0.154GB
+-----------------------
+Resource units charged (estimate):
+48.017 RUs
+-----------------------

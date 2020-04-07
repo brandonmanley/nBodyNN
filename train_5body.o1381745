@@ -1,0 +1,152 @@
+/users/PAS1585/llavez99/work/nbody/nBodyNN
+Using TensorFlow backend.
+WARNING:root:Limited tf.compat.v2.summary API due to missing TensorBoard installation.
+2020-04-06 16:06:45.509738: I tensorflow/core/platform/cpu_feature_guard.cc:142] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 AVX512F FMA
+2020-04-06 16:06:45.518518: I tensorflow/core/platform/profile_utils/cpu_utils.cc:94] CPU Frequency: 2400000000 Hz
+2020-04-06 16:06:45.518858: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x555651d50700 executing computations on platform Host. Devices:
+2020-04-06 16:06:45.518882: I tensorflow/compiler/xla/service/service.cc:175]   StreamExecutor device (0): <undefined>, <undefined>
+2020-04-06 16:06:45.586014: W tensorflow/compiler/jit/mark_for_compilation_pass.cc:1412] (One-time warning): Not using XLA:CPU for cluster because envvar TF_XLA_FLAGS=--tf_xla_cpu_global_jit was not set.  If you want XLA:CPU, either set that envvar, or use experimental_jit_scope to enable XLA:CPU.  To confirm that XLA is active, pass --vmodule=xla_compilation_cache=1 (as a proper command-line flag, not via TF_XLA_FLAGS) or set the envvar XLA_FLAGS=--xla_hlo_profile.
+/users/PAS1585/llavez99/work/nbody/nBodyNN/nn_kfold_train_5body.py:75: FutureWarning:
+
+Method .as_matrix will be removed in a future version. Use .values instead.
+
+/users/PAS1585/llavez99/work/nbody/nBodyNN/nn_kfold_train_5body.py:76: FutureWarning:
+
+Method .as_matrix will be removed in a future version. Use .values instead.
+
+WARNING:tensorflow:From /users/PAS1585/llavez99/.local/lib/python3.6/site-packages/keras/backend/tensorflow_backend.py:422: The name tf.global_variables is deprecated. Please use tf.compat.v1.global_variables instead.
+
+WARNING:tensorflow:From /users/PAS1585/llavez99/.local/lib/python3.6/site-packages/keras/backend/tensorflow_backend.py:422: The name tf.global_variables is deprecated. Please use tf.compat.v1.global_variables instead.
+
+   file  eventID        m1  ...      dyf4      dyf5  Unnamed: 48
+0     1    10001  4.828762  ... -0.739343  0.309672          NaN
+1     1    10002  4.828762  ... -0.755528  0.325226          NaN
+2     1    10003  4.828762  ... -0.771745  0.340821          NaN
+3     1    10004  4.828762  ... -0.787995  0.356460          NaN
+4     1    10005  4.828762  ... -0.804280  0.372141          NaN
+
+[5 rows x 49 columns]
+   file  eventID        m1         m2  ...      dyf2      dyf3      dyf4      dyf5
+0     1    10001  4.828762  59.257187  ...  0.317701  0.816792 -0.739343  0.309672
+1     1    10002  4.828762  59.257187  ...  0.320429  0.814882 -0.755528  0.325226
+2     1    10003  4.828762  59.257187  ...  0.323157  0.812966 -0.771745  0.340821
+3     1    10004  4.828762  59.257187  ...  0.325885  0.811045 -0.787995  0.356460
+4     1    10005  4.828762  59.257187  ...  0.328613  0.809119 -0.804280  0.372141
+
+[5 rows x 48 columns]
+(865814, 26) (865814, 20)
+(8746, 26) (8746, 20)
+Training:
+Layers: 4
+Nodes: 50
+Training on numSplit: 0
+Training on numSplit: 1
+Training on numSplit: 2
+Training on numSplit: 3
+1.821173071861267 9.103472096157269 100.0
+Training:
+Layers: 4
+Nodes: 128
+Training on numSplit: 0
+Training on numSplit: 1
+Training on numSplit: 2
+Training on numSplit: 3
+1.2560161352157593 6.35191062038917 100.0
+Training:
+Layers: 4
+Nodes: 200
+Training on numSplit: 0
+Training on numSplit: 1
+Training on numSplit: 2
+Training on numSplit: 3
+1.0922125577926636 5.649613777234814 100.0
+Training:
+Layers: 4
+Nodes: 300
+Training on numSplit: 0
+Training on numSplit: 1
+Training on numSplit: 2
+Training on numSplit: 3
+0.9700125753879547 5.162308234366634 100.0
+Training:
+Layers: 9
+Nodes: 50
+Training on numSplit: 0
+Training on numSplit: 1
+Training on numSplit: 2
+Training on numSplit: 3
+1.7171818017959595 8.485980356602568 100.0
+Training:
+Layers: 9
+Nodes: 128
+Training on numSplit: 0
+Training on numSplit: 1
+Training on numSplit: 2
+Training on numSplit: 3
+1.1753627359867096 5.8882526097622145 100.0
+Training:
+Layers: 9
+Nodes: 200
+Training on numSplit: 0
+Training on numSplit: 1
+Training on numSplit: 2
+Training on numSplit: 3
+0.9822164624929428 5.126331970267369 97.25
+Training:
+Layers: 9
+Nodes: 300
+Training on numSplit: 0
+Training on numSplit: 1
+Training on numSplit: 2
+Training on numSplit: 3
+0.947145402431488 5.114344706733371 100.0
+Training:
+Layers: 14
+Nodes: 50
+Training on numSplit: 0
+Training on numSplit: 1
+Training on numSplit: 2
+Training on numSplit: 3
+1.7218576669692993 8.384095888352622 100.0
+Training:
+Layers: 14
+Nodes: 128
+Training on numSplit: 0
+Training on numSplit: 1
+Training on numSplit: 2
+Training on numSplit: 3
+1.3403235077857971 6.634656022812437 100.0
+Training:
+Layers: 14
+Nodes: 200
+Training on numSplit: 0
+Training on numSplit: 1
+Training on numSplit: 2
+Training on numSplit: 3
+1.1923619508743286 5.94234928759866 100.0
+Training:
+Layers: 14
+Nodes: 300
+Training on numSplit: 0
+Training on numSplit: 1
+Training on numSplit: 2
+Training on numSplit: 3
+1.1994335800409317 6.09710026191465 100.0
+[[4, 50], [4, 128], [4, 200], [4, 300], [9, 50], [9, 128], [9, 200], [9, 300], [14, 50], [14, 128], [14, 200], [14, 300]]
+[1.821173071861267, 1.2560161352157593, 1.0922125577926636, 0.9700125753879547, 1.7171818017959595, 1.1753627359867096, 0.9822164624929428, 0.947145402431488, 1.7218576669692993, 1.3403235077857971, 1.1923619508743286, 1.1994335800409317]
+[9.103472096157269, 6.35191062038917, 5.649613777234814, 5.162308234366634, 8.485980356602568, 5.8882526097622145, 5.126331970267369, 5.114344706733371, 8.384095888352622, 6.634656022812437, 5.94234928759866, 6.09710026191465]
+[100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 97.25, 100.0, 100.0, 100.0, 100.0, 100.0]
+
+-----------------------
+Resources requested:
+nodes=1:ppn=10
+mem=5000mb
+-----------------------
+Resources used:
+cput=50:54:17
+walltime=09:03:07
+mem=2.559GB
+vmem=7.066GB
+-----------------------
+Resource units charged (estimate):
+-----------------------
