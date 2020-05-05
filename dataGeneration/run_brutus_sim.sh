@@ -7,4 +7,4 @@
 cd $PBS_O_WORKDIR
 echo $PBS_O_WORKDIR
 cd /users/PAS1585/llavez99/work/nbody/NvMgeneration/
-./main.exe 1 3
+./main.exe $1 $2

@@ -4,12 +4,12 @@ from random import SystemRandom
 from random import randint
 import numpy as np
 
-fileDir = '/users/PAS1585/llavez99/data/nbody'
+fileDir = '/users/PAS1585/llavez99/data/nbody/'
 
 def grnum(minValue,maxValue):
     return SystemRandom().uniform(minValue, maxValue)
 
-def create_data(batch, filenum, nEPerFile):
+def create_data(batch, nBodies, file_i, file_f, nEPerFile):
     seed(1)
 
     pb = 10    # bounds for position
@@ -17,16 +17,16 @@ def create_data(batch, filenum, nEPerFile):
     mb = 100   # bounds for mass
     nb = 10    # upper bound for # of pls
 
-    for ifile in range(1,filenum+1):
+    for ifile in range(file_i,file_f+1):
 
-        filename = fileDir + "/indat_{0}_{1}.dat".format(batch, ifile)
+        filename = fileDir + str(nBodies) + "body/indat_{0}_{1}.dat".format(batch, ifile)
         inp = open(filename, "w+")
 
         
         for iev in range(1,nEPerFile+1):
 
             # n = randint(2,nb)
-            n = 3 
+            n = nBodies 
             pxdata, pydata, pzdata, mdata, vxdata, vydata, vzdata = [], [], [], [], [], [], []
 
             for k in range(0,n):
@@ -55,6 +55,8 @@ def create_data(batch, filenum, nEPerFile):
 if __name__ == "__main__":
     # configurable data parameters 
     batch = 10
-    nFiles = 3
+    nBodies = 3
+    file_i = 8
+    file_f = 10
     nEventsPerFile = 1000
-    create_data(batch, nFiles, nEventsPerFile)
+    create_data(batch, nBodies, file_i, file_f, nEventsPerFile)
