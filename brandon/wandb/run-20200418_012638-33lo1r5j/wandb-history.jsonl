@@ -1,0 +1,5 @@
+{"epoch": 0, "val_loss": 5.112705611198757, "val_mae": 1.4131903648376465, "loss": 7.941956649752735, "mae": 1.7008126974105835, "_runtime": 373.5580141544342, "_timestamp": 1587173571.793806, "_step": 0}
+{"epoch": 1, "val_loss": 4.66712226539466, "val_mae": 1.3215932846069336, "loss": 4.918946022578915, "mae": 1.3564988374710083, "_runtime": 673.9643471240997, "_timestamp": 1587173872.200139, "_step": 1}
+{"epoch": 2, "val_loss": 4.256025439097136, "val_mae": 1.2351932525634766, "loss": 4.677323769552039, "mae": 1.3074042797088623, "_runtime": 972.3823442459106, "_timestamp": 1587174170.6181362, "_step": 2}
+{"mae": {"_type": "plotly-file", "path": "media/plotly/mae_3_100eb2bf.plotly.json", "sha256": "100eb2bffcc7df177ab82a34c465476a918a11b19ac3bd966d8bdb1281212055", "size": 9255}, "_runtime": 972.8655910491943, "_timestamp": 1587174171.101383, "_step": 3}
+{"loss": {"_type": "plotly-file", "path": "media/plotly/loss_4_39a5b3e0.plotly.json", "sha256": "39a5b3e0091a2cd0c08a3691b6ad329e3c9cb0a7fe4e29dc70a369ab73cb245c", "size": 9249}, "_runtime": 975.0200312137604, "_timestamp": 1587174173.2558231, "_step": 4}
