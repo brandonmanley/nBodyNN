@@ -8,7 +8,7 @@ attrs==19.3.0
 autobahn==20.2.1
 backcall==0.1.0
 beautifulsoup4==4.8.2
-bleach==3.1.0
+bleach==3.1.4
 boto3==1.11.9
 botocore==1.14.9
 bullet==2.1.0
@@ -165,7 +165,7 @@ tox==3.14.3
 traitlets==4.3.3
 txaio==20.1.1
 uncertainties==3.1.2
-urllib3==1.22
+urllib3==1.24.2
 verboselogs==1.7
 virtualenv==16.7.9
 vpython==7.6.0
