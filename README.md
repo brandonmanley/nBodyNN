@@ -1,2 +1,2 @@
 # nBodyNN
-Simulation and development of a Neural Network for N body problem
+Simulation and development of a neural network for the gravitational N body problem
