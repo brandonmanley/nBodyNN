@@ -1,7 +1,7 @@
 #PBS -N run_test2
 #PBS -l walltime=1:00:00
-#PBS -l nodes=1:ppn=40
-#PBS -l mem=5GB
+#PBS -l nodes=4:ppn=40
+#PBS -l mem=20GB
 #PBS -j oe
 
 # uncomment if using qsub

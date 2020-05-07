@@ -1,6 +1,6 @@
 #PBS -N run_test1
 #PBS -l walltime=1:00:00
-#PBS -l nodes=1:ppn=1
+#PBS -l nodes=1:ppn=40
 #PBS -l mem=5GB
 #PBS -j oe
 
