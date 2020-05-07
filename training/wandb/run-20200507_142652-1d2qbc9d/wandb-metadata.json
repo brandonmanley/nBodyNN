@@ -1,0 +1,23 @@
+{
+    "root": "/users/PAS1585/llavez99/work/nbody/nBodyNN",
+    "program": "/users/PAS1585/llavez99/work/nbody/nBodyNN/training/test.py",
+    "git": {
+        "remote": "https://github.com/brandonmanley/nBodyNN.git",
+        "commit": "520599e09dcddcc5a1765c0ab67deb494cf6e8f1"
+    },
+    "email": null,
+    "codePath": "training/test.py",
+    "startedAt": "2020-05-07T14:26:52.537290",
+    "host": "p0149.ten.osc.edu",
+    "username": "llavez99",
+    "executable": "/apps/python/3.6-conda5.2/bin/python",
+    "os": "Linux-3.10.0-957.41.1.el7.x86_64-x86_64-with-redhat-7.6-Maipo",
+    "python": "3.6.6",
+    "cpu_count": 40,
+    "args": [],
+    "state": "running",
+    "jobType": null,
+    "mode": "dryrun",
+    "project": "nbody",
+    "heartbeatAt": "2020-05-07T14:31:59.689553"
+}
