@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 2020-05-07 15:21:38,570 DEBUG   MainThread:7796 [wandb_config.py:_load_defaults():122] no defaults not found in config-defaults.yaml
 2020-05-07 15:21:38,575 DEBUG   MainThread:7796 [meta.py:setup():97] code probe starting
 2020-05-07 15:21:38,576 DEBUG   MainThread:7796 [meta.py:_setup_code_git():49] probe for git information
@@ -144,3 +145,22 @@
 2020-05-07 15:23:47,996 INFO    Thread-3  :7796 [27yf7zxi:run_manager.py:_on_file_modified():692] file/dir modified: /Users/brandonmanley/Documents/nBody/nBodyNN/training/wandb/run-20200507_192137-27yf7zxi/wandb-metadata.json
 2020-05-07 15:23:49,000 INFO    Thread-3  :7796 [27yf7zxi:run_manager.py:_on_file_modified():692] file/dir modified: /Users/brandonmanley/Documents/nBody/nBodyNN/training/wandb/run-20200507_192137-27yf7zxi/output.log
 2020-05-07 15:23:50,003 INFO    Thread-3  :7796 [27yf7zxi:run_manager.py:_on_file_modified():692] file/dir modified: /Users/brandonmanley/Documents/nBody/nBodyNN/training/wandb/run-20200507_192137-27yf7zxi/output.log
+=======
+2020-05-07 10:37:39,987 DEBUG   MainThread:216428 [wandb_config.py:_load_defaults():122] no defaults not found in config-defaults.yaml
+2020-05-07 10:37:40,022 DEBUG   MainThread:216428 [meta.py:setup():100] code probe starting
+2020-05-07 10:37:40,029 DEBUG   MainThread:216428 [meta.py:_setup_code_git():49] probe for git information
+2020-05-07 10:37:40,117 DEBUG   MainThread:216428 [meta.py:_setup_code_program():58] save program starting
+2020-05-07 10:37:40,117 DEBUG   MainThread:216428 [meta.py:_setup_code_program():60] save program starting: /users/PAS1585/llavez99/work/nbody/nBodyNN/training/test.py
+2020-05-07 10:37:40,122 DEBUG   MainThread:216428 [meta.py:_setup_code_program():68] save program saved: /users/PAS1585/llavez99/work/nbody/nBodyNN/training/wandb/run-20200507_143738-2kiawqmz/code/training/test.py
+2020-05-07 10:37:40,124 DEBUG   MainThread:216428 [meta.py:_setup_code_program():70] save program
+2020-05-07 10:37:40,129 DEBUG   MainThread:216428 [meta.py:setup():122] code probe done
+2020-05-07 10:37:40,164 DEBUG   MainThread:216428 [run_manager.py:__init__():546] Initialized sync for nbody/2kiawqmz
+2020-05-07 10:37:40,175 INFO    MainThread:216428 [run_manager.py:wrap_existing_process():1148] wrapping existing process 216217
+2020-05-07 10:37:40,255 INFO    MainThread:216428 [run_manager.py:init_run():927] system metrics and metadata threads started
+2020-05-07 10:37:40,255 INFO    MainThread:216428 [run_manager.py:wrap_existing_process():1165] informing user process we are ready to proceed
+2020-05-07 10:37:40,255 INFO    MainThread:216428 [run_manager.py:_sync_etc():1272] entering loop for messages from user process
+2020-05-07 10:37:41,007 INFO    Thread-3  :216428 [run_manager.py:_on_file_modified():691] file/dir modified: /users/PAS1585/llavez99/work/nbody/nBodyNN/training/wandb/run-20200507_143738-2kiawqmz/config.yaml
+2020-05-07 10:37:52,659 INFO    MainThread:216428 [run_manager.py:_sync_etc():1295] received message from user process: {"save_policy": {"glob": "model-best.h5", "policy": "live"}}
+20200507_143738-2kiawqmz/config.yaml
+2020-05-07 10:37:52,659 INFO    MainThread:216428 [2kiawqmz:run_manager.py:_sync_etc():1295] received message from user process: {"save_policy": {"glob": "model-best.h5", "policy": "live"}}
+>>>>>>> b81f254178e1a3bccc8627446ac057c76b2e2543
