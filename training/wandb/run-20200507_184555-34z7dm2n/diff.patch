@@ -1,0 +1,12 @@
+diff --git a/training/nn.py b/training/nn.py
+index 04e4d39..5d5de39 100644
+--- a/training/nn.py
++++ b/training/nn.py
+@@ -65,6 +65,7 @@ n_epochs, batch_size = 3, 100
+ 
+ network = models.Sequential()
+ network.add(layers.Dense(X_train.shape[1], activation='relu', input_dim=X_train.shape[1]))
++network.add(Dropout(0.2, input_shape=(X_train.shape[1],)))
+ for i in range(10):
+     network.add(layers.Dense(128,activation='relu'))
+ network.add(layers.Dense(y_train.shape[1],activation='linear'))

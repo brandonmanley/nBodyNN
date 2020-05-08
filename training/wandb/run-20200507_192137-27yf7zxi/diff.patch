@@ -1,0 +1,24 @@
+diff --git a/training/nn.py b/training/nn.py
+index 04e4d39..8de6610 100644
+--- a/training/nn.py
++++ b/training/nn.py
+@@ -65,10 +65,11 @@ n_epochs, batch_size = 3, 100
+ 
+ network = models.Sequential()
+ network.add(layers.Dense(X_train.shape[1], activation='relu', input_dim=X_train.shape[1]))
++network.add(Dropout(0.2, input_shape=(X_train.shape[1],)))
+ for i in range(10):
+     network.add(layers.Dense(128,activation='relu'))
+ network.add(layers.Dense(y_train.shape[1],activation='linear'))
+-network.compile(optimizer='adam', loss=loss_function, metrics=my_metrics)
++network.compile(optimizer='sgd', loss=loss_function, metrics=my_metrics)
+ network.save_weights(workDir + '/weights/model_init_test.h5')
+ network.load_weights(workDir + '/weights/model_init_test.h5')
+ history = network.fit(X_train,y_train,
+@@ -95,4 +96,4 @@ plt.title('Model loss')
+ plt.ylabel('Loss')
+ plt.xlabel('Epoch')
+ plt.legend(['Train', 'Test'], loc='best')
+-wandb.log({"loss": plt})
++wandb.log({"loss": plt})
+\ No newline at end of file

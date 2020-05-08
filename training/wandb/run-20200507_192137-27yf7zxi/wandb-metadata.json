@@ -1,0 +1,23 @@
+{
+    "root": "/Users/brandonmanley/Documents/nBody/nBodyNN",
+    "program": "nn.py",
+    "git": {
+        "remote": "https://github.com/brandonmanley/nBodyNN.git",
+        "commit": "febe26f29542a5ab8819a5d2eb1ccc39caed3d04"
+    },
+    "email": "brandonmanley10@gmail.com",
+    "codePath": "training/nn.py",
+    "startedAt": "2020-05-07T19:21:38.042693",
+    "host": "neutrinoNet.local",
+    "username": "brandonmanley",
+    "executable": "/usr/local/opt/python/bin/python3.7",
+    "os": "Darwin-19.4.0-x86_64-i386-64bit",
+    "python": "3.7.7",
+    "cpu_count": 4,
+    "args": [],
+    "state": "running",
+    "jobType": null,
+    "mode": "run",
+    "project": "nbody",
+    "heartbeatAt": "2020-05-07T19:23:47.158095"
+}

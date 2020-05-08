@@ -64,12 +64,12 @@ my_metrics = ['mae']
 n_epochs, batch_size = 3, 100
 
 network = models.Sequential()
-network.add(layers.Dense(X_train.shape[1], activation='relu', input_dim=X_train.shape[1]))
+network.add(layers.Dense(X_train.shape[1], activation='sgd', input_dim=X_train.shape[1]))
 network.add(Dropout(0.2, input_shape=(X_train.shape[1],)))
 for i in range(10):
     network.add(layers.Dense(128,activation='relu'))
 network.add(layers.Dense(y_train.shape[1],activation='linear'))
-network.compile(optimizer='sgd', loss=loss_function, metrics=my_metrics)
+network.compile(optimizer='adam', loss=loss_function, metrics=my_metrics)
 network.save_weights(workDir + '/weights/model_init_test.h5')
 network.load_weights(workDir + '/weights/model_init_test.h5')
 history = network.fit(X_train,y_train,
