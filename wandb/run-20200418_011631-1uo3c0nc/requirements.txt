@@ -22,7 +22,7 @@ cmd2==0.8.9
 colorama==0.4.1
 configobj==5.0.6
 configparser==4.0.2
-cryptography==2.8
+cryptography==3.2
 cycler==0.10.0
 cython==0.29.10
 dask==2.10.0
